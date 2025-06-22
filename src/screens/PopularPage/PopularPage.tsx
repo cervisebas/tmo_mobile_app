@@ -3,13 +3,8 @@ import { TopTabNavigator } from "./navigation/TopTabNavigator";
 import { Appbar } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
-import { useEffect } from "react";
-import { getAllPopulars } from "~/api/scripts/getAllPopulars";
-import { useApiPopulars } from "~/api/hooks/useApiPopulars";
 
 export function PopularPage(props: DrawerScreenProps) {
-  useApiPopulars();
-
   return (
     <PrincipalView>
       <AppbarHeader mode={'small'}>
@@ -21,6 +16,7 @@ export function PopularPage(props: DrawerScreenProps) {
           title={'Populares'}
         />
       </AppbarHeader>
+
       <TopTabNavigator />
     </PrincipalView>
   );

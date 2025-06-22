@@ -10,9 +10,6 @@ import {
   ScrollView as ScrollViewBase,
 } from 'react-native';
 import useSafeArea, {SafeAreaResponse} from '../hooks/useSafeArea';
-import InfinityFlatListNative, {
-  InfinityFlatListProps,
-} from './InfinityFlatList';
 import {
   Divider as DividerNative,
   DividerProps,
@@ -132,15 +129,6 @@ namespace SafeArea {
   export const FlatList = createComponent<FlatListProps<any>>(
     FlatListNative,
     'contentContainerStyle',
-  );
-  export const InfinityFlatList = createComponent<InfinityFlatListProps>(
-    InfinityFlatListNative,
-    'contentContainerStyle',
-    undefined,
-    {
-      expandDisableTop: true,
-      expandType: 'padding',
-    },
   );
   export const FAB = createComponent<FABProps>(
     FABNative,

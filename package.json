@@ -21,6 +21,7 @@
     "babel-plugin-inline-import": "^3.0.0",
     "drizzle-orm": "^0.44.2",
     "expo": "^53.0.12",
+    "expo-image": "~2.3.0",
     "expo-sqlite": "~15.2.12",
     "expo-status-bar": "~2.2.3",
     "nativewind": "latest",
