@@ -64,10 +64,13 @@ export async function databaseSaveBook(data: BookInfoInterface) {
     .set({
       picture: data.picture,
       stars: data.stars,
+      ...getIfExistOr(data.title, {title: data.title}, {}),
+      ...getIfExistOr(data.subtitle, {subtitle: data.subtitle}, {}),
       ...getIfExistOr(data.status, {status: data.status}, {}),
       ...getIfExistOr(data.description, {description: data.description}, {}),
       ...getIfExistOr(data.wallpaper, {wallpaper: data.wallpaper}, {}),
-    });
+    })
+    .where(eq(BookInfoModel.url, data.url));
 
   if (data.genders) {
     for (const gender of data.genders) {
