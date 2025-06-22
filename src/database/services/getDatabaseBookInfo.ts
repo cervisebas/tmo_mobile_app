@@ -23,6 +23,8 @@ export async function getDatabaseBookInfo(url: string) {
         eq(BookInfoModel.url, url),
       );
 
+    console.log('db', find_book);
+
     if (!find_book.length) {
       throw 'Libro no encontrado';
     }

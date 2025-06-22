@@ -95,7 +95,7 @@ export const ImageBook = React.memo(function (props: IProps) {
                 color={'#ffff00'}
               />
               <Text variant={'labelSmall'}>
-                {' ' + props.stars.toFixed(2)}
+                {' ' + (props?.stars?.toFixed?.(2) ?? '')}
               </Text>
             </>
           </View>

@@ -9,11 +9,16 @@ import { AppbarHeader } from "~/common/components/AppbarHeader";
 import useSafeArea from "~/common/hooks/useSafeArea";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
 import * as Sharing from 'expo-sharing';
+import { ImageBook } from "~/common/components/ImageBook";
+import { BookType } from "~/api/enums/BookType";
 
 interface IProps extends ScrollHeaderProps {
   link: string;
   title: string;
   loading?: boolean;
+  type?: BookType;
+  stars?: number;
+  picture?: string;
   wallpaper?: string;
   onBackPress?(): void;
 }
@@ -109,6 +114,14 @@ export function Header(props: IProps) {
         className={'z-[9] absolute top-0 left-0 w-full'}
         style={{height: largeHeight}}
       >
+        <ImageBook
+          type={props.type}
+          stars={props.stars ?? 0}
+          stars_position={'bottom'}
+          width={130}
+          source={props.picture!}
+          style={styles.picture}
+        />
         <Image
           style={[
             styles.image,
@@ -135,5 +148,22 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
+    zIndex: 10,
+  },
+  picture: {
+    zIndex: 11,
+    left: 0,
+    bottom: 0,
+    margin: 16,
+    position: 'absolute',
+    
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity:  0.18,
+    shadowRadius: 4.59,
+    elevation: 5,
   },
 });
