@@ -4,6 +4,8 @@ import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
 import { BookItem } from '~/common/components/BookItem';
 import SafeArea from '~/common/components/SafeArea';
 import { useLayoutSize } from '~/common/hooks/useLayoutSize';
+import { refNavigation } from '~/common/utils/Ref';
+import { StackScreens } from '~/enums/StackScreens';
 
 interface IProps {
   data: BookInfoInterface[];
@@ -38,7 +40,10 @@ export default React.memo(function (props: IProps) {
         width={WIDTH_ITEM}
         picture={item.picture}
         onPress={() => {
-          console.log(item);
+          refNavigation.current?.navigate(
+            StackScreens.BOOK_INFO,
+            item,
+          );
         }}
       />
     ),

@@ -11,6 +11,7 @@ export function useApiPopulars() {
       getAllPopulars()
         .then(async value => {
           sub.next(value);
+          sub.complete();
           
           const all = Object.values(value).flat() as BookInfoInterface[];
           setDatabaseBooks(all);

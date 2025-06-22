@@ -2,7 +2,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Platform, StyleSheet } from "react-native";
 import { DrawerMenu } from "~/common/components/DrawerMenu";
 import { DrawerScreen } from "~/enums/DrawerScreen";
-import { PopularPage } from "~/screens/PopularPage/PopularPage";
+import { PopularScreen } from "~/screens/PopularScreen/PopularScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -23,7 +23,7 @@ export function DrawerNavigator() {
           drawerLabel: 'Populares',
           drawerIcon: 'fire' as never,
         }}
-        component={PopularPage}
+        component={PopularScreen}
       />
       
       <Drawer.Screen
@@ -32,7 +32,7 @@ export function DrawerNavigator() {
           drawerLabel: 'Biblioteca',
           drawerIcon: 'bookmark-box-multiple-outline' as never,
         }}
-        component={PopularPage}
+        component={PopularScreen}
       />
       
       <Drawer.Screen
@@ -41,7 +41,7 @@ export function DrawerNavigator() {
           drawerLabel: 'Descargados',
           drawerIcon: 'download-box-outline' as never,
         }}
-        component={PopularPage}
+        component={PopularScreen}
       />
       
       <Drawer.Screen
@@ -50,7 +50,7 @@ export function DrawerNavigator() {
           drawerLabel: 'Mi perfil',
           drawerIcon: 'account-circle' as never,
         }}
-        component={PopularPage}
+        component={PopularScreen}
       />
     </Drawer.Navigator>
   );

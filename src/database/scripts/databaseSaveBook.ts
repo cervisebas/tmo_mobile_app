@@ -6,12 +6,13 @@ import { databaseSaveGender } from "./databaseSaveGender";
 import { databaseSaveGenderByBook } from "./databaseSaveGenderByBook";
 import { databaseSaveChapter } from "./databaseSaveChapter";
 import { getIfExistOr } from "../utils/getIfExistOr";
+import { databaseSaveUserStatus } from "./databaseSaveUserStatus";
 
 export async function databaseSaveBook(data: BookInfoInterface) {
   const find = await db
     .select()
     .from(BookInfoModel)
-    .where(eq(BookInfoModel.path, data.path));
+    .where(eq(BookInfoModel.url, data.url));
 
   if (!find.length) {
     const insert = await db.insert(BookInfoModel).values({
@@ -48,6 +49,13 @@ export async function databaseSaveBook(data: BookInfoInterface) {
       }
     }
 
+    if (data.user_status) {
+      await databaseSaveUserStatus(
+        insert.lastInsertRowId,
+        data.user_status,
+      );
+    }
+
     return;
   }
 
@@ -61,12 +69,30 @@ export async function databaseSaveBook(data: BookInfoInterface) {
       ...getIfExistOr(data.wallpaper, {wallpaper: data.wallpaper}, {}),
     });
 
+  if (data.genders) {
+    for (const gender of data.genders) {
+      const id_bookgender = await databaseSaveGender(gender);
+      
+      await databaseSaveGenderByBook(
+        id_bookgender,
+        find[0]!.id,
+      );
+    }
+  }
+
   if (data.chapters) {
     for (const chapter of data.chapters) {
       await databaseSaveChapter(
-        find.at(0)!.id,
+        find[0]!.id,
         chapter,
       );
     }
+  }
+
+  if (data.user_status) {
+    await databaseSaveUserStatus(
+      find[0]!.id,
+      data.user_status,
+    );
   }
 }

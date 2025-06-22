@@ -4,7 +4,7 @@ import { Appbar } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
 
-export function PopularPage(props: DrawerScreenProps) {
+export function PopularScreen(props: DrawerScreenProps) {
   return (
     <PrincipalView>
       <AppbarHeader mode={'small'}>

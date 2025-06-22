@@ -1,23 +1,18 @@
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { db } from "../database";
 import { BookChapterModel } from "../schemas/BookChapterModel";
-import { BookChapterOptionModel } from "../schemas/BookChapterOptionModel";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { databaseSaveChapterOption } from "./databaseSaveChapterOption";
 
 export async function databaseSaveChapter(id_bookinfo: number, data: ChapterInterface) {
   const find = await db
     .select()
     .from(BookChapterModel)
-    .leftJoin(
-      BookChapterOptionModel,
-      eq(
-        BookChapterModel.id,
-        BookChapterOptionModel.id_chapter
-      ),
-    )
     .where(
-      eq(BookChapterModel.id_bookinfo, id_bookinfo),
+      and(
+        eq(BookChapterModel.id_bookinfo, id_bookinfo),
+        eq(BookChapterModel.name, data.title),
+      ),
     );
 
   if (!find.length) {
@@ -38,7 +33,7 @@ export async function databaseSaveChapter(id_bookinfo: number, data: ChapterInte
 
   for (const option of data.options) {
     await databaseSaveChapterOption(
-      find.at(0)?.["book-chapters"].id!,
+      find[0].id,
       option,
     );
   }

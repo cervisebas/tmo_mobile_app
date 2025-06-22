@@ -1,0 +1,139 @@
+import { ScrollHeaderProps } from "@codeherence/react-native-header";
+import Color from "color";
+import { Image } from "expo-image";
+import { useCallback, useContext, useMemo } from "react";
+import { StyleSheet } from "react-native";
+import { Appbar } from "react-native-paper";
+import Animated, { interpolate, interpolateColor, useAnimatedStyle } from "react-native-reanimated";
+import { AppbarHeader } from "~/common/components/AppbarHeader";
+import useSafeArea from "~/common/hooks/useSafeArea";
+import { ThemeContext } from "~/common/providers/ThemeProvider";
+import * as Sharing from 'expo-sharing';
+
+interface IProps extends ScrollHeaderProps {
+  link: string;
+  title: string;
+  loading?: boolean;
+  wallpaper?: string;
+  onBackPress?(): void;
+}
+
+const SMALL_HEADER_SIZE = 64;
+const LARGE_HEADER_SIZE = 240;
+
+export function Header(props: IProps) {
+  const {top} = useSafeArea();
+  const {theme} = useContext(ThemeContext);
+
+  const smallHeight = useMemo(() => SMALL_HEADER_SIZE + top, [top]);
+  const largeHeight = useMemo(() => smallHeight + LARGE_HEADER_SIZE, [smallHeight]);
+
+  const headerColors = useMemo(() => ({
+    closed: Color(theme.colors.elevation.level2).alpha(0.5).rgb().string(),
+    open: Color(theme.colors.elevation.level2).alpha(1).rgb().string(),
+  }), [theme]);
+
+  const contentHeaderAnimatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      props.showNavBar.value,
+      [0, 1],
+      [
+        headerColors.closed,
+        headerColors.open,
+      ],
+    ),
+  }));
+
+  const contentAnimatedStyle = useAnimatedStyle(() => ({
+    height: interpolate(
+      props.showNavBar.value,
+      [0, 1],
+      [largeHeight, smallHeight],
+    ),
+  }));
+
+  const goShareLink = useCallback(async () => {
+    if (await Sharing.isAvailableAsync()) {
+      Sharing.shareAsync(props.link);
+    }
+  }, [props.link]);
+
+  if (props.loading) {
+    return (
+      <AppbarHeader mode={'small'}>
+        <Appbar.BackAction
+          onPress={props.onBackPress}
+        />
+
+        <Appbar.Content
+          title={props.title}
+        />
+
+        <Appbar.Action
+          icon={'share-variant-outline'}
+          onPress={goShareLink}
+        />
+      </AppbarHeader>
+    );
+  }
+
+  return (
+    <Animated.View
+      className={'relative'}
+      style={[contentAnimatedStyle, styles.content]}
+    >
+      <Animated.View
+        className={'z-[10]'}
+        style={contentHeaderAnimatedStyle}
+      >
+        <AppbarHeader
+          mode={'small'}
+          style={styles.header}
+        >
+          <Appbar.BackAction
+            onPress={props.onBackPress}
+          />
+
+          <Appbar.Content
+            title={props.title}
+          />
+
+          <Appbar.Action
+            icon={'share-variant-outline'}
+            onPress={goShareLink}
+          />
+        </AppbarHeader>
+      </Animated.View>
+
+      <Animated.View
+        className={'z-[9] absolute top-0 left-0 w-full'}
+        style={{height: largeHeight}}
+      >
+        <Image
+          style={[
+            styles.image,
+            {
+              height: largeHeight,
+            },
+          ]}
+          source={{
+            uri: props.wallpaper,
+          }}
+          contentFit={'cover'}
+        />
+      </Animated.View>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  content: {
+    overflow: 'hidden',
+  },
+  header: {
+    backgroundColor: 'transparent',
+  },
+  image: {
+    width: '100%',
+  },
+});
