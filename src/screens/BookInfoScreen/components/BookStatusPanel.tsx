@@ -5,7 +5,7 @@ import { UserBookStatus } from "~/api/interfaces/UserBookStatus";
 
 export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}: UserBookStatus) {
   return (
-    <React.Fragment>
+    <View className={'flex-col mx-[-12]'}>
       <View className={'w-full flex-wrap justify-start flex-row'}>
         <BookStatusItem
           icon={'check-circle-outline'}
@@ -57,6 +57,6 @@ export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}:
           value={abandoned}
         />
       </View>
-    </React.Fragment>
+    </View>
   );
 }
