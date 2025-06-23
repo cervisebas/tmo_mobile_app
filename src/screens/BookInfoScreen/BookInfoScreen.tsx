@@ -13,11 +13,13 @@ import useSafeArea from "~/common/hooks/useSafeArea";
 import { GenderList } from "./components/GenderList";
 import { ChapterList } from "./components/ChapterList";
 import React from "react";
+import useDimension from "~/common/hooks/useDimension";
 
 export function BookInfoScreen(props: StackScreenProps) {
   const info = props.route.params as BookInfoInterface;
   const {data, error, loading, refresh} = useApiBookInfo(info.url);
   const {left, right, bottom} = useSafeArea(12, 60);
+  const [, WINDOW_HEIGHT] = useDimension('window');
 
   return (
     <PrincipalView>
@@ -49,7 +51,7 @@ export function BookInfoScreen(props: StackScreenProps) {
         contentContainerStyle={{
           paddingLeft: left,
           paddingRight: right,
-          paddingBottom: bottom,
+          paddingBottom: bottom + (WINDOW_HEIGHT / 2),
         }}
       >
         <LoadingErrorContent
