@@ -18,7 +18,7 @@ export const ChapterList = React.memo(function (props: IProps) {
   
   const data = useMemo(() => {
     const use_data = ascending
-      ? props.chapters.reverse()
+      ? props.chapters.slice().reverse()
       : props.chapters;
 
     const chapters = showAll
@@ -30,7 +30,7 @@ export const ChapterList = React.memo(function (props: IProps) {
   
   const canShowMore = useMemo(() => (
     !showAll &&
-    props.chapters.length > 10
+    props.chapters.length > MAX_ITEMS_COLAPSE
   ), [props.chapters.length, showAll]);
 
   const renderItem = useCallback(({item}: ListRenderItemInfo<ChapterInterface>) => (
@@ -62,14 +62,14 @@ export const ChapterList = React.memo(function (props: IProps) {
 
           <IconButton
             icon={
-              ascending
+              !ascending
                 ? 'sort-ascending'
                 : 'sort-descending'
             }
             mode={'contained'}
             style={styles.button_actions}
             size={20}
-            onPress={() => setAscending(!ascending)}
+            onPress={() => setAscending(v => !v)}
           />
         </View>
       </View>
