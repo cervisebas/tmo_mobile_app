@@ -33,7 +33,7 @@ export const ImageBook = React.memo(function (props: IProps) {
 
   return (
     <TouchableRipple
-      className={'flex-1 relative rounded-[8]'}
+      className={'flex-1 relative'}
       style={[
         styles.content,
         {
@@ -45,7 +45,7 @@ export const ImageBook = React.memo(function (props: IProps) {
       onPress={props.onPress}
     >
       <React.Fragment>
-        <View className={'flex-1'}>
+        <View className={'flex-1 rounded-[8] overflow-hidden'}>
           <Image
             source={{
               uri: props.source,
@@ -107,7 +107,7 @@ export const ImageBook = React.memo(function (props: IProps) {
 
 const styles = StyleSheet.create({
   content: {
-    overflow: 'hidden',
+    //overflow: 'hidden',
   },
   shadow_text_type: {
     color: 'black',
