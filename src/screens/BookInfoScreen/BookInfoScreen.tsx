@@ -3,7 +3,7 @@ import StackScreenProps from "~/common/interfaces/StackScreenProps";
 import { Header } from "./components/Header";
 import { LargeHeader } from "./components/LargeHeader";
 import PrincipalView from "~/common/components/PrincipalView";
-import { Divider, FAB, Text } from "react-native-paper";
+import { Divider, Text } from "react-native-paper";
 import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 import { useApiBookInfo } from "~/api/hooks/useApiBookInfo";
 import { LoadingErrorContent } from "~/common/components/LoadingErrorContent";
@@ -11,6 +11,8 @@ import { StyleSheet, View } from "react-native";
 import SafeArea from "~/common/components/SafeArea";
 import useSafeArea from "~/common/hooks/useSafeArea";
 import { GenderList } from "./components/GenderList";
+import { ChapterList } from "./components/ChapterList";
+import React from "react";
 
 export function BookInfoScreen(props: StackScreenProps) {
   const info = props.route.params as BookInfoInterface;
@@ -81,13 +83,19 @@ export function BookInfoScreen(props: StackScreenProps) {
             
             <Divider />
 
-            <GenderList data={data?.genders!} />
+            <GenderList
+              data={data?.genders!}
+            />
 
-            <Divider />
+            {data?.chapters && (
+              <React.Fragment>
+                <Divider />
 
-            {Array(200).fill(0).map((_, i) => (
-              <Text key={i}>Element {i}</Text>
-            ))}
+                <ChapterList
+                  chapters={data?.chapters}
+                />
+              </React.Fragment>
+            )}
           </View>
         </LoadingErrorContent>
       </ScrollViewWithHeaders>
