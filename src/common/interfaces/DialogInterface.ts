@@ -4,22 +4,23 @@ export namespace DialogInterface {
   export interface IProps {}
 
   export interface IRef {
-    showLoading: (message: string | false) => void;
+    showLoading(message: string | false): void;
     showAlert: AlertRef['open'];
+    showImage: ImageViewingRef['open'];
   }
 
   export interface LoadingRef {
-    open: (message: string) => void;
-    close: () => void;
+    open(message: string): void;
+    close(): void;
   }
 
   export interface AlertButtons {
     text: string;
-    onPress?: () => void;
+    onPress?(): void;
   }
 
   export interface AlertRef {
-    open: (props: {
+    open(props: {
       title?: string;
       message?: string | React.ReactNode;
       buttons?: AlertButtons[];
@@ -27,8 +28,12 @@ export namespace DialogInterface {
       showOk?: boolean;
       textOk?: string;
       onClose?: () => void;
-    }) => void;
-    close: () => void;
+    }): void;
+    close(): void;
+  }
+
+  export interface ImageViewingRef {
+    open(images: string[]): void;
   }
 
 }

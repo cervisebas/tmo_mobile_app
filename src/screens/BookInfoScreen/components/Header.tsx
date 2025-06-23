@@ -11,6 +11,7 @@ import { ThemeContext } from "~/common/providers/ThemeProvider";
 import * as Sharing from 'expo-sharing';
 import { ImageBook } from "~/common/components/ImageBook";
 import { BookType } from "~/api/enums/BookType";
+import { refDialog } from "~/common/utils/Ref";
 
 interface IProps extends ScrollHeaderProps {
   link: string;
@@ -121,6 +122,12 @@ export function Header(props: IProps) {
           width={130}
           source={props.picture!}
           style={styles.picture}
+          onPress={() => {
+            refDialog.current?.showImage([
+              props.picture!,
+              props.wallpaper!,
+            ]);
+          }}
         />
         <Image
           style={[

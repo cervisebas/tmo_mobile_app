@@ -9,12 +9,12 @@ import {
   ActivityIndicator,
   Button,
   Dialog,
-  Paragraph,
   Portal,
   Text,
 } from 'react-native-paper';
-import {StyleSheet} from 'react-native';
+import {ImageURISource, Platform, StyleSheet} from 'react-native';
 import {DialogInterface} from '../interfaces/DialogInterface';
+import ImageView from 'react-native-image-viewing';
 
 export const Dialogs = forwardRef(function (
   _: DialogInterface.IProps,
@@ -22,6 +22,7 @@ export const Dialogs = forwardRef(function (
 ) {
   const refLoading = useRef<DialogInterface.LoadingRef>(null);
   const refAlert = useRef<DialogInterface.AlertRef>(null);
+  const refImageViewing = useRef<DialogInterface.ImageViewingRef>(null);
 
   useImperativeHandle(ref, () => ({
     showLoading(message: string | false) {
@@ -33,11 +34,16 @@ export const Dialogs = forwardRef(function (
     showAlert(props: Parameters<DialogInterface.AlertRef['open']>[0]) {
       refAlert.current?.open(props);
     },
+    showImage(images) {
+      refImageViewing.current?.open(images);
+    },
   }));
+
   return (
     <Portal>
       <Loading.Component ref={refLoading} />
       <Alert.Component ref={refAlert} />
+      <ImageViewing.Component ref={refImageViewing} />
     </Portal>
   );
 });
@@ -158,9 +164,9 @@ namespace Alert {
         {message && (
           <Dialog.Content>
             {typeof message === 'string' ? (
-              <Paragraph>
+              <Text variant={'bodyMedium'}>
                 {message}
-              </Paragraph>
+              </Text>
             ) : (
               message
             )}
@@ -182,4 +188,44 @@ namespace Alert {
       </Dialog>
     );
   });
+}
+
+namespace ImageViewing {
+  export const Component = React.memo(forwardRef(function (_: object, ref: React.Ref<DialogInterface.ImageViewingRef>) {
+    const [visible, setVisible] = useState(false);
+    const [images, setimages] = useState<ImageURISource[]>([]);
+    
+    useImperativeHandle(ref, () => ({
+      open(images) {
+        setVisible(true);
+        setimages(images.map(v => ({uri: v})));
+      },
+    }));
+
+    return (
+      <ImageView
+        images={images}
+        imageIndex={0}
+        visible={visible}
+        presentationStyle={
+          Platform.select({
+            ios: 'pageSheet',
+            default: 'fullScreen',
+          })
+        }
+        animationType={
+          Platform.select({
+            ios: 'slide',
+            default: 'fade',
+          })
+        }
+        swipeToCloseEnabled={false}
+        doubleTapToZoomEnabled={true}
+
+        onRequestClose={() => {
+          setVisible(false);
+        }}
+      />
+    );
+  }));
 }

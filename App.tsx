@@ -6,6 +6,8 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { db } from '~/database/database';
 import { Text } from 'react-native-paper';
 import { View } from 'react-native';
+import { Dialogs } from '~/common/components/Dialogs';
+import { refDialog } from '~/common/utils/Ref';
 import 'react-native-gesture-handler';
 import './global.css';
 
@@ -37,6 +39,7 @@ export default function App() {
       <StatusBar animated style={'light'} />
 
       <RootNavigator />
+      <Dialogs ref={refDialog} />
     </ThemeProvider>
   );
 }
