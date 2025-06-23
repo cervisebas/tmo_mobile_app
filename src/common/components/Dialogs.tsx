@@ -219,7 +219,12 @@ namespace ImageViewing {
             default: 'fade',
           })
         }
-        swipeToCloseEnabled={false}
+        swipeToCloseEnabled={
+          Platform.select({
+            ios: false,
+            default: true,
+          })
+        }
         doubleTapToZoomEnabled={true}
 
         onRequestClose={() => {
