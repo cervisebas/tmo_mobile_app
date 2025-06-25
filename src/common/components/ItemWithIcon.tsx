@@ -6,7 +6,9 @@ interface IProps {
   title: string;
   description?: string | React.ReactNode;
   leftIcon?: string;
+  leftIconColor?: string;
   rightIcon?: string;
+  rightIconColor?: string;
   fixHeight?: number;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -23,14 +25,26 @@ export default React.memo(function (props: IProps) {
       descriptionNumberOfLines={props.descriptionNumberOfLines}
       left={
         props.leftIcon
-          ? // eslint-disable-next-line react/no-unstable-nested-components
-            p => <List.Icon {...p} icon={props.leftIcon!} />
+          ?
+            p => (
+              <List.Icon
+                {...p}
+                icon={props.leftIcon!}
+                color={props.leftIconColor ?? p.color}
+              />
+            )
           : undefined
       }
       right={
         props.rightIcon
-          ? // eslint-disable-next-line react/no-unstable-nested-components
-            p => <List.Icon {...p} icon={props.rightIcon!} />
+          ?
+            p => (
+              <List.Icon
+                {...p}
+                icon={props.rightIcon!}
+                color={props.rightIconColor ?? p.color}
+              />
+            )
           : undefined
       }
       disabled={props.disabled}

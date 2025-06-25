@@ -15,6 +15,7 @@ import {
 import {ImageURISource, Platform, StyleSheet} from 'react-native';
 import {DialogInterface} from '../interfaces/DialogInterface';
 import ImageView from 'react-native-image-viewing';
+import BottomSheetOptions, { BottomSheetOptionsRef } from './BottomSheetOptions';
 
 export const Dialogs = forwardRef(function (
   _: DialogInterface.IProps,
@@ -23,6 +24,7 @@ export const Dialogs = forwardRef(function (
   const refLoading = useRef<DialogInterface.LoadingRef>(null);
   const refAlert = useRef<DialogInterface.AlertRef>(null);
   const refImageViewing = useRef<DialogInterface.ImageViewingRef>(null);
+  const refBottomSheetOptions = useRef<BottomSheetOptionsRef>(null);
 
   useImperativeHandle(ref, () => ({
     showLoading(message: string | false) {
@@ -37,14 +39,21 @@ export const Dialogs = forwardRef(function (
     showImage(images) {
       refImageViewing.current?.open(images);
     },
+    showBottomSheetOptions(title, options) {
+      refBottomSheetOptions.current?.open(title, options);
+    },
   }));
 
   return (
-    <Portal>
-      <Loading.Component ref={refLoading} />
-      <Alert.Component ref={refAlert} />
-      <ImageViewing.Component ref={refImageViewing} />
-    </Portal>
+    <React.Fragment>
+      <Portal>
+        <Loading.Component ref={refLoading} />
+        <Alert.Component ref={refAlert} />
+        <ImageViewing.Component ref={refImageViewing} />
+      </Portal>
+
+      <BottomSheetOptions ref={refBottomSheetOptions} />
+    </React.Fragment>
   );
 });
 

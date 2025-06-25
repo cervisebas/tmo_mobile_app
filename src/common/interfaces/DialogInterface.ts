@@ -1,4 +1,5 @@
 import React from 'react';
+import { BottomSheetOptionsRef } from '../components/BottomSheetOptions';
 
 export namespace DialogInterface {
   export interface IProps {}
@@ -7,6 +8,7 @@ export namespace DialogInterface {
     showLoading(message: string | false): void;
     showAlert: AlertRef['open'];
     showImage: ImageViewingRef['open'];
+    showBottomSheetOptions: BottomSheetOptionsRef['open'];
   }
 
   export interface LoadingRef {

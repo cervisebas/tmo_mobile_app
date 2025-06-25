@@ -1,9 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
+import moment from "moment";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import { ListRenderItemInfo, StyleSheet, View } from "react-native";
 import { Button, IconButton, Text } from "react-native-paper";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
+import { BottomSheetOptionsInterface } from "~/common/components/BottomSheetOptions";
 import FlatListDynamicItems from "~/common/components/FlatListDynamicItems";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
+import { ThemeContext } from "~/common/providers/ThemeProvider";
+import { refDialog } from "~/common/utils/Ref";
 
 interface IProps {
   chapters: ChapterInterface[];
@@ -13,6 +17,8 @@ const MAX_ITEMS_COLAPSE = 6;
 const HEIGHT_ITEMS = 52;
 
 export const ChapterList = React.memo(function (props: IProps) {
+  const {theme} = useContext(ThemeContext);
+  
   const [ascending, setAscending] = useState(false);
   const [showAll, setShowAll] = useState(false);
   
@@ -37,8 +43,29 @@ export const ChapterList = React.memo(function (props: IProps) {
     <ItemWithIcon
       title={item.title}
       leftIcon={'chevron-down'}
+      leftIconColor={theme.colors.primary}
       rightIcon={'eye-off-outline'}
       fixHeight={HEIGHT_ITEMS}
+      onPress={() => {
+        const options: BottomSheetOptionsInterface[] = [];
+
+        options.push(
+          ...item.options.map(v => ({
+            label: v.title,
+            description: moment(v.date).format('DD-MM-YYYY'),
+            leftIcon: 'play',
+            leftIconColor: theme.colors.primary,
+            onPress() {
+              console.log(v.path);
+            },
+          }))
+        );
+
+        refDialog.current?.showBottomSheetOptions(
+          'Opciónes del capítulo',
+          options,
+        );
+      }}
     />
   ), []);
 

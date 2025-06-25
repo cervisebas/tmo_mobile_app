@@ -24,13 +24,12 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
 
     // ##### Chapters
     const chapters: ChapterInterface[] = [];
-    
     for (const el of root.querySelectorAll('#chapters ul li[data-index]')) {
       const options: ChapterInterface['options'] = [];
 
       for (const item_el of el.querySelectorAll('.list-group-item')) {
         const date = moment(
-          item_el.querySelector('.badge')?.innerText.trim()!,
+          item_el.querySelector('.badge')?.innerText.trim() ?? '2012-12-12',
           'YYYY-MM-DD',
         );
 
@@ -38,16 +37,18 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
           date: date.toDate(),
           path: item_el.querySelector('a.btn-sm')?.getAttribute('href')!,
           title: item_el
-            .querySelector('.text-truncate')!
-            .innerText
+            .querySelector('.text-truncate')
+            ?.innerText
             .trim()
             .replace(/ {2,}/g, '  ')
-            .replace(/\n/g, ''),
+            .replace(/\n/g, '')
+            ?? ''
+          ,
         });
       }
 
       chapters.push({
-        title: el.querySelector('h4')!.innerText.trim(),
+        title: el.querySelector('h4')?.innerText.trim() ?? '',
         options: options,
       });
     }
@@ -81,8 +82,10 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
       Object.assign(user_status, {
         [key]: {
           quantity: el
-            .querySelector('.element-header-bar-element-number')!
-            .innerText,
+            .querySelector('.element-header-bar-element-number')
+            ?.innerText
+            ?? ''
+          ,
           user_select: el.classList.contains('active'),
         },
       });
@@ -90,29 +93,31 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
     
     const stars = root
         .querySelector('.score')!
-        .querySelector('span')!
-        .innerText;
+        .querySelector('span')
+        ?.innerText
+        ?? '';
 
     return {
       url: url,
       path: url.slice(url.lastIndexOf('/') + 1),
       stars: Number(stars),
       title: root
-        .querySelector('.element-title')!
-        .innerText
+        .querySelector('.element-title')
+        ?.innerText
         .trim()
         .replace(/ {2,}/g, '  ')
         .replace(/\n/g, '')
         .replace(/\t/g, '')
+        ?? ''
       ,
       subtitle: root
-        .querySelector('h2.element-subtitle')!
-        .innerText
+        .querySelector('h2.element-subtitle')
+        ?.innerText
         .trim()
       ,
       description: root
-        .querySelector('.element-description')!
-        .innerText
+        .querySelector('.element-description')
+        ?.innerText
         .trim()
       ,
       picture: root
@@ -122,13 +127,13 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
       wallpaper: data.slice(start_url_wallpaper + 5, end_url_wallpaper),
       genders: genders,
       status: root
-        .querySelector('.book-status.publishing')!
-        .innerText
+        .querySelector('.book-status.publishing')
+        ?.innerText
         .toLowerCase() as BookStatus
       ,
       type: root
-        .querySelector('.book-type')!
-        .innerText
+        .querySelector('.book-type')
+        ?.innerText
         .toLowerCase()
         .trim() as BookType
       ,

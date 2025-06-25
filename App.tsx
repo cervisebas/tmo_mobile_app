@@ -5,10 +5,11 @@ import migrations from 'drizzle/migrations';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { db } from '~/database/database';
 import { Text } from 'react-native-paper';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Dialogs } from '~/common/components/Dialogs';
 import { refDialog } from '~/common/utils/Ref';
-import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import './global.css';
 
 export default function App() {
@@ -36,10 +37,20 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <StatusBar animated style={'light'} />
+      <GestureHandlerRootView style={styles.content}>
+        <BottomSheetModalProvider>
+          <StatusBar animated style={'light'} />
 
-      <RootNavigator />
-      <Dialogs ref={refDialog} />
+          <RootNavigator />
+          <Dialogs ref={refDialog} />
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+  },
+});
