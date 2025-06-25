@@ -12,14 +12,26 @@ import SafeArea from "~/common/components/SafeArea";
 import useSafeArea from "~/common/hooks/useSafeArea";
 import { GenderList } from "./components/GenderList";
 import { ChapterList } from "./components/ChapterList";
-import React from "react";
+import React, { useMemo } from "react";
 import useDimension from "~/common/hooks/useDimension";
+import { BookStatusList } from "~/constants/BookStatusList";
 
 export function BookInfoScreen(props: StackScreenProps) {
   const info = props.route.params as BookInfoInterface;
   const {data, error, loading, refresh} = useApiBookInfo(info.url);
   const {left, right, bottom} = useSafeArea(12, 60);
   const [, WINDOW_HEIGHT] = useDimension('window');
+
+  const status = useMemo(() => {
+    if (data?.status) {
+      const status = BookStatusList[data.status];
+
+      return {
+        ...status,
+        label: status.label.toUpperCase(),
+      };
+    }
+  }, [data?.status]);
 
   return (
     <PrincipalView>
@@ -33,7 +45,7 @@ export function BookInfoScreen(props: StackScreenProps) {
             title={info.title}
             loading={loading}
             type={data?.type}
-            stars={data?.stars}
+            stars={data?.stars ?? info.stars}
             picture={data?.picture}
             wallpaper={data?.wallpaper}
             onBackPress={props.navigation.goBack}
@@ -49,6 +61,7 @@ export function BookInfoScreen(props: StackScreenProps) {
           : undefined
         }
         contentContainerStyle={{
+          flexGrow: loading ? 1 : undefined,
           paddingLeft: left,
           paddingRight: right,
           paddingBottom: bottom + (WINDOW_HEIGHT / 2),
@@ -60,7 +73,7 @@ export function BookInfoScreen(props: StackScreenProps) {
         >
           <View className={'mt-[12] gap-[24]'}>
             <View className={'gap-[8]'}>
-              <Text variant={'titleLarge'}>Titulos</Text>
+              <Text variant={'titleLarge'}>Títulos</Text>
 
               <Text variant={'titleMedium'}>
                 {data?.title}
@@ -74,6 +87,27 @@ export function BookInfoScreen(props: StackScreenProps) {
             </View>
             
             <Divider />
+            
+            {status && (
+              <React.Fragment>
+                <View className={'gap-[8] flex-col'}>
+                  <Text variant={'titleLarge'}>Estado</Text>
+    
+                  <View className={'flex-row gap-[8] items-center'}>
+                    <View
+                      className={'size-[16] rounded-full'}
+                      style={{backgroundColor: status.color}}
+                    />
+
+                    <Text variant={'labelLarge'}>
+                      {status.label}
+                    </Text>
+                  </View>
+                </View>
+                
+                <Divider />
+              </React.Fragment>
+            )}
 
             <View className={'gap-[8]'}>
               <Text variant={'titleLarge'}>Descripción</Text>

@@ -47,27 +47,28 @@ export const ChapterList = React.memo(function (props: IProps) {
       rightIcon={'eye-off-outline'}
       fixHeight={HEIGHT_ITEMS}
       onPress={() => {
-        const options: BottomSheetOptionsInterface[] = [];
+        const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
+          label: v.title,
+          description: moment(v.date).format('DD-MM-YYYY'),
+          leftIcon: 'play',
+          leftIconColor: theme.colors.primary,
+          onPress() {
+            console.log(v.path);
+          },
+        }));
 
-        options.push(
-          ...item.options.map(v => ({
-            label: v.title,
-            description: moment(v.date).format('DD-MM-YYYY'),
-            leftIcon: 'play',
-            leftIconColor: theme.colors.primary,
-            onPress() {
-              console.log(v.path);
-            },
-          }))
-        );
+        const aditionalOptions: BottomSheetOptionsInterface[] = [];
 
         refDialog.current?.showBottomSheetOptions(
           'Opciónes del capítulo',
-          options,
+          {
+            'Opciónes de lectura': options,
+            'Opciónes adicionales': aditionalOptions,
+          },
         );
       }}
     />
-  ), []);
+  ), [theme.colors.primary]);
 
   return (
     <View className={'flex-col gap-[8]'}>
@@ -93,6 +94,7 @@ export const ChapterList = React.memo(function (props: IProps) {
                 ? 'sort-ascending'
                 : 'sort-descending'
             }
+            animated={true}
             mode={'contained'}
             style={styles.button_actions}
             size={20}
@@ -108,7 +110,7 @@ export const ChapterList = React.memo(function (props: IProps) {
         no_scrollview={true}
         heightItems={HEIGHT_ITEMS}
         useDivider
-        useKeyExtractor={'chapter-item-{title}'}
+        useKeyExtractor={'chapter-item-{data_chapter}'}
       />
 
       {canShowMore && (

@@ -9,6 +9,7 @@ import { BookStatus } from "../enums/BookStatus";
 import { BookType } from "../enums/BookType";
 import { BookInfoInterface } from "../interfaces/BookInfoInterface";
 import { axios } from "~/common/utils/Axios";
+import he from "he";
 
 export async function getBookInfo(url: string): Promise<BookInfoInterface> {
   try {
@@ -33,22 +34,27 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
           'YYYY-MM-DD',
         );
 
+        const title = item_el
+          .querySelector('.text-truncate')
+          ?.innerText
+          .trim()
+          .replace(/ {2,}/g, '  ')
+          .replace(/\n/g, '')
+          ?? '';
+
         options.push({
           date: date.toDate(),
           path: item_el.querySelector('a.btn-sm')?.getAttribute('href')!,
-          title: item_el
-            .querySelector('.text-truncate')
-            ?.innerText
-            .trim()
-            .replace(/ {2,}/g, '  ')
-            .replace(/\n/g, '')
-            ?? ''
-          ,
+          title: he.decode(title),
         });
       }
 
+      const title = el.querySelector('h4')?.innerText.trim() ?? '';
+      const number = el.querySelector('span[data-chapter]')?.getAttribute('data-chapter') ?? '0';
+
       chapters.push({
-        title: el.querySelector('h4')?.innerText.trim() ?? '',
+        title: he.decode(title),
+        data_chapter: Number(number),
         options: options,
       });
     }
@@ -97,29 +103,32 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
         ?.innerText
         ?? '';
 
+    const title = root
+      .querySelector('.element-title')
+      ?.innerText
+      .trim()
+      .replace(/ {2,}/g, '  ')
+      .replace(/\n/g, '')
+      .replace(/\t/g, '')
+      ?? '';
+
+    const subtitle = root
+      .querySelector('h2.element-subtitle')
+      ?.innerText
+      .trim() ?? '';
+
+    const description = root
+      .querySelector('.element-description')
+      ?.innerText
+      .trim() ?? '';
+
     return {
       url: url,
       path: url.slice(url.lastIndexOf('/') + 1),
       stars: Number(stars),
-      title: root
-        .querySelector('.element-title')
-        ?.innerText
-        .trim()
-        .replace(/ {2,}/g, '  ')
-        .replace(/\n/g, '')
-        .replace(/\t/g, '')
-        ?? ''
-      ,
-      subtitle: root
-        .querySelector('h2.element-subtitle')
-        ?.innerText
-        .trim()
-      ,
-      description: root
-        .querySelector('.element-description')
-        ?.innerText
-        .trim()
-      ,
+      title: he.decode(title),
+      subtitle: he.decode(subtitle),
+      description: he.decode(description),
       picture: root
         .querySelector('.book-thumbnail')!
         .getAttribute('src')!

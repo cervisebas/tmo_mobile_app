@@ -23,7 +23,7 @@ export function useApiBookInfo(url: string) {
             })
             .catch(sub.error);
         })
-        .catch(sub.error)
+        .catch(sub.error);
     })
   );
 }

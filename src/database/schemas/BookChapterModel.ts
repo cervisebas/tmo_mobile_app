@@ -7,5 +7,6 @@ export const BookChapterModel = sqliteTable(
     id: integer().primaryKey({autoIncrement: true}).notNull(),
     id_bookinfo: integer().notNull(),
     name: text().notNull(),
+    data_chapter: integer().notNull().default(0),
   },
 );

@@ -1,0 +1,1 @@
+ALTER TABLE `book-chapters` ADD `data_chapter` integer DEFAULT 0 NOT NULL;

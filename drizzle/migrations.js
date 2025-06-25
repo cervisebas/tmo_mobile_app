@@ -3,12 +3,14 @@
 import journal from './meta/_journal.json';
 import m0000 from './0000_huge_kitty_pryde.sql';
 import m0001 from './0001_cooing_killer_shrike.sql';
+import m0002 from './0002_massive_pixie.sql';
 
   export default {
     journal,
     migrations: {
       m0000,
-m0001
+m0001,
+m0002
     }
   }
   

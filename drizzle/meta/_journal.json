@@ -15,6 +15,13 @@
       "when": 1750625308503,
       "tag": "0001_cooing_killer_shrike",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1750880401576,
+      "tag": "0002_massive_pixie",
+      "breakpoints": true
     }
   ]
 }

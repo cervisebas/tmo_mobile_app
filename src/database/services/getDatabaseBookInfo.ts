@@ -113,6 +113,7 @@ export async function getDatabaseBookInfo(url: string) {
       chapters.push({
         id: chapter[DatabaseTable.BOOK_CHAPTERS].id,
         title: chapter[DatabaseTable.BOOK_CHAPTERS].name,
+        data_chapter: chapter[DatabaseTable.BOOK_CHAPTERS].data_chapter,
         options: [
           {
             title: chapter[DatabaseTable.BOOK_CHAPTER_OPTIONS]!.title,
@@ -122,7 +123,6 @@ export async function getDatabaseBookInfo(url: string) {
         ],
       });
     }
-
 
     const data: BookInfoInterface = {
       id: find_book[0].id,
