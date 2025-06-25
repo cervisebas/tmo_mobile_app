@@ -18,6 +18,7 @@ export async function databaseSaveChapter(id_bookinfo: number, data: ChapterInte
   if (!find.length) {
     const insert = await db.insert(BookChapterModel).values({
       id_bookinfo: id_bookinfo,
+      data_chapter: data.data_chapter,
       name: data.title,
     });
 

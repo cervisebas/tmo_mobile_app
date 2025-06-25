@@ -17,8 +17,9 @@ export function useApiBookInfo(url: string) {
           getBookInfo(url)
             .then(async value => {
               await databaseSaveBook(value);
+              const data = await getDatabaseBookInfo(url);
 
-              sub.next(value);
+              sub.next(data!);
               sub.complete();
             })
             .catch(sub.error);

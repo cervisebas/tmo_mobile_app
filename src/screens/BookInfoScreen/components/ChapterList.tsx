@@ -8,6 +8,9 @@ import FlatListDynamicItems from "~/common/components/FlatListDynamicItems";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
 import { refDialog } from "~/common/utils/Ref";
+import { useChapterHistory } from "~/database/hooks/useChapterHistory";
+import { ChapterHistoryInterface } from "~/database/interfaces/ChapterHistoryInterface";
+import { setDatabaseHistoryChapter } from "~/database/services/setDatabaseHistoryChapter";
 
 interface IProps {
   chapters: ChapterInterface[];
@@ -21,30 +24,41 @@ export const ChapterList = React.memo(function (props: IProps) {
   
   const [ascending, setAscending] = useState(false);
   const [showAll, setShowAll] = useState(false);
+
+  const chapters = useChapterHistory(props.chapters);
   
   const data = useMemo(() => {
     const use_data = ascending
-      ? props.chapters.slice().reverse()
-      : props.chapters;
+      ? chapters.slice().reverse()
+      : chapters;
 
-    const chapters = showAll
+    const items = showAll
       ? use_data
       : use_data.slice(0, MAX_ITEMS_COLAPSE);
 
-    return chapters;
-  }, [ascending, props.chapters, showAll]);
+    return items;
+  }, [ascending, chapters, showAll]);
   
   const canShowMore = useMemo(() => (
     !showAll &&
-    props.chapters.length > MAX_ITEMS_COLAPSE
-  ), [props.chapters.length, showAll]);
+    chapters.length > MAX_ITEMS_COLAPSE
+  ), [chapters.length, showAll]);
 
-  const renderItem = useCallback(({item}: ListRenderItemInfo<ChapterInterface>) => (
+  const renderItem = useCallback(({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (
     <ItemWithIcon
       title={item.title}
       leftIcon={'chevron-down'}
       leftIconColor={theme.colors.primary}
-      rightIcon={'eye-off-outline'}
+      rightIcon={
+        item.viewed
+          ? 'eye-outline'
+          : 'eye-off-outline'
+      }
+      rightIconColor={
+        item.viewed
+          ? theme.colors.inversePrimary
+          : theme.colors.onSurfaceDisabled
+      }
       fixHeight={HEIGHT_ITEMS}
       onPress={() => {
         const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
@@ -59,6 +73,24 @@ export const ChapterList = React.memo(function (props: IProps) {
 
         const aditionalOptions: BottomSheetOptionsInterface[] = [];
 
+        if (item.viewed) {
+          aditionalOptions.push({
+            label: 'Marcar como no visto',
+            leftIcon: 'eye-off-outline',
+            onPress() {
+              setDatabaseHistoryChapter(chapters, item, false);
+            },
+          });
+        } else {
+          aditionalOptions.push({
+            label: 'Marcar como visto',
+            leftIcon: 'eye-outline',
+            onPress() {
+              setDatabaseHistoryChapter(chapters, item, true);
+            },
+          });
+        }
+
         refDialog.current?.showBottomSheetOptions(
           'Opciónes del capítulo',
           {
@@ -68,7 +100,7 @@ export const ChapterList = React.memo(function (props: IProps) {
         );
       }}
     />
-  ), [theme.colors.primary]);
+  ), [chapters, theme.colors.inversePrimary, theme.colors.onSurfaceDisabled, theme.colors.primary]);
 
   return (
     <View className={'flex-col gap-[8]'}>
