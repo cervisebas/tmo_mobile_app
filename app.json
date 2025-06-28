@@ -41,6 +41,12 @@
           "android": {
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true
+          },
+          "ios": {
+            "infoPlist": {
+              "UIStatusBarStyle": "UIStatusBarStyleAutomatic",
+              "UIViewControllerBasedStatusBarAppearance": true
+            }
           }
         }
       ]
@@ -58,10 +64,7 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "infoPlist": {
-        "UIStatusBarStyle": "UIStatusBarStyleAutomatic",
-        "UIViewControllerBasedStatusBarAppearance": true
-      }
+      "bundleIdentifier": "com.cervisebas.tmo-app"
     },
     "android": {
       "edgeToEdgeEnabled": true,
