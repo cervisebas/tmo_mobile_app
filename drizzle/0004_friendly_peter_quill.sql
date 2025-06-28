@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `book-chapter-history_id_chapter_unique` ON `book-chapter-history` (`id_chapter`);

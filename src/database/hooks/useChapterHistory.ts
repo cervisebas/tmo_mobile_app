@@ -3,20 +3,22 @@ import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { ChapterHistoryInterface } from "../interfaces/ChapterHistoryInterface";
 import { getDatabaseHistoryChapter } from "../services/getDatabaseHistoryChapter";
 import { useTableChanges as useTableChange } from "./useTableChange";
-import { BookChapterHistory } from "../schemas/BookChapterHistory";
 import { DatabaseTable } from "../enums/DatabaseTable";
 
 export function useChapterHistory(chapterList: ChapterInterface[]) {
   const [chapters, setChapters] = useState<ChapterHistoryInterface[]>([]);
 
   const processChapters = useCallback(async () => {
-    console.log('find');
     const data: ChapterHistoryInterface[] = [];
+
+    const hystory = await getDatabaseHistoryChapter(chapterList.map(v => v.id!));
     
     for (const chapter of chapterList) {
+      const viewed = hystory.find(v => v.id === chapter.id);
+      
       data.push({
         ...chapter,
-        viewed: await getDatabaseHistoryChapter(chapter.id!),
+        viewed: viewed ? viewed.status : false,
       });
     }
 
