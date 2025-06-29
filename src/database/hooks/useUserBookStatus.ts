@@ -1,32 +1,26 @@
-import { UserBookStatus } from "../../api/interfaces/UserBookStatus";
+import { useCallback, useState } from "react";
+import { UserBookStatusList } from "../../api/interfaces/UserBookStatus";
+import { DatabaseTable } from "../enums/DatabaseTable";
+import { useTableChanges } from "./useTableChange";
+import { getMarkUserBookStatus } from "../services/getMarkUserBookStatus";
 
-export function useUserBookStatus(path_bookinfo: string) {
-  const data: UserBookStatus = {
-    watch: {
-      quantity: "10K",
-      user_select: false
+export function useUserBookStatus(id_bookinfo: number, userBookStatus: UserBookStatusList) {
+  const [data, setData] = useState(userBookStatus);
+  
+  const loadUserStatus = useCallback(
+    async () => {
+      const bookStatus = await getMarkUserBookStatus(id_bookinfo);
+
+      setData(bookStatus);
     },
-    pending: {
-      quantity: "10K",
-      user_select: false
-    },
-    follow: {
-      quantity: "10K",
-      user_select: false
-    },
-    wish: {
-      quantity: "10K",
-      user_select: false
-    },
-    have: {
-      quantity: "10K",
-      user_select: false
-    },
-    abandoned: {
-      quantity: "10K",
-      user_select: false
-    },
-  };
+    [id_bookinfo],
+  );
+
+  useTableChanges(
+    DatabaseTable.BOOK_USER_STATUS_BY_BOOK_INFO,
+    loadUserStatus,
+    [id_bookinfo],
+  );
 
   return data;
 }

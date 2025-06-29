@@ -1,6 +1,7 @@
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { db } from "../database";
 import { BookChapterHistory } from "../schemas/BookChapterHistory";
+import { checkMarkUserBookStatus } from "./checkMarkUserBookStatus";
 
 function makeInBulk(
   values: {
@@ -20,7 +21,18 @@ function makeInBulk(
     });
 }
 
-export async function setDatabaseHistoryChapter(chapterList: ChapterInterface[], chapter: ChapterInterface, status: boolean) {
+export async function setDatabaseHistoryChapter(
+  id_bookinfo: number,
+  chapterList: ChapterInterface[],
+  chapter: ChapterInterface,
+  status: boolean,
+) {
+  const isStatusMarked = await checkMarkUserBookStatus(id_bookinfo);
+
+  if (!isStatusMarked && status) {
+    throw 'Es necesario clasificar la obra en un estado para marcar los capítulos vistos.';
+  }
+  
   const indexOf = chapterList.indexOf(chapter);
 
   if (indexOf === -1) {

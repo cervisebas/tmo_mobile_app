@@ -18,8 +18,6 @@ export function useTableChanges(selectedTableName: string, callback?: () => void
         setTimeout(() => {
           coldDown.current = false;
         }, coldDownTime);
-        
-        console.log(event);
       }
     });
 

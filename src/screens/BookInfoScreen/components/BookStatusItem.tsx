@@ -10,6 +10,7 @@ interface IProps {
   color: string;
   title: string;
   value: UserStatus;
+  onPress?(): void;
 }
 
 export function BookStatusItem(props: IProps) {
@@ -25,7 +26,7 @@ export function BookStatusItem(props: IProps) {
         },
       ]}
     >
-      <TouchableRipple style={styles.touchable} onPress={() => {}}>
+      <TouchableRipple style={styles.touchable} onPress={props.onPress}>
         <React.Fragment>
           {props.value.user_select ? (
             <Icon
@@ -51,6 +52,14 @@ export function BookStatusItem(props: IProps) {
           </View>
         </React.Fragment>
       </TouchableRipple>
+
+      <View
+        className={'w-full h-[4]'}
+        style={{
+          backgroundColor: props.color,
+          opacity: Number(props.value.user_select),
+        }}
+      />
     </Surface>
   );
 }

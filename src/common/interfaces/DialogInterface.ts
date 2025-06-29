@@ -9,6 +9,7 @@ export namespace DialogInterface {
     showAlert: AlertRef['open'];
     showImage: ImageViewingRef['open'];
     showBottomSheetOptions: BottomSheetOptionsRef['open'];
+    showTost: ToastRef['open'];
   }
 
   export interface LoadingRef {
@@ -36,6 +37,10 @@ export namespace DialogInterface {
 
   export interface ImageViewingRef {
     open(images: string[]): void;
+  }
+
+  export interface ToastRef {
+    open(message: string, duration?: number): void;
   }
 
 }

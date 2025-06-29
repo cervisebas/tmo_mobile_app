@@ -4,7 +4,7 @@ import parse from "node-html-parser";
 import { ChapterInterface } from "../interfaces/ChapterInterface";
 import moment from "moment";
 import { GenderInterface } from "../interfaces/GenderInterface";
-import { UserBookStatus } from "../interfaces/UserBookStatus";
+import { UserBookStatusList } from "../interfaces/UserBookStatus";
 import { BookStatus } from "../enums/BookStatus";
 import { BookType } from "../enums/BookType";
 import { BookInfoInterface } from "../interfaces/BookInfoInterface";
@@ -80,7 +80,7 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
 
     
     // ##### User Statues
-    const user_status: Record<string, UserBookStatus['abandoned']> = {};
+    const user_status: Record<string, UserBookStatusList['abandoned']> = {};
 
     for (const el of root.querySelectorAll('div[data-status]')) {
       const key = el.getAttribute('data-status')!;
@@ -146,7 +146,7 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
         .toLowerCase()
         .trim() as BookType
       ,
-      user_status: user_status as unknown as UserBookStatus,
+      user_status: user_status as unknown as UserBookStatusList,
       chapters: chapters,
     };
   } catch (error) {

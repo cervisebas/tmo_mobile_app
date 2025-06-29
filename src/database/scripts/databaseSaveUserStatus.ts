@@ -1,10 +1,10 @@
-import { UserBookStatus } from "~/api/interfaces/UserBookStatus";
+import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 import { db } from "../database";
 import { BookUserStatusByBookInfo } from "../schemas/BookUserStatusByBookInfo";
 import { and, eq } from "drizzle-orm";
 
-export async function databaseSaveUserStatus(id_bookinfo: number, data: UserBookStatus) {
-  const keys = Object.keys(data) as (keyof UserBookStatus)[];
+export async function databaseSaveUserStatus(id_bookinfo: number, data: UserBookStatusList) {
+  const keys = Object.keys(data) as (keyof UserBookStatusList)[];
 
   for (const key of keys) {
     const value = data[key];

@@ -2,7 +2,7 @@ import { BookStatus } from "../enums/BookStatus";
 import { BookType } from "../enums/BookType";
 import { ChapterInterface } from "./ChapterInterface";
 import { GenderInterface } from "./GenderInterface";
-import { UserBookStatus } from "./UserBookStatus";
+import { UserBookStatusList } from "./UserBookStatus";
 
 export interface BookInfoInterface {
   id?: number;
@@ -19,7 +19,7 @@ export interface BookInfoInterface {
   wallpaper?: string;
   subtitle?: string;
 
-  user_status?: UserBookStatus;
+  user_status?: UserBookStatusList;
 
   genders?: GenderInterface[];
   chapters?: ChapterInterface[];

@@ -13,6 +13,7 @@ import { ChapterHistoryInterface } from "~/database/interfaces/ChapterHistoryInt
 import { setDatabaseHistoryChapter } from "~/database/services/setDatabaseHistoryChapter";
 
 interface IProps {
+  id_bookinfo: number;
   chapters: ChapterInterface[];
 }
 
@@ -44,63 +45,81 @@ export const ChapterList = React.memo(function (props: IProps) {
     chapters.length > MAX_ITEMS_COLAPSE
   ), [chapters.length, showAll]);
 
-  const renderItem = useCallback(({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (
-    <ItemWithIcon
-      title={item.title}
-      leftIcon={'chevron-down'}
-      leftIconColor={theme.colors.primary}
-      rightIcon={
-        item.viewed
-          ? 'eye-outline'
-          : 'eye-off-outline'
-      }
-      rightIconColor={
-        item.viewed
-          ? theme.colors.inversePrimary
-          : theme.colors.onSurfaceDisabled
-      }
-      fixHeight={HEIGHT_ITEMS}
-      onPress={() => {
-        const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
-          label: v.title,
-          description: moment(v.date).format('DD-MM-YYYY'),
-          leftIcon: 'play',
-          leftIconColor: theme.colors.primary,
-          onPress() {
-            console.log(v.path);
-          },
-        }));
-
-        const aditionalOptions: BottomSheetOptionsInterface[] = [];
-
-        if (item.viewed) {
-          aditionalOptions.push({
-            label: 'Marcar como no visto',
-            leftIcon: 'eye-off-outline',
-            onPress() {
-              setDatabaseHistoryChapter(chapters, item, false);
-            },
-          });
-        } else {
-          aditionalOptions.push({
-            label: 'Marcar como visto',
-            leftIcon: 'eye-outline',
-            onPress() {
-              setDatabaseHistoryChapter(chapters, item, true);
-            },
-          });
+  const renderItem = useCallback(
+    ({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (
+      <ItemWithIcon
+        title={item.title}
+        leftIcon={'chevron-down'}
+        leftIconColor={theme.colors.primary}
+        rightIcon={
+          item.viewed
+            ? 'eye-outline'
+            : 'eye-off-outline'
         }
+        rightIconColor={
+          item.viewed
+            ? theme.colors.inversePrimary
+            : theme.colors.onSurfaceDisabled
+        }
+        fixHeight={HEIGHT_ITEMS}
+        onPress={() => {
+          const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
+            label: v.title,
+            description: moment(v.date).format('DD-MM-YYYY'),
+            leftIcon: 'play',
+            leftIconColor: theme.colors.primary,
+            onPress() {
+              console.log(v.path);
+            },
+          }));
 
-        refDialog.current?.showBottomSheetOptions(
-          'Opciónes del capítulo',
-          {
-            'Opciónes de lectura': options,
-            'Opciónes adicionales': aditionalOptions,
-          },
-        );
-      }}
-    />
-  ), [chapters, theme.colors.inversePrimary, theme.colors.onSurfaceDisabled, theme.colors.primary]);
+          const aditionalOptions: BottomSheetOptionsInterface[] = [];
+
+          if (item.viewed) {
+            aditionalOptions.push({
+              label: 'Marcar como no visto',
+              leftIcon: 'eye-off-outline',
+              onPress() {
+                setDatabaseHistoryChapter(props.id_bookinfo, chapters, item, false);
+              },
+            });
+          } else {
+            aditionalOptions.push({
+              label: 'Marcar como visto',
+              leftIcon: 'eye-outline',
+              async onPress() {
+                try {
+                  await setDatabaseHistoryChapter(
+                    props.id_bookinfo,
+                    chapters,
+                    item,
+                    true,
+                  );
+                } catch (error) {
+                  refDialog.current?.showTost(error as never);
+                }
+              },
+            });
+          }
+
+          refDialog.current?.showBottomSheetOptions(
+            'Opciónes del capítulo',
+            {
+              'Opciónes de lectura': options,
+              'Opciónes adicionales': aditionalOptions,
+            },
+          );
+        }}
+      />
+    ),
+    [
+      chapters,
+      props.id_bookinfo,
+      theme.colors.inversePrimary,
+      theme.colors.onSurfaceDisabled,
+      theme.colors.primary,
+    ],
+  );
 
   return (
     <View className={'flex-col gap-[8]'}>

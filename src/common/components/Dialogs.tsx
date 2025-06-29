@@ -10,6 +10,7 @@ import {
   Button,
   Dialog,
   Portal,
+  Snackbar,
   Text,
 } from 'react-native-paper';
 import {ImageURISource, Platform, StyleSheet} from 'react-native';
@@ -25,6 +26,7 @@ export const Dialogs = forwardRef(function (
   const refAlert = useRef<DialogInterface.AlertRef>(null);
   const refImageViewing = useRef<DialogInterface.ImageViewingRef>(null);
   const refBottomSheetOptions = useRef<BottomSheetOptionsRef>(null);
+  const refToast = useRef<DialogInterface.ToastRef>(null);
 
   useImperativeHandle(ref, () => ({
     showLoading(message: string | false) {
@@ -42,6 +44,9 @@ export const Dialogs = forwardRef(function (
     showBottomSheetOptions(title, options) {
       refBottomSheetOptions.current?.open(title, options);
     },
+    showTost(message, duration) {
+      refToast.current?.open(message, duration);
+    },
   }));
 
   return (
@@ -50,6 +55,7 @@ export const Dialogs = forwardRef(function (
         <Loading.Component ref={refLoading} />
         <Alert.Component ref={refAlert} />
         <ImageViewing.Component ref={refImageViewing} />
+        <Toast.Component ref={refToast} />
       </Portal>
 
       <BottomSheetOptions ref={refBottomSheetOptions} />
@@ -242,4 +248,39 @@ namespace ImageViewing {
       />
     );
   }));
+}
+
+namespace Toast {
+  export const Component = forwardRef(function (
+    _: {},
+    ref: React.Ref<DialogInterface.ToastRef>,
+  ) {
+    const [visible, setVisible] = useState(false);
+    const [message, setMessage] = useState('');
+    const [duration, setDuration] = useState(4000);
+
+    const onDismissSnackBar = () => setVisible(false);
+
+    useImperativeHandle(ref, () => ({
+      open(message, duration = 4000) {
+        setVisible(true);
+        setMessage(message);
+        setDuration(duration);
+      },
+    }));
+
+    return (
+      <Snackbar
+        visible={visible}
+        duration={duration}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: 'Aceptar',
+          onPress: onDismissSnackBar,
+        }}
+      >
+        {message}
+      </Snackbar>
+    );
+  });
 }

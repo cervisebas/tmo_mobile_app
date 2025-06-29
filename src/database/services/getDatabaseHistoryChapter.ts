@@ -8,7 +8,6 @@ interface HistoryChapter {
 }
 
 export async function getDatabaseHistoryChapter<T extends (number | number[])>(id_chapter: T): Promise<T extends number ? boolean : HistoryChapter[]> {
-  //Array.isArray(id_chapter) && console.log(id_chapter);
   const find = await db
     .select()
     .from(BookChapterHistory)

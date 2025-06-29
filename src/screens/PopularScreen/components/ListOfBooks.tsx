@@ -18,7 +18,6 @@ export default React.memo(function (props: IProps) {
   const {layout, onLayout} = useLayoutSize();
 
   const WIDTH_ITEM = useMemo(() => {
-    //console.log(layout.width);
     return layout.width / 2;
   }, [layout.width]);
 

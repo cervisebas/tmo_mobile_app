@@ -55,6 +55,7 @@ export function BookInfoScreen(props: StackScreenProps) {
           ? _props => (
             <LargeHeader
               {..._props}
+              id_bookinfo={data?.id!}
               status={data?.user_status!}
             />
           )
@@ -129,6 +130,7 @@ export function BookInfoScreen(props: StackScreenProps) {
 
                 <ChapterList
                   chapters={data?.chapters}
+                  id_bookinfo={data.id!}
                 />
               </React.Fragment>
             )}

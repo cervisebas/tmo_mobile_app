@@ -1,9 +1,14 @@
 import React from "react";
 import { View } from "react-native";
 import { BookStatusItem } from "./BookStatusItem";
-import { UserBookStatus } from "~/api/interfaces/UserBookStatus";
+import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
+import { UserBookStatus } from "~/api/enums/UserBookStatus";
 
-export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}: UserBookStatus) {
+interface IProps extends UserBookStatusList {
+  onToggleStatus(key: keyof UserBookStatusList): void;
+}
+
+export function BookStatusPanel(props: IProps) {
   return (
     <View className={'flex-col mx-[-12]'}>
       <View className={'w-full flex-wrap justify-start flex-row'}>
@@ -12,7 +17,10 @@ export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}:
           iconSelected={'check-circle'}
           color={'#51a351'}
           title={'Leido'}
-          value={watch}
+          value={props.watch}
+          onPress={() => {
+            props.onToggleStatus(UserBookStatus.WATCH);
+          }}
         />
 
         <BookStatusItem
@@ -20,7 +28,10 @@ export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}:
           iconSelected={'clock-time-five'}
           color={'#f89406'}
           title={'Pendiente'}
-          value={pending}
+          value={props.pending}
+          onPress={() => {
+            props.onToggleStatus(UserBookStatus.PENDING);
+          }}
         />
 
         <BookStatusItem
@@ -28,7 +39,10 @@ export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}:
           iconSelected={'play-circle'}
           color={'#2f96b4'}
           title={'Siguiendo'}
-          value={follow}
+          value={props.follow}
+          onPress={() => {
+            props.onToggleStatus(UserBookStatus.FOLLOW);
+          }}
         />
       </View>
 
@@ -38,15 +52,21 @@ export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}:
           iconSelected={'heart'}
           color={'#bd362f'}
           title={'Favorito'}
-          value={wish}
+          value={props.wish}
+          onPress={() => {
+            props.onToggleStatus(UserBookStatus.WISH);
+          }}
         />
 
         <BookStatusItem
           icon={'checkbox-outline'}
-          iconSelected={'checkbox'}
+          iconSelected={'checkbox-marked'}
           color={'#0e67ef'}
           title={'Lo tengo'}
-          value={have}
+          value={props.have}
+          onPress={() => {
+            props.onToggleStatus(UserBookStatus.HAVE);
+          }}
         />
 
         <BookStatusItem
@@ -54,7 +74,10 @@ export function BookStatusPanel({watch, pending, follow, wish, have, abandoned}:
           iconSelected={'thumb-down'}
           color={'#970047'}
           title={'Abandonado'}
-          value={abandoned}
+          value={props.abandoned}
+          onPress={() => {
+            props.onToggleStatus(UserBookStatus.ABANDONED);
+          }}
         />
       </View>
     </View>

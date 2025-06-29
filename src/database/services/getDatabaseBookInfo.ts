@@ -8,11 +8,11 @@ import { BookGenderModel } from "../schemas/BookGenderModel";
 import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 import { BookType } from "~/api/enums/BookType";
 import { BookStatus } from "~/api/enums/BookStatus";
-import { BookUserStatusByBookInfo } from "../schemas/BookUserStatusByBookInfo";
-import { UserBookStatus } from "~/api/interfaces/UserBookStatus";
+import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 import { GenderInterface } from "~/api/interfaces/GenderInterface";
 import { DatabaseTable } from "../enums/DatabaseTable";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
+import { getMarkUserBookStatus } from "./getMarkUserBookStatus";
 
 export async function getDatabaseBookInfo(url: string) {
   try {
@@ -65,28 +65,9 @@ export async function getDatabaseBookInfo(url: string) {
           find_book[0].id,
         ),
       );
-
-    const db_statuses = await db
-      .select()
-      .from(BookUserStatusByBookInfo)
-      .where(
-        eq(
-          BookUserStatusByBookInfo.id_bookinfo,
-          find_book[0].id,
-        ),
-      );
-
     
     // ##### Make Datas
-    const user_status: Record<string, UserBookStatus['abandoned']> = {};
-    for (const status of db_statuses) {
-      Object.assign(user_status, {
-        [status.status]: {
-          quantity: status.value,
-          user_select: status.marked,
-        },
-      });
-    }
+    const user_status = await getMarkUserBookStatus(find_book[0].id);
 
 
     const genders: GenderInterface[] = [];
@@ -139,7 +120,7 @@ export async function getDatabaseBookInfo(url: string) {
       wallpaper: find_book[0].wallpaper,
       subtitle: find_book[0].subtitle ?? '',
 
-      user_status: user_status as unknown as UserBookStatus,
+      user_status: user_status,
 
       genders: genders,
       chapters: chapters,
