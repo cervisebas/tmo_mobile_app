@@ -6,6 +6,7 @@ import m0001 from './0001_cooing_killer_shrike.sql';
 import m0002 from './0002_massive_pixie.sql';
 import m0003 from './0003_slippery_lizard.sql';
 import m0004 from './0004_friendly_peter_quill.sql';
+import m0005 from './0005_goofy_blacklash.sql';
 
   export default {
     journal,
@@ -14,7 +15,8 @@ import m0004 from './0004_friendly_peter_quill.sql';
 m0001,
 m0002,
 m0003,
-m0004
+m0004,
+m0005
     }
   }
   

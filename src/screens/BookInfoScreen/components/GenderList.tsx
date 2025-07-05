@@ -15,7 +15,7 @@ export const GenderList = React.memo(function (props: IProps) {
       <View className={'flex-wrap gap-[12] w-full justify-start flex-row'}>
         {props.data.map(gender => (
           <Chip
-            key={`gender-${gender.path}`}
+            key={`gender-${gender.value}`}
             mode={'outlined'}
             onPress={() => console.log(gender)}
           >

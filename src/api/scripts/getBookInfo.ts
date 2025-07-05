@@ -10,6 +10,7 @@ import { BookType } from "../enums/BookType";
 import { BookInfoInterface } from "../interfaces/BookInfoInterface";
 import { axios } from "~/common/utils/Axios";
 import he from "he";
+import { getUrlParams } from "~/database/utils/getUrlParams";
 
 export async function getBookInfo(url: string): Promise<BookInfoInterface> {
   try {
@@ -64,11 +65,12 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
     const genders: GenderInterface[] = [];
 
     for (const el of root.querySelectorAll('.element-header-content-text h6')) {
+      const path = el.querySelector('a')!.getAttribute('href')!;
+      const pathParams = getUrlParams(path);
+
       genders.push({
         name: el.innerText.trim(),
-        path: el
-          .querySelector('a')!
-          .getAttribute('href')!,
+        value: pathParams['genders'][0],
       });
     }
 

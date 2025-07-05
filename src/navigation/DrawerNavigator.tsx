@@ -2,6 +2,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Platform, StyleSheet } from "react-native";
 import { DrawerMenu } from "~/common/components/DrawerMenu";
 import { DrawerScreen } from "~/enums/DrawerScreen";
+import { LibraryScreen } from "~/screens/LibraryScreen/LibraryScreen";
 import { PopularScreen } from "~/screens/PopularScreen/PopularScreen";
 
 const Drawer = createDrawerNavigator();
@@ -32,7 +33,7 @@ export function DrawerNavigator() {
           drawerLabel: 'Biblioteca',
           drawerIcon: 'bookmark-box-multiple-outline' as never,
         }}
-        component={PopularScreen}
+        component={LibraryScreen}
       />
       
       <Drawer.Screen

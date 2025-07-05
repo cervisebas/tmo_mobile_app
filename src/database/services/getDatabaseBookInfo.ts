@@ -8,7 +8,6 @@ import { BookGenderModel } from "../schemas/BookGenderModel";
 import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 import { BookType } from "~/api/enums/BookType";
 import { BookStatus } from "~/api/enums/BookStatus";
-import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 import { GenderInterface } from "~/api/interfaces/GenderInterface";
 import { DatabaseTable } from "../enums/DatabaseTable";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
@@ -73,7 +72,7 @@ export async function getDatabaseBookInfo(url: string) {
     const genders: GenderInterface[] = [];
     for (const gender of db_genders) {
       genders.push({
-        path: gender[DatabaseTable.BOOK_GENDERS]!.path,
+        value: gender[DatabaseTable.BOOK_GENDERS]!.value,
         name: gender[DatabaseTable.BOOK_GENDERS]!.name,
       });
     }
