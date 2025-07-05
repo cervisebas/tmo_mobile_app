@@ -47,7 +47,7 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
         ),
       );
 
-    return;
+    return false;
   }
 
   await database
@@ -73,4 +73,6 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
         not(eq(BookUserStatusByBookInfo.status, status)),
       ),
     );
+  
+  return true;
 }

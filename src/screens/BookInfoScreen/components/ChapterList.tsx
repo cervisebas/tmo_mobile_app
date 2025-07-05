@@ -41,9 +41,9 @@ export const ChapterList = React.memo(function (props: IProps) {
   }, [ascending, chapters, showAll]);
   
   const canShowMore = useMemo(() => (
-    !showAll &&
-    chapters.length > MAX_ITEMS_COLAPSE
-  ), [chapters.length, showAll]);
+    !showAll //&&
+    //chapters.length > MAX_ITEMS_COLAPSE
+  ), [showAll]);
 
   const renderItem = useCallback(
     ({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (
@@ -164,7 +164,7 @@ export const ChapterList = React.memo(function (props: IProps) {
         useKeyExtractor={'chapter-item-{data_chapter}'}
       />
 
-      {canShowMore && (
+      {canShowMore && chapters.length > MAX_ITEMS_COLAPSE && (
         <View className={'pt-[12]'}>
           <Button
             mode={'contained'}
