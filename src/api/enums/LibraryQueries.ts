@@ -19,18 +19,18 @@ export enum LibraryFilterby {
 }
 
 export enum LibraryType {
-  ALL = '',
+  ALL = '-',
   MANGA = 'manga',
   MANHUA = 'manhua',
   MANHWA = 'manhwa',
   NOVEL = 'novel',
-  ONE = 'one_shot',
+  ONE_SHOT = 'one_shot',
   DOUJINSHI = 'doujinshi',
   OEL = 'oel',
 }
 
 export enum LibraryDemography {
-  ALL = '',
+  ALL = '-',
   SEINEN = 'seinen',
   SHOUJO = 'shoujo',
   SHOUNEN = 'shounen',
@@ -47,14 +47,14 @@ export enum LibraryStatus {
 }
 
 export enum LibraryTranslationStatus {
-  ALL = '',
+  ALL = '-',
   ACTIVE = 'active',
   FINISHED = 'finished',
   ABANDONED = 'abandoned',
 }
 
 export enum LibraryCheck {
-  ALL = '',
+  ALL = '-',
   YES = 'true',
   NO = 'false',
 }
@@ -82,6 +82,6 @@ export enum LibraryQueries {
   EROTIC = 'erotic',
 
   // Genders
-  GENDERS = 'genders[]',
-  EXCLUDE_GENDERS = 'exclude_genders[]',
+  GENDERS = 'genders',
+  EXCLUDE_GENDERS = 'exclude_genders',
 }

@@ -24,6 +24,6 @@ export interface LibraryQueriesInterface {
   [LibraryQueries.EROTIC]: LibraryCheck;
 
   // Genders
-  [LibraryQueries.GENDERS]: LibraryGenders;
-  [LibraryQueries.EXCLUDE_GENDERS]: LibraryGenders;
+  [LibraryQueries.GENDERS]: LibraryGenders[];
+  [LibraryQueries.EXCLUDE_GENDERS]: LibraryGenders[];
 }

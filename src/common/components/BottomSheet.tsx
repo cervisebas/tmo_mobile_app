@@ -42,8 +42,8 @@ export default React.memo(
   forwardRef(function (props: IProps, ref: React.Ref<BottomSheetRef>) {
     const [visible, setVisible] = useState(false);
     const {theme} = useContext(ThemeContext);
-    const {left, right, bottom} = useSafeArea();
-    const [WINDOW_WIDTH] = useDimension('window');
+    const {left, right, bottom, top} = useSafeArea();
+    const [WINDOW_WIDTH, WINDOW_HEIGHT] = useDimension('window');
     const refBottomSheetModal = useRef<BottomSheetModal>(null);
 
     const EXTRA_MARGIN = useMemo(
@@ -131,6 +131,11 @@ export default React.memo(
         ref={refBottomSheetModal}
         enablePanDownToClose={true}
         enableDynamicSizing={!props.height}
+        maxDynamicContentSize={
+          !props.height
+            ? (WINDOW_HEIGHT - top)
+            : undefined
+        }
         snapPoints={
           props.height
             ? Array.isArray(props.height)
