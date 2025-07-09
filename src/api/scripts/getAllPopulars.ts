@@ -52,7 +52,7 @@ export async function getAllPopulars(): Promise<PopularsInterface> {
 
         const data: BookInfoInterface = {
           url: url!,
-          path: url!.slice(url!.lastIndexOf('/') + 1),
+          path: url!.slice(url!.lastIndexOf('/') + 1).trim(),
           title: element.querySelector('h4')?.innerText!,
           picture: style?.slice(findUrl! + 5, findEndUrl) as string,
           stars: Number(element.querySelector('.score')?.innerText),

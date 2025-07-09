@@ -69,7 +69,8 @@ export enum LibraryQueries {
   FILTER_BY = 'filter_by',
 
   // Page number
-  PAGE = '_pg',
+  PAGINATOR = '_pg',
+  PAGE = 'page',
 
   // Filters
   TYPE = 'type',

@@ -28,7 +28,7 @@ export function BookStatusItem(props: IProps) {
     >
       <TouchableRipple style={styles.touchable} onPress={props.onPress}>
         <React.Fragment>
-          {props.value.user_select ? (
+          {props.value?.user_select ? (
             <Icon
               source={props.iconSelected}
               size={32}
@@ -43,7 +43,7 @@ export function BookStatusItem(props: IProps) {
           )}
           <View className={'gap-[4] flex-col'}>
             <Text variant={'titleMedium'}>
-              {props.value.quantity}
+              {props.value?.quantity}
             </Text>
 
             <Text variant={'labelSmall'}>
@@ -57,7 +57,7 @@ export function BookStatusItem(props: IProps) {
         className={'w-full h-[4]'}
         style={{
           backgroundColor: props.color,
-          opacity: Number(props.value.user_select),
+          opacity: Number(props.value?.user_select ?? 0),
         }}
       />
     </Surface>

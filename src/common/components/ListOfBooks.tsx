@@ -9,6 +9,7 @@ import { StackScreens } from '~/enums/StackScreens';
 
 interface IProps {
   data: BookInfoInterface[];
+  referer?: string;
   keyExtractor: string;
 }
 
@@ -41,12 +42,15 @@ export default React.memo(function (props: IProps) {
         onPress={() => {
           refNavigation.current?.navigate(
             StackScreens.BOOK_INFO,
-            item,
+            {
+              ...item,
+              referer: props.referer,
+            },
           );
         }}
       />
     ),
-    [props.keyExtractor, WIDTH_ITEM],
+    [props.keyExtractor, props.referer, WIDTH_ITEM],
   );
 
   return (

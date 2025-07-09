@@ -17,8 +17,8 @@ import useDimension from "~/common/hooks/useDimension";
 import { BookStatusList } from "~/constants/BookStatusList";
 
 export function BookInfoScreen(props: StackScreenProps) {
-  const info = props.route.params as BookInfoInterface;
-  const {data, error, loading, refresh} = useApiBookInfo(info.url);
+  const info = props.route.params as BookInfoInterface & {referer?: string};
+  const {data, error, loading, refresh} = useApiBookInfo(info.url, info.referer);
   const {left, right, bottom} = useSafeArea(12, 60);
   const [, WINDOW_HEIGHT] = useDimension('window');
 

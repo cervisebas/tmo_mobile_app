@@ -45,7 +45,8 @@ export async function getDatabaseBookInfo(url: string) {
       );
     
     if (!db_chapters.length) {
-      throw 'Información incompleta';
+      // TODO: Ver que hago aquí
+      //throw 'Información incompleta';
     }
     
     const db_genders = await db

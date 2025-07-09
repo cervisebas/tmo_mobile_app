@@ -1,22 +1,30 @@
-import React, { forwardRef, useContext, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Divider, List } from "react-native-paper";
+import React, { forwardRef, useCallback, useContext, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { Button, Divider, List } from "react-native-paper";
 import BottomSheet, { BottomSheetRef } from "~/common/components/BottomSheet";
 import ItemWithOptions from "~/common/components/ItemWithOptions";
 import { LibraryCheckOptions, LibraryDemographyOptions, LibraryFilterbyOptions, LibraryGenderOptions, LibraryOrderByOptions, LibraryOrderDirOptions, LibraryTypeOptions } from "../constants/SearchFilterOptions";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
-import { StyleProp, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { ItemWithCheckbox } from "~/common/components/ItemWithCheckbox";
 import { LibraryGenders } from "~/api/enums/LibraryGenders";
+import { BottomSheetFooter } from "@gorhom/bottom-sheet";
+import useSafeArea from "~/common/hooks/useSafeArea";
+import { LibraryQueriesInterface } from "~/api/interfaces/LibraryQueriesInterface";
+import { LibraryQueries } from "~/api/enums/LibraryQueries";
 
-interface IProps {}
+interface IProps {
+  onFilter?(): void;
+}
 
 export interface SearchFilterSheetRef {
   show(): void;
+  getFilters(): Exclude<LibraryQueriesInterface, LibraryQueries.TITLE | LibraryQueries.PAGE | LibraryQueries.STATUS | LibraryQueries.TRANSLATION_STATUS>;
 }
 
 export const SearchFilterSheet = React.memo(forwardRef(
   function (props: IProps, ref: React.Ref<SearchFilterSheetRef>) {
     const {theme} = useContext(ThemeContext);
+    const {bottom, left, right} = useSafeArea(16);
     const refBottomSheet = useRef<BottomSheetRef>(null);
 
     const accordionTheme = useMemo(() => ({
@@ -31,7 +39,8 @@ export const SearchFilterSheet = React.memo(forwardRef(
       () => ({
         backgroundColor: theme.colors.elevation.level5,
         borderRadius: 2 * theme.roundness,
-        margin: 8,
+        marginHorizontal: 8,
+        marginVertical: 4,
       }),
       [theme],
     );
@@ -53,14 +62,85 @@ export const SearchFilterSheet = React.memo(forwardRef(
     const [genders, setGenders] = useState<LibraryGenders[]>([]);
     const [excludeGenders, setExcludeGenders] = useState<LibraryGenders[]>([]);
 
+    const onFilter = useCallback(() => {
+      props.onFilter?.();
+      refBottomSheet.current?.hide();
+    }, [props]);
+
+    const clearFilters = useCallback(() => {
+      setFilterBy(LibraryFilterbyOptions[0].value);
+      setOrderBy(LibraryOrderByOptions[0].value);
+      setOrderDir(LibraryOrderDirOptions[0].value);
+      setType(LibraryTypeOptions[0].value);
+      setDemography(LibraryDemographyOptions[0].value);
+      setWebcomic(LibraryCheckOptions[0].value);
+      setYonkoma(LibraryCheckOptions[0].value);
+      setAmateur(LibraryCheckOptions[0].value);
+      setErotic(LibraryCheckOptions[0].value);
+      setGenders([]);
+      setExcludeGenders([]);
+
+      onFilter();
+    }, [onFilter]);
+
     useImperativeHandle(ref, () => ({
       show() {
         refBottomSheet.current?.show();
       },
+      getFilters() {
+        return {
+          [LibraryQueries.ORDER_ITEM]: orderBy,
+          [LibraryQueries.ORDER_DIR]: orderDir,
+          [LibraryQueries.FILTER_BY]: filterBy,
+          [LibraryQueries.TYPE]: type,
+          [LibraryQueries.DEMOGRAPHY]: demography,
+          [LibraryQueries.WEBCOMIC]: webcomic,
+          [LibraryQueries.YONKOMA]: yonkoma,
+          [LibraryQueries.AMATEUR]: amateur,
+          [LibraryQueries.EROTIC]: erotic,
+          [LibraryQueries.GENDERS]: genders,
+          [LibraryQueries.EXCLUDE_GENDERS]: excludeGenders,
+        } as ReturnType<SearchFilterSheetRef['getFilters']>;
+      },
     }));
 
     return (
-      <BottomSheet ref={refBottomSheet} useScrollView title={'Filtros de busqueda'}>
+      <BottomSheet
+        ref={refBottomSheet}
+        title={'Filtros de busqueda'}
+        useScrollView={true}
+        contentContainerStyle={{
+          paddingBottom: bottom + 64,
+        }}
+        footerComponent={p => (
+          <BottomSheetFooter {...p} bottomInset={bottom}>
+            <View
+              style={{paddingLeft: left, paddingRight: right}}
+              className={'w-full pb-[8] flex-row justify-between'}
+            >
+              <Button
+                mode={'contained'}
+                compact={true}
+                buttonColor={theme.colors.error}
+                textColor={theme.colors.errorContainer}
+                style={styles.buttons}
+                onPress={clearFilters}
+              >
+                Limpiar
+              </Button>
+
+              <Button
+                mode={'contained'}
+                compact={true}
+                style={styles.buttons}
+                onPress={onFilter}
+              >
+                Guardar
+              </Button>
+            </View>
+          </BottomSheetFooter>
+        )}
+      >
         <List.AccordionGroup>
           <List.Accordion id={'1'} theme={accordionTheme} title={'Opciónes de busqueda'} style={accordionStyles}>
             <ItemWithOptions
@@ -191,3 +271,9 @@ export const SearchFilterSheet = React.memo(forwardRef(
     );
   }
 ));
+
+const styles = StyleSheet.create({
+  buttons: {
+    borderRadius: 8,
+  },
+});

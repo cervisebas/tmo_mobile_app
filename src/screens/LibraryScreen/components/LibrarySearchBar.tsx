@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { forwardRef, useContext, useImperativeHandle, useState } from "react";
 import { View } from "react-native";
 import { Searchbar } from "react-native-paper";
 import useSafeArea from "~/common/hooks/useSafeArea";
@@ -8,12 +8,22 @@ interface IProps {
   onSearch?(value: string): void;
 }
 
-export const LibrarySearchBar = React.memo(
-  function (props: IProps) {
+export interface LibrarySearchBarRef {
+  getValue(): string;
+}
+
+export const LibrarySearchBar = React.memo(forwardRef(
+  function (props: IProps, ref: React.Ref<LibrarySearchBarRef>) {
     const {theme} = useContext(ThemeContext);
     const {left, right} = useSafeArea(12);
     const [value, setValue] = useState('');
     
+    useImperativeHandle(ref, () => ({
+      getValue() {
+        return value;
+      },
+    }));
+
     return (
       <View
         className={'pb-[8]'}
@@ -34,9 +44,13 @@ export const LibrarySearchBar = React.memo(
           onChangeText={setValue}
           returnKeyType={'search'}
           onSubmitEditing={() => props.onSearch?.(value)}
-          onClearIconPress={() => props.onSearch?.('')}
+          onClearIconPress={() => {
+            setTimeout(() => {
+              props.onSearch?.('');
+            }, 500);
+          }}
         />
       </View>
     );
   }
-);
+));

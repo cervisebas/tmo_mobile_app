@@ -7,7 +7,7 @@ export function useApi<T = object>(getData: Observable<T>) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function reload() {
+  async function reload(append?: boolean) {
     setRefresh(true);
 
     getData.subscribe({
@@ -24,9 +24,26 @@ export function useApi<T = object>(getData: Observable<T>) {
     });
   }
 
+  function fullReload() {
+    setLoading(true);
+    reload();
+  }
+
+  function reloadAppend() {
+    reload(true);
+  }
+
   useEffect(() => {
     reload();
   }, []);
 
-  return {loading, refresh, data, error, reload};
+  return {
+    loading: loading,
+    refresh: refresh,
+    data: data,
+    error: error,
+    reload: () => reload(),
+    fullReload: fullReload,
+    reloadAppend,
+  };
 }

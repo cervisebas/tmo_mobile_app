@@ -13,7 +13,7 @@ export const GenderList = React.memo(function (props: IProps) {
       <Text variant={'titleLarge'}>Géneros</Text>
       
       <View className={'flex-wrap gap-[12] w-full justify-start flex-row'}>
-        {props.data.map(gender => (
+        {props?.data?.map(gender => (
           <Chip
             key={`gender-${gender.value}`}
             mode={'outlined'}

@@ -1,6 +1,6 @@
 import { ApiEndpoint } from "../enums/ApiEndpoint";
 import { ApiMessageError } from "../enums/ApiMessageError";
-import parse from "node-html-parser";
+import parse, { HTMLElement } from "node-html-parser";
 import { ChapterInterface } from "../interfaces/ChapterInterface";
 import moment from "moment";
 import { GenderInterface } from "../interfaces/GenderInterface";
@@ -11,14 +11,49 @@ import { BookInfoInterface } from "../interfaces/BookInfoInterface";
 import { axios } from "~/common/utils/Axios";
 import he from "he";
 import { getUrlParams } from "~/database/utils/getUrlParams";
+import { AxiosError } from "axios";
 
-export async function getBookInfo(url: string): Promise<BookInfoInterface> {
+function getChapterInfo(el: HTMLElement, set_title?: string) {
+  const options: ChapterInterface['options'] = [];
+  
+  for (const item_el of el.querySelectorAll('.list-group-item')) {
+    const date = moment(
+      item_el.querySelector('.badge')?.innerText.trim() ?? '2012-12-12',
+      'YYYY-MM-DD',
+    );
+
+    const title = item_el
+      .querySelector('.text-truncate')
+      ?.innerText
+      .trim()
+      .replace(/ {2,}/g, '  ')
+      .replace(/\n/g, '')
+      ?? '';
+
+    options.push({
+      date: date.toDate(),
+      path: item_el.querySelector('a.btn-sm')?.getAttribute('href')!,
+      title: he.decode(title),
+    });
+  }
+
+  const title = el.querySelector('h4')?.innerText.trim() ?? '';
+  const number = el.querySelector('span[data-chapter]')?.getAttribute('data-chapter') ?? '0';
+
+  return {
+    title: set_title ?? he.decode(title),
+    data_chapter: Number(number),
+    options: options,
+  };
+}
+
+export async function getBookInfo(url: string, referer?: string): Promise<BookInfoInterface> {
   try {
     const { data } = await axios.get<string>(
       url,
       {
         headers: {
-          Referer: ApiEndpoint.HOME,
+          Referer: referer ?? ApiEndpoint.HOME,
         },
       },
     );
@@ -26,38 +61,16 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
 
     // ##### Chapters
     const chapters: ChapterInterface[] = [];
-    for (const el of root.querySelectorAll('#chapters ul li[data-index]')) {
-      const options: ChapterInterface['options'] = [];
 
-      for (const item_el of el.querySelectorAll('.list-group-item')) {
-        const date = moment(
-          item_el.querySelector('.badge')?.innerText.trim() ?? '2012-12-12',
-          'YYYY-MM-DD',
-        );
-
-        const title = item_el
-          .querySelector('.text-truncate')
-          ?.innerText
-          .trim()
-          .replace(/ {2,}/g, '  ')
-          .replace(/\n/g, '')
-          ?? '';
-
-        options.push({
-          date: date.toDate(),
-          path: item_el.querySelector('a.btn-sm')?.getAttribute('href')!,
-          title: he.decode(title),
-        });
+    if (root.querySelector('#chapters ul')) {
+      for (const el of root.querySelectorAll('#chapters ul li[data-index]')) {
+        chapters.push(getChapterInfo(el));
       }
-
-      const title = el.querySelector('h4')?.innerText.trim() ?? '';
-      const number = el.querySelector('span[data-chapter]')?.getAttribute('data-chapter') ?? '0';
-
-      chapters.push({
-        title: he.decode(title),
-        data_chapter: Number(number),
-        options: options,
-      });
+    } else {
+      const el = root.querySelector('.chapter-list-element ul');
+      if (el) {
+        chapters.push(getChapterInfo(el, 'Capítulo 0.00'));
+      }
     }
 
     
@@ -125,8 +138,8 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
       .trim() ?? '';
 
     return {
-      url: url,
-      path: url.slice(url.lastIndexOf('/') + 1),
+      url: url.trim(),
+      path: url.slice(url.lastIndexOf('/') + 1).trim(),
       stars: Number(stars),
       title: he.decode(title),
       subtitle: he.decode(subtitle),
@@ -152,6 +165,9 @@ export async function getBookInfo(url: string): Promise<BookInfoInterface> {
       chapters: chapters,
     };
   } catch (error) {
+    if (error instanceof AxiosError) {
+      console.error(error.toJSON());
+    }
     console.error(error);
     throw typeof error === 'string' ? error : ApiMessageError.REQUEST;
   }

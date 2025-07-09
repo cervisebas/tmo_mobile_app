@@ -4,7 +4,7 @@ import { ThemeContext } from "~/common/providers/ThemeProvider";
 import { TopTabScreens } from "../enums/TopTabScreens";
 import { TabBarLabel } from "../components/TabBarLabel";
 import { LoadingErrorContent } from "~/common/components/LoadingErrorContent";
-import ListOfBooks from "../components/ListOfBooks";
+import ListOfBooks from "../../../common/components/ListOfBooks";
 import { useApiPopulars } from "~/api/hooks/useApiPopulars";
 
 const Tab = createMaterialTopTabNavigator();

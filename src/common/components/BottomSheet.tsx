@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {Text} from 'react-native-paper';
-import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal, BottomSheetProps, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomSheetVariables } from '@gorhom/bottom-sheet/lib/typescript/types';
 import useSafeArea from '../hooks/useSafeArea';
 import useDimension from '../hooks/useDimension';
@@ -22,11 +22,13 @@ interface IProps {
   title?: string;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
   alwaysOnTop?: boolean;
   followKeyboard?: boolean;
   height?: (number | `${number}%`) | (number | `${number}%`)[];
   useScrollView?: boolean;
   navigation?: StackScreenProps;
+  footerComponent?: BottomSheetProps['footerComponent'];
   onClose?(): void;
 }
 export interface BottomSheetRef {
@@ -159,19 +161,20 @@ export default React.memo(
         ]}
         backdropComponent={renderBackdrop}
         handleComponent={renderHandle}
+        footerComponent={props.footerComponent}
         onDismiss={onDismiss}
       >
         {!props.useScrollView
           ? (
             <BottomSheetView
-              style={contentStyle}
+              style={[contentStyle, props.contentContainerStyle]}
               // eslint-disable-next-line react/no-children-prop
               children={props.children}
             />
           )
           : (
             <BottomSheetScrollView
-              contentContainerStyle={contentStyle}
+              contentContainerStyle={[contentStyle, props.contentContainerStyle]}
               // eslint-disable-next-line react/no-children-prop
               children={props.children}
             />

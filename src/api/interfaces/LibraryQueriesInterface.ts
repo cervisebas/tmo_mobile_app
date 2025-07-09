@@ -11,6 +11,7 @@ export interface LibraryQueriesInterface {
   [LibraryQueries.FILTER_BY]: LibraryFilterby;
 
   // Page number
+  [LibraryQueries.PAGINATOR]: string | number;
   [LibraryQueries.PAGE]: string | number;
 
   // Filters
