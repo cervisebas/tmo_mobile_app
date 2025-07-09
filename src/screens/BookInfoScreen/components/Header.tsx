@@ -145,6 +145,12 @@ export function Header(props: IProps) {
           source={{
             uri: props.wallpaper,
           }}
+          blurRadius={
+            Platform.select({
+              ios: 1,
+              default: 2,
+            })
+          }
           contentFit={'cover'}
         />
       </Animated.View>
