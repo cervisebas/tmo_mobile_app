@@ -2,6 +2,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Platform, StyleSheet } from "react-native";
 import { DrawerMenu } from "~/common/components/DrawerMenu";
 import { DrawerScreen } from "~/enums/DrawerScreen";
+import { ConfigurationScreen } from "~/screens/ConfigurationScreen/ConfigurationScreen";
 import { LibraryScreen } from "~/screens/LibraryScreen/LibraryScreen";
 import { PopularScreen } from "~/screens/PopularScreen/PopularScreen";
 
@@ -43,6 +44,15 @@ export function DrawerNavigator() {
           drawerIcon: 'download-box-outline' as never,
         }}
         component={PopularScreen}
+      />
+      
+      <Drawer.Screen
+        name={DrawerScreen.CONFIGURATIONS}
+        options={{
+          drawerLabel: 'Configuraciones',
+          drawerIcon: 'cog' as never,
+        }}
+        component={ConfigurationScreen}
       />
       
       <Drawer.Screen
