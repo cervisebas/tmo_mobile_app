@@ -19,6 +19,7 @@ interface IProps {
 export interface SearchFilterSheetRef {
   show(): void;
   getFilters(): Exclude<LibraryQueriesInterface, LibraryQueries.TITLE | LibraryQueries.PAGE | LibraryQueries.STATUS | LibraryQueries.TRANSLATION_STATUS>;
+  activeFilters(): number;
 }
 
 export const SearchFilterSheet = React.memo(forwardRef(
@@ -80,7 +81,9 @@ export const SearchFilterSheet = React.memo(forwardRef(
       setGenders([]);
       setExcludeGenders([]);
 
-      onFilter();
+      setTimeout(() => {
+        onFilter();
+      }, 500);
     }, [onFilter]);
 
     useImperativeHandle(ref, () => ({
@@ -101,6 +104,24 @@ export const SearchFilterSheet = React.memo(forwardRef(
           [LibraryQueries.GENDERS]: genders,
           [LibraryQueries.EXCLUDE_GENDERS]: excludeGenders,
         } as ReturnType<SearchFilterSheetRef['getFilters']>;
+      },
+      activeFilters() {
+        let quantity = 0;
+        
+        quantity += genders.length;
+        quantity += excludeGenders.length;
+
+        quantity += Number(filterBy !== LibraryFilterbyOptions[0].value);
+        quantity += Number(orderBy !== LibraryOrderByOptions[0].value);
+        quantity += Number(orderDir !== LibraryOrderDirOptions[0].value);
+        quantity += Number(type !== LibraryTypeOptions[0].value);
+        quantity += Number(demography !== LibraryDemographyOptions[0].value);
+        quantity += Number(webcomic !== LibraryCheckOptions[0].value);
+        quantity += Number(yonkoma !== LibraryCheckOptions[0].value);
+        quantity += Number(amateur !== LibraryCheckOptions[0].value);
+        quantity += Number(erotic !== LibraryCheckOptions[0].value);
+
+        return quantity;
       },
     }));
 

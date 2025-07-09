@@ -153,9 +153,6 @@ export function BookInfoScreen(props: StackScreenProps) {
 }
 
 const styles = StyleSheet.create({
-  content: {
-    position: 'relative',
-  },
   fab_loading: {
     position: 'absolute',
     right: 0,

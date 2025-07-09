@@ -1,5 +1,5 @@
-import { Keyboard, View } from "react-native";
-import { Appbar, Tooltip } from "react-native-paper";
+import { Keyboard, StyleSheet, View } from "react-native";
+import { Appbar, Button, Tooltip } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import PrincipalView from "~/common/components/PrincipalView";
 import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
@@ -11,26 +11,33 @@ import { LibraryQueries, LibraryStatus, LibraryTranslationStatus } from "~/api/e
 import { useApiLibrarySearch } from "~/api/hooks/useApiLibrarySearch";
 import { LoadingErrorContent } from "~/common/components/LoadingErrorContent";
 import ListOfBooks from "../../common/components/ListOfBooks";
-import { ApiEndpoint } from "~/api/enums/ApiEndpoint";
+import SafeArea from "~/common/components/SafeArea";
+import { AppbarActionFilter, AppbarActionFilterRef } from "./components/AppbarActionFilter";
 
 export function LibraryScreen(props: DrawerScreenProps) {
   const refSearchFilterSheet = useRef<SearchFilterSheetRef>(null);
   const refLibrarySearchBar = useRef<LibrarySearchBarRef>(null);
+  const refAppbarActionFilter = useRef<AppbarActionFilterRef>(null);
+  
 
-  const getFilters = useCallback(() => {
+  const getFilters = useCallback((page: number) => {
     const filters: LibraryQueriesInterface = {
       ...refSearchFilterSheet.current?.getFilters()!,
       [LibraryQueries.TITLE]: refLibrarySearchBar.current?.getValue()!,
       [LibraryQueries.PAGINATOR]: '1',
-      [LibraryQueries.PAGE]: '1',
+      [LibraryQueries.PAGE]: String(page),
       [LibraryQueries.STATUS]: LibraryStatus.ALL,
       [LibraryQueries.TRANSLATION_STATUS]: LibraryTranslationStatus.ALL,
     };
 
+    refAppbarActionFilter.current?.setQuantityFilter(
+      refSearchFilterSheet.current?.activeFilters() ?? 0,
+    );
+
     return filters;
   }, []);
 
-  const {loading, refresh, url, data, error, reload, fullReload} = useApiLibrarySearch(getFilters);
+  const {loading, refresh, url, data, error, nextPage, goNextPage, fullReload} = useApiLibrarySearch(getFilters);
 
   return (
     <React.Fragment>
@@ -44,15 +51,13 @@ export function LibraryScreen(props: DrawerScreenProps) {
             title={'Biblioteca'}
           />
 
-          <Tooltip title={'Filtros'}>
-            <Appbar.Action
-              icon={'filter-variant'}
-              onPress={() => {
-                Keyboard.dismiss();
-                refSearchFilterSheet.current?.show();
-              }}
-            />
-          </Tooltip>
+          <AppbarActionFilter
+            ref={refAppbarActionFilter}
+            onPress={() => {
+              Keyboard.dismiss();
+              refSearchFilterSheet.current?.show();
+            }}
+          />
         </AppbarHeader>
 
         <LibrarySearchBar
@@ -65,8 +70,36 @@ export function LibraryScreen(props: DrawerScreenProps) {
             data={data!}
             referer={url}
             keyExtractor={'library-search-item-{id}'}
+            ListFooterComponent={
+              nextPage !== undefined
+                ? (
+                  <View className={'w-full py-[6] flex-row justify-center'}>
+                    <Button
+                      mode={'contained'}
+                      loading={refresh}
+                      disabled={refresh}
+                      style={styles.loadMore}
+                      onPress={goNextPage}
+                    >
+                      CARGAR MÁS
+                    </Button>
+                  </View>
+                )
+                : null
+            }
           />
         </LoadingErrorContent>
+
+        <SafeArea.FAB
+          icon={'loading'}
+          loading={true}
+          visible={!loading && refresh}
+          style={styles.fab_loading}
+          expandArea={{
+            right: 18,
+            bottom: 18,
+          }}
+        />
       </PrincipalView>
 
       <SearchFilterSheet
@@ -76,3 +109,14 @@ export function LibraryScreen(props: DrawerScreenProps) {
     </React.Fragment>
   );
 }
+
+const styles = StyleSheet.create({
+  loadMore: {
+    flexBasis: 'auto',
+  },
+  fab_loading: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+  },
+});

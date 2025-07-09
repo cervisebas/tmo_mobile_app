@@ -12,7 +12,12 @@ export function useApi<T = object>(getData: Observable<T>) {
 
     getData.subscribe({
       next(value) {
-        setData(value);
+        if (append) {
+          setData([...data as any, ...value as any] as T);
+        } else {
+          setData(value);
+        }
+
         setLoading(false);
       },
       complete() {

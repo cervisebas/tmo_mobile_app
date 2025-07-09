@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo} from 'react';
-import {ListRenderItemInfo} from 'react-native';
+import {FlatListProps, ListRenderItemInfo} from 'react-native';
 import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
 import { BookItem } from '~/common/components/BookItem';
 import SafeArea from '~/common/components/SafeArea';
@@ -11,6 +11,7 @@ interface IProps {
   data: BookInfoInterface[];
   referer?: string;
   keyExtractor: string;
+  ListFooterComponent?: FlatListProps<any>['ListFooterComponent'];
 }
 
 const getKey = (s: string, v: string) => s.replace('{id}', v);
@@ -59,6 +60,7 @@ export default React.memo(function (props: IProps) {
       data={props.data}
       numColumns={2}
       expandDisableTop
+      ListFooterComponent={props.ListFooterComponent}
       expandArea={{
         top: 8,
         bottom: 12,

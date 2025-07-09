@@ -5,17 +5,21 @@ import { useApi } from "./useApi";
 import { librarySearch } from "../scripts/librarySearch";
 import { setDatabaseBooks } from "~/database/services/setDatabaseBooks";
 import { clearSearchFilters } from "../utils/clearSearchFilters";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ApiEndpoint } from "../enums/ApiEndpoint";
 
-export function useApiLibrarySearch(getFilters: () => LibraryQueriesInterface) {
+export function useApiLibrarySearch(getFilters: (page: number) => LibraryQueriesInterface) {
   const [url, setUrl] = useState(ApiEndpoint.LIBRARY as string);
+  const [nextPage, setNextPage] = useState<number | undefined>(undefined);
+  const page = useRef(1);
 
   const api = useApi<BookInfoInterface[]>(
     new Observable<BookInfoInterface[]>(function (sub) {
-      librarySearch(clearSearchFilters(getFilters()))
+      librarySearch(clearSearchFilters(getFilters(page.current)))
         .then(async value => {
           setUrl(value.url);
+          setNextPage(value.nextPage);
+
           sub.next(value.books);
           sub.complete();
           
@@ -25,5 +29,15 @@ export function useApiLibrarySearch(getFilters: () => LibraryQueriesInterface) {
     }),
   );
 
-  return {...api, url};
+  function goNextPage() {
+    page.current = nextPage ?? 1;
+    api.reloadAppend();
+  }
+
+  function fullReload() {
+    page.current = 1;
+    api.fullReload();
+  }
+
+  return {...api, url, fullReload, nextPage, goNextPage};
 }
