@@ -1,6 +1,6 @@
 import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 import { db } from "../database";
-import { BookUserStatusByBookInfo } from "../schemas/BookUserStatusByBookInfo";
+import { BookUserStatusByBookInfoModel } from "../schemas/BookUserStatusByBookInfoModel";
 import { eq } from "drizzle-orm";
 
 export async function getMarkUserBookStatus(id_bookinfo: number) {
@@ -8,9 +8,9 @@ export async function getMarkUserBookStatus(id_bookinfo: number) {
 
   const db_statuses = await db
     .select()
-    .from(BookUserStatusByBookInfo)
+    .from(BookUserStatusByBookInfoModel)
     .where(
-      eq(BookUserStatusByBookInfo.id_bookinfo, id_bookinfo),
+      eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
     );
 
   for (const status of db_statuses) {

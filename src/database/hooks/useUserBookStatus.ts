@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { UserBookStatusList } from "../../api/interfaces/UserBookStatus";
-import { DatabaseTable } from "../enums/DatabaseTable";
+import { DatabaseTableName } from "../enums/DatabaseTableName";
 import { useTableChanges } from "./useTableChange";
 import { getMarkUserBookStatus } from "../services/getMarkUserBookStatus";
 
@@ -17,7 +17,7 @@ export function useUserBookStatus(id_bookinfo: number, userBookStatus: UserBookS
   );
 
   useTableChanges(
-    DatabaseTable.BOOK_USER_STATUS_BY_BOOK_INFO,
+    DatabaseTableName.BOOK_USER_STATUS_BY_BOOK_INFO,
     loadUserStatus,
     [id_bookinfo],
   );

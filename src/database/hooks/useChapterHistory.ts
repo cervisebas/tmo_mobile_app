@@ -3,7 +3,7 @@ import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { ChapterHistoryInterface } from "../interfaces/ChapterHistoryInterface";
 import { getDatabaseHistoryChapter } from "../services/getDatabaseHistoryChapter";
 import { useTableChanges as useTableChange } from "./useTableChange";
-import { DatabaseTable } from "../enums/DatabaseTable";
+import { DatabaseTableName } from "../enums/DatabaseTableName";
 
 export function useChapterHistory(chapterList: ChapterInterface[]) {
   const [chapters, setChapters] = useState<ChapterHistoryInterface[]>([]);
@@ -26,7 +26,7 @@ export function useChapterHistory(chapterList: ChapterInterface[]) {
   }, [chapterList]);
 
   useTableChange(
-    DatabaseTable.BOOK_CHAPTER_HISTORY,
+    DatabaseTableName.BOOK_CHAPTER_HISTORY,
     processChapters,
     [chapterList],
   );

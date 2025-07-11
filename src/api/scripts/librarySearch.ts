@@ -3,7 +3,6 @@ import { ApiEndpoint } from "../enums/ApiEndpoint";
 import { LibraryQueriesInterface } from "../interfaces/LibraryQueriesInterface";
 import qs from "qs";
 import parse from "node-html-parser";
-import { ChapterInterface } from "../interfaces/ChapterInterface";
 import { BookInfoInterface } from "../interfaces/BookInfoInterface";
 import { BookType } from "../enums/BookType";
 import { ApiMessageError } from "../enums/ApiMessageError";

@@ -83,7 +83,7 @@ export const SearchFilterSheet = React.memo(forwardRef(
 
       setTimeout(() => {
         onFilter();
-      }, 500);
+      }, 200);
     }, [onFilter]);
 
     useImperativeHandle(ref, () => ({

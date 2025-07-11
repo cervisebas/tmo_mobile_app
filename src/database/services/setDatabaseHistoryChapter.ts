@@ -1,6 +1,6 @@
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { db } from "../database";
-import { BookChapterHistory } from "../schemas/BookChapterHistory";
+import { BookChapterHistoryModel } from "../schemas/BookChapterHistoryModel";
 import { checkMarkUserBookStatus } from "./checkMarkUserBookStatus";
 
 function makeInBulk(
@@ -11,10 +11,10 @@ function makeInBulk(
   on_conflict: boolean,
 ) {
   return db
-    .insert(BookChapterHistory)
+    .insert(BookChapterHistoryModel)
     .values(values)
     .onConflictDoUpdate({
-      target: BookChapterHistory.id_chapter,
+      target: BookChapterHistoryModel.id_chapter,
       set: {
         status: on_conflict,
       },

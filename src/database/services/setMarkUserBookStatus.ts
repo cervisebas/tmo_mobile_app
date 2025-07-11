@@ -1,31 +1,31 @@
 import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 import { db as database } from "../database";
-import { BookUserStatusByBookInfo } from "../schemas/BookUserStatusByBookInfo";
+import { BookUserStatusByBookInfoModel } from "../schemas/BookUserStatusByBookInfoModel";
 import { and, eq, inArray, not } from "drizzle-orm";
-import { BookChapterHistory } from "../schemas/BookChapterHistory";
+import { BookChapterHistoryModel } from "../schemas/BookChapterHistoryModel";
 import { BookChapterModel } from "../schemas/BookChapterModel";
 
 export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof UserBookStatusList) {
   const find = await database
     .select()
-    .from(BookUserStatusByBookInfo)
+    .from(BookUserStatusByBookInfoModel)
     .where(
       and(
-        eq(BookUserStatusByBookInfo.id_bookinfo, id_bookinfo),
-        eq(BookUserStatusByBookInfo.status, status),
+        eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+        eq(BookUserStatusByBookInfoModel.status, status),
       ),
     );
 
   if (find[0].marked) {
     await database
-      .update(BookUserStatusByBookInfo)
+      .update(BookUserStatusByBookInfoModel)
       .set({
         marked: false,
       })
       .where(
         and(
-          eq(BookUserStatusByBookInfo.id_bookinfo, id_bookinfo),
-          eq(BookUserStatusByBookInfo.status, status),
+          eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+          eq(BookUserStatusByBookInfoModel.status, status),
         ),
       );
 
@@ -36,13 +36,13 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
 
 
     await database
-      .update(BookChapterHistory)
+      .update(BookChapterHistoryModel)
       .set({
         status: false,
       })
       .where(
         inArray(
-          BookChapterHistory.id_chapter,
+          BookChapterHistoryModel.id_chapter,
           chapters.map(v => v.id),
         ),
       );
@@ -51,26 +51,26 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
   }
 
   await database
-    .update(BookUserStatusByBookInfo)
+    .update(BookUserStatusByBookInfoModel)
     .set({
       marked: true,
     })
     .where(
       and(
-        eq(BookUserStatusByBookInfo.id_bookinfo, id_bookinfo),
-        eq(BookUserStatusByBookInfo.status, status),
+        eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+        eq(BookUserStatusByBookInfoModel.status, status),
       ),
     );
 
   await database
-    .update(BookUserStatusByBookInfo)
+    .update(BookUserStatusByBookInfoModel)
     .set({
       marked: false,
     })
     .where(
       and(
-        eq(BookUserStatusByBookInfo.id_bookinfo, id_bookinfo),
-        not(eq(BookUserStatusByBookInfo.status, status)),
+        eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+        not(eq(BookUserStatusByBookInfoModel.status, status)),
       ),
     );
   

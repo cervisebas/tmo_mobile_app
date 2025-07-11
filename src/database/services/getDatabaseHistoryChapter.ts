@@ -1,6 +1,6 @@
 import { eq, inArray } from "drizzle-orm";
 import { db } from "../database";
-import { BookChapterHistory } from "../schemas/BookChapterHistory";
+import { BookChapterHistoryModel } from "../schemas/BookChapterHistoryModel";
 
 interface HistoryChapter {
   id: number;
@@ -10,11 +10,11 @@ interface HistoryChapter {
 export async function getDatabaseHistoryChapter<T extends (number | number[])>(id_chapter: T): Promise<T extends number ? boolean : HistoryChapter[]> {
   const find = await db
     .select()
-    .from(BookChapterHistory)
+    .from(BookChapterHistoryModel)
     .where(
       Array.isArray(id_chapter)
-        ? inArray(BookChapterHistory.id_chapter, id_chapter)
-        : eq(BookChapterHistory.id_chapter, id_chapter),
+        ? inArray(BookChapterHistoryModel.id_chapter, id_chapter)
+        : eq(BookChapterHistoryModel.id_chapter, id_chapter),
     );
 
   if (!find.length) {

@@ -3,13 +3,13 @@ import { db } from "../database";
 import { BookInfoModel } from "../schemas/BookInfoModel";
 import { BookChapterModel } from "../schemas/BookChapterModel";
 import { BookChapterOptionModel } from "../schemas/BookChapterOptionModel";
-import { BookGenderByBookInfo } from "../schemas/BookGenderByBookInfo";
+import { BookGenderByBookInfoModel } from "../schemas/BookGenderByBookInfoModel";
 import { BookGenderModel } from "../schemas/BookGenderModel";
 import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 import { BookType } from "~/api/enums/BookType";
 import { BookStatus } from "~/api/enums/BookStatus";
 import { GenderInterface } from "~/api/interfaces/GenderInterface";
-import { DatabaseTable } from "../enums/DatabaseTable";
+import { DatabaseTableName } from "../enums/DatabaseTableName";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { getMarkUserBookStatus } from "./getMarkUserBookStatus";
 
@@ -51,17 +51,17 @@ export async function getDatabaseBookInfo(url: string) {
     
     const db_genders = await db
       .select()
-      .from(BookGenderByBookInfo)
+      .from(BookGenderByBookInfoModel)
       .leftJoin(
         BookGenderModel,
         eq(
-          BookGenderByBookInfo.id_bookgender,
+          BookGenderByBookInfoModel.id_bookgender,
           BookGenderModel.id,
         )
       )
       .where(
         eq(
-          BookGenderByBookInfo.id_bookinfo,
+          BookGenderByBookInfoModel.id_bookinfo,
           find_book[0].id,
         ),
       );
@@ -73,33 +73,33 @@ export async function getDatabaseBookInfo(url: string) {
     const genders: GenderInterface[] = [];
     for (const gender of db_genders) {
       genders.push({
-        value: gender[DatabaseTable.BOOK_GENDERS]!.value,
-        name: gender[DatabaseTable.BOOK_GENDERS]!.name,
+        value: gender[DatabaseTableName.BOOK_GENDERS]!.value,
+        name: gender[DatabaseTableName.BOOK_GENDERS]!.name,
       });
     }
 
     const chapters: ChapterInterface[] = [];
     for (const chapter of db_chapters) {
-      const index_found = chapters.findIndex(v => chapter[DatabaseTable.BOOK_CHAPTERS].id === v.id);
+      const index_found = chapters.findIndex(v => chapter[DatabaseTableName.BOOK_CHAPTERS].id === v.id);
 
       if (index_found !== -1) {
         chapters[index_found].options.push({
-          title: chapter[DatabaseTable.BOOK_CHAPTER_OPTIONS]!.title,
-          date: chapter[DatabaseTable.BOOK_CHAPTER_OPTIONS]!.date,
-          path: chapter[DatabaseTable.BOOK_CHAPTER_OPTIONS]!.path,
+          title: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.title,
+          date: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.date,
+          path: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.path,
         });
         continue;
       }
 
       chapters.push({
-        id: chapter[DatabaseTable.BOOK_CHAPTERS].id,
-        title: chapter[DatabaseTable.BOOK_CHAPTERS].name,
-        data_chapter: chapter[DatabaseTable.BOOK_CHAPTERS].data_chapter,
+        id: chapter[DatabaseTableName.BOOK_CHAPTERS].id,
+        title: chapter[DatabaseTableName.BOOK_CHAPTERS].name,
+        data_chapter: chapter[DatabaseTableName.BOOK_CHAPTERS].data_chapter,
         options: [
           {
-            title: chapter[DatabaseTable.BOOK_CHAPTER_OPTIONS]!.title,
-            date: chapter[DatabaseTable.BOOK_CHAPTER_OPTIONS]!.date,
-            path: chapter[DatabaseTable.BOOK_CHAPTER_OPTIONS]!.path,
+            title: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.title,
+            date: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.date,
+            path: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.path,
           },
         ],
       });

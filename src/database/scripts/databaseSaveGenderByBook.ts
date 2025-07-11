@@ -1,21 +1,21 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../database";
-import { BookGenderByBookInfo } from "../schemas/BookGenderByBookInfo";
+import { BookGenderByBookInfoModel } from "../schemas/BookGenderByBookInfoModel";
 
 export async function databaseSaveGenderByBook(id_bookgender: number, id_bookinfo: number) {
   const find = await db
     .select()
-    .from(BookGenderByBookInfo)
+    .from(BookGenderByBookInfoModel)
     .where(
       and(
-        eq(BookGenderByBookInfo.id_bookinfo, id_bookinfo),
-        eq(BookGenderByBookInfo.id_bookgender, id_bookgender),
+        eq(BookGenderByBookInfoModel.id_bookinfo, id_bookinfo),
+        eq(BookGenderByBookInfoModel.id_bookgender, id_bookgender),
       ),
     );
 
   if (!find.length) {
     await db
-      .insert(BookGenderByBookInfo)
+      .insert(BookGenderByBookInfoModel)
       .values({
         id_bookinfo: id_bookinfo,
         id_bookgender: id_bookgender,

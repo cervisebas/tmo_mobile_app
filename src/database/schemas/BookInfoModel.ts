@@ -1,10 +1,10 @@
 import { integer, numeric, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { DatabaseTable } from "../enums/DatabaseTable";
+import { DatabaseTableName } from "../enums/DatabaseTableName";
 import { BookStatus } from "~/api/enums/BookStatus";
 import { BookType } from "~/api/enums/BookType";
 
 export const BookInfoModel = sqliteTable(
-  DatabaseTable.BOOKS_INFO,
+  DatabaseTableName.BOOKS_INFO,
   {
     id: integer().primaryKey({autoIncrement: true}).notNull(),
     path: text().notNull(),

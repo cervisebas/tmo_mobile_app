@@ -1,8 +1,8 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { DatabaseTable } from "../enums/DatabaseTable";
+import { DatabaseTableName } from "../enums/DatabaseTableName";
 
 export const BookGenderModel = sqliteTable(
-  DatabaseTable.BOOK_GENDERS,
+  DatabaseTableName.BOOK_GENDERS,
   {
     id: integer().primaryKey({autoIncrement: true}).notNull(),
     name: text().notNull(),

@@ -1,8 +1,8 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { DatabaseTable } from "../enums/DatabaseTable";
+import { DatabaseTableName } from "../enums/DatabaseTableName";
 
 export const BookChapterOptionModel = sqliteTable(
-  DatabaseTable.BOOK_CHAPTER_OPTIONS,
+  DatabaseTableName.BOOK_CHAPTER_OPTIONS,
   {
     id_chapter: integer().notNull(),
     title: text().notNull(),

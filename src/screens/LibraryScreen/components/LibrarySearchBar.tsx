@@ -47,7 +47,7 @@ export const LibrarySearchBar = React.memo(forwardRef(
           onClearIconPress={() => {
             setTimeout(() => {
               props.onSearch?.('');
-            }, 500);
+            }, 200);
           }}
         />
       </View>

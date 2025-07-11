@@ -1,12 +1,13 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { DatabaseTableName } from "../enums/DatabaseTableName";
 
-export const BookChapterModel = sqliteTable(
-  DatabaseTableName.BOOK_CHAPTERS,
+export const BookStaffModel = sqliteTable(
+  DatabaseTableName.BOOK_STAFF,
   {
     id: integer().primaryKey({autoIncrement: true}).notNull(),
-    id_bookinfo: integer().notNull(),
+    url: text().notNull(),
     name: text().notNull(),
-    data_chapter: integer().notNull().default(0),
+    image: text().notNull(),
+    search_name: text().notNull(),
   },
 );

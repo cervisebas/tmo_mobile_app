@@ -1,8 +1,8 @@
 import { integer, sqliteTable } from "drizzle-orm/sqlite-core";
-import { DatabaseTable } from "../enums/DatabaseTable";
+import { DatabaseTableName } from "../enums/DatabaseTableName";
 
-export const BookChapterHistory = sqliteTable(
-  DatabaseTable.BOOK_CHAPTER_HISTORY,
+export const BookChapterHistoryModel = sqliteTable(
+  DatabaseTableName.BOOK_CHAPTER_HISTORY,
   {
     id_chapter: integer().unique().notNull(),
     status: integer({mode: 'boolean'}).notNull(),

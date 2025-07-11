@@ -1,6 +1,6 @@
 import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 import { db } from "../database";
-import { BookUserStatusByBookInfo } from "../schemas/BookUserStatusByBookInfo";
+import { BookUserStatusByBookInfoModel } from "../schemas/BookUserStatusByBookInfoModel";
 import { and, eq } from "drizzle-orm";
 
 export async function databaseSaveUserStatus(id_bookinfo: number, data: UserBookStatusList) {
@@ -11,17 +11,17 @@ export async function databaseSaveUserStatus(id_bookinfo: number, data: UserBook
 
     const find = await db
       .select()
-      .from(BookUserStatusByBookInfo)
+      .from(BookUserStatusByBookInfoModel)
       .where(
         and(
-          eq(BookUserStatusByBookInfo.id_bookinfo, id_bookinfo),
-          eq(BookUserStatusByBookInfo.status, key),
+          eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+          eq(BookUserStatusByBookInfoModel.status, key),
         ),
       );
 
     if (!find.length) {
       await db
-        .insert(BookUserStatusByBookInfo)
+        .insert(BookUserStatusByBookInfoModel)
         .values({
           id_bookinfo: id_bookinfo,
           status: key,
@@ -33,14 +33,14 @@ export async function databaseSaveUserStatus(id_bookinfo: number, data: UserBook
     }
 
     await db
-      .update(BookUserStatusByBookInfo)
+      .update(BookUserStatusByBookInfoModel)
       .set({
         value: value.quantity,
       })
       .where(
         and(
-          eq(BookUserStatusByBookInfo.id_bookinfo, id_bookinfo),
-          eq(BookUserStatusByBookInfo.status, key),
+          eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+          eq(BookUserStatusByBookInfoModel.status, key),
         ),
       );
   }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { db } from "~/database/database";
-import { DatabaseTable } from "~/database/enums/DatabaseTable";
+import { DatabaseTableName } from "~/database/enums/DatabaseTableName";
 import { useTableChanges } from "~/database/hooks/useTableChange";
 import { BookInfoModel } from "~/database/schemas/BookInfoModel";
 
@@ -28,7 +28,7 @@ export function useSavedBooks() {
   }, []);
 
   useTableChanges(
-    DatabaseTable.BOOKS_INFO,
+    DatabaseTableName.BOOKS_INFO,
     loadData,
   );
 
