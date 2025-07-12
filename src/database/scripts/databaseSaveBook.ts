@@ -7,6 +7,7 @@ import { databaseSaveGenderByBook } from "./databaseSaveGenderByBook";
 import { databaseSaveChapter } from "./databaseSaveChapter";
 import { getIfExistOr } from "../utils/getIfExistOr";
 import { databaseSaveUserStatus } from "./databaseSaveUserStatus";
+import { databaseSaveBookStaff } from "./databaseSaveBookStaff";
 
 export async function databaseSaveBook(data: BookInfoInterface) {
   const find = await db
@@ -56,6 +57,13 @@ export async function databaseSaveBook(data: BookInfoInterface) {
       );
     }
 
+    if (data.staff?.length) {
+      await databaseSaveBookStaff(
+        insert.lastInsertRowId,
+        data.staff,
+      );
+    }
+
     return;
   }
   
@@ -96,6 +104,13 @@ export async function databaseSaveBook(data: BookInfoInterface) {
     await databaseSaveUserStatus(
       find[0]!.id,
       data.user_status,
+    );
+  }
+
+  if (data.staff?.length) {
+    await databaseSaveBookStaff(
+      find[0]!.id,
+      data.staff,
     );
   }
 }

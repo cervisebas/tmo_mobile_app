@@ -12,6 +12,9 @@ import { GenderInterface } from "~/api/interfaces/GenderInterface";
 import { DatabaseTableName } from "../enums/DatabaseTableName";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { getMarkUserBookStatus } from "./getMarkUserBookStatus";
+import { BookStaffInterface } from "~/api/interfaces/BookStaffInterface";
+import { BookStaffByBookInfoModel } from "../schemas/BookStaffByBookInfoModel";
+import { BookStaffModel } from "../schemas/BookStaffModel";
 
 export async function getDatabaseBookInfo(url: string) {
   try {
@@ -66,6 +69,23 @@ export async function getDatabaseBookInfo(url: string) {
         ),
       );
     
+    const db_staff = await db
+      .select()
+      .from(BookStaffByBookInfoModel)
+      .leftJoin(
+        BookStaffModel,
+        eq(
+          BookStaffByBookInfoModel.id_bookstaff,
+          BookStaffModel.id,
+        ),
+      )
+      .where(
+        eq(
+          BookStaffByBookInfoModel.id_bookinfo,
+          find_book[0].id,
+        )
+      );
+
     // ##### Make Datas
     const user_status = await getMarkUserBookStatus(find_book[0].id);
 
@@ -105,6 +125,18 @@ export async function getDatabaseBookInfo(url: string) {
       });
     }
 
+    const staff_list: BookStaffInterface[] = [];
+    for (const staff of db_staff) {
+      staff_list.push({
+        id: staff[DatabaseTableName.BOOK_STAFF]!.id,
+        url: staff[DatabaseTableName.BOOK_STAFF]!.url,
+        name: staff[DatabaseTableName.BOOK_STAFF]!.name,
+        picture: staff[DatabaseTableName.BOOK_STAFF]!.image,
+        position: staff[DatabaseTableName.BOOK_STAFF_BY_BOOKS_INFO].position,
+        search_name: staff[DatabaseTableName.BOOK_STAFF]!.search_name,
+      });
+    }
+
     const data: BookInfoInterface = {
       id: find_book[0].id,
 
@@ -124,6 +156,8 @@ export async function getDatabaseBookInfo(url: string) {
 
       genders: genders,
       chapters: chapters,
+
+      staff: staff_list,
     };
 
     return data;

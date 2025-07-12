@@ -9,9 +9,11 @@ import { BookStatus } from "../enums/BookStatus";
 import { BookType } from "../enums/BookType";
 import { BookInfoInterface } from "../interfaces/BookInfoInterface";
 import { axios } from "~/common/utils/Axios";
-import he from "he";
 import { getUrlParams } from "~/database/utils/getUrlParams";
 import { AxiosError } from "axios";
+import { BookStaffInterface } from "../interfaces/BookStaffInterface";
+import he from "he";
+import qs from "qs";
 
 function getChapterInfo(el: HTMLElement, set_title?: string) {
   const options: ChapterInterface['options'] = [];
@@ -137,6 +139,32 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
       ?.innerText
       .trim() ?? '';
 
+
+    // Staff
+    const staff_list: BookStaffInterface[] = [];
+    const staff_content = Array.from(root.querySelectorAll('h2'))
+      .find(el => el.textContent.trim() === 'Staff')
+      ?.parentNode
+      ?.parentNode;
+    
+    if (staff_content) {
+      for (const el of staff_content.querySelectorAll('div.card')) {
+        const img = el.querySelector('img');
+        const name = el.querySelector('h5');
+        const url_search = new URL(name?.parentNode.getAttribute('href')?.trim()!);
+        const url_search_params = qs.parse(url_search.search.slice(1));
+
+        staff_list.push({
+          url: img?.parentNode.getAttribute('href')!.trim()!,
+          name: name?.innerText.trim()!,
+          picture: img?.getAttribute('src')!,
+          position: el.querySelector('b')!.innerText.trim(),
+          search_name: url_search_params['title'] as string,
+        });
+      }
+    }
+
+
     return {
       url: url.trim(),
       path: url.slice(url.lastIndexOf('/') + 1).trim(),
@@ -163,6 +191,7 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
       ,
       user_status: user_status as unknown as UserBookStatusList,
       chapters: chapters,
+      staff: staff_list,
     };
   } catch (error) {
     if (error instanceof AxiosError) {

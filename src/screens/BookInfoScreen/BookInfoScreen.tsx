@@ -15,6 +15,7 @@ import { ChapterList } from "./components/ChapterList";
 import React, { useMemo } from "react";
 import useDimension from "~/common/hooks/useDimension";
 import { BookStatusList } from "~/constants/BookStatusList";
+import { StaffList } from "./components/StaffList";
 
 export function BookInfoScreen(props: StackScreenProps) {
   const info = props.route.params as BookInfoInterface & {referer?: string};
@@ -123,6 +124,16 @@ export function BookInfoScreen(props: StackScreenProps) {
             <GenderList
               data={data?.genders!}
             />
+
+            {data?.staff && (
+              <React.Fragment>
+                <Divider />
+
+                <StaffList
+                  data={data.staff}
+                />
+              </React.Fragment>
+            )}
 
             {data?.chapters && (
               <React.Fragment>

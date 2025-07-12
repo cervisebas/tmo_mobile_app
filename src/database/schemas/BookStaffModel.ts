@@ -5,7 +5,7 @@ export const BookStaffModel = sqliteTable(
   DatabaseTableName.BOOK_STAFF,
   {
     id: integer().primaryKey({autoIncrement: true}).notNull(),
-    url: text().notNull(),
+    url: text().notNull().unique(),
     name: text().notNull(),
     image: text().notNull(),
     search_name: text().notNull(),
