@@ -13,7 +13,7 @@ export interface BottomSheetOptionsInterface {
   rightIconColor?: string;
   disabled?: boolean;
   selected?: boolean;
-  onPress: () => void;
+  onPress?(): void;
 }
 
 type Options = BottomSheetOptionsInterface[] | Record<string, BottomSheetOptionsInterface[]>;
@@ -51,7 +51,7 @@ export default forwardRef(function (_: object, ref: React.Ref<BottomSheetOptions
           description={value.description}
           onPress={() => {
             refBottomSheet.current?.hide();
-            value.onPress();
+            value.onPress?.();
           }}
         />
 

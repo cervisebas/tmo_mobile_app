@@ -105,6 +105,13 @@ export const ChapterList = React.memo(function (props: IProps) {
           refDialog.current?.showBottomSheetOptions(
             'Opciónes del capítulo',
             {
+              'Información': [
+                {
+                  label: 'Nombre',
+                  leftIcon: 'text',
+                  description: item.title,
+                },
+              ],
               'Opciónes de lectura': options,
               'Opciónes adicionales': aditionalOptions,
             },
