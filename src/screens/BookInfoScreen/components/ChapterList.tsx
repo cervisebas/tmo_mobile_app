@@ -74,7 +74,11 @@ export const ChapterList = React.memo(function (props: IProps) {
           success(value: boolean) {
             return `Se ha ${value ? 'marcado' : 'desmarcado'} como visto correctamente`;
           },
-          error: 'Ocurrio un error inesperado',
+          error(error) {
+            return typeof error === 'string'
+              ? error
+              : 'Ocurrio un error inesperado';
+          },
         });
       },
     });
