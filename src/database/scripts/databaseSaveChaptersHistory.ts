@@ -1,19 +1,23 @@
 import { sql } from "drizzle-orm";
 import { db } from "../database";
 import { BookChapterHistoryModel } from "../schemas/BookChapterHistoryModel";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 
-export async function databaseSaveChapterHistory(chapter: ChapterInterface, status: boolean) {
+interface IProps {
+  id_chapter: number;
+  status: boolean;
+}
+
+export async function databaseSaveChaptersHistory(chapter: IProps[], default_status?: boolean) {
   await db
     .insert(BookChapterHistoryModel)
-    .values({
-      id_chapter: chapter.id!,
-      status: status,
-    })
+    .values(chapter)
     .onConflictDoUpdate({
       target: BookChapterHistoryModel.id_chapter,
       set: {
-        status: sql`excluded.status`,
+        status: default_status !== undefined
+          ? default_status
+          : sql`excluded.status`
+        ,
       },
     });
 }

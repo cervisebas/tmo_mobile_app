@@ -15,6 +15,7 @@ import { getMarkUserBookStatus } from "./getMarkUserBookStatus";
 import { BookStaffInterface } from "~/api/interfaces/BookStaffInterface";
 import { BookStaffByBookInfoModel } from "../schemas/BookStaffByBookInfoModel";
 import { BookStaffModel } from "../schemas/BookStaffModel";
+import { extractNumberChapter } from "~/utils/extractNumberChapter";
 
 export async function getDatabaseBookInfo(url: string) {
   try {
@@ -98,7 +99,7 @@ export async function getDatabaseBookInfo(url: string) {
       });
     }
 
-    const chapters: ChapterInterface[] = [];
+    let chapters: ChapterInterface[] = [];
     for (const chapter of db_chapters) {
       const index_found = chapters.findIndex(v => chapter[DatabaseTableName.BOOK_CHAPTERS].id === v.id);
 
@@ -115,6 +116,7 @@ export async function getDatabaseBookInfo(url: string) {
         id: chapter[DatabaseTableName.BOOK_CHAPTERS].id,
         title: chapter[DatabaseTableName.BOOK_CHAPTERS].name,
         data_chapter: chapter[DatabaseTableName.BOOK_CHAPTERS].data_chapter,
+        chapter_number: extractNumberChapter(chapter[DatabaseTableName.BOOK_CHAPTERS].name),
         options: [
           {
             title: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.title,
@@ -124,6 +126,7 @@ export async function getDatabaseBookInfo(url: string) {
         ],
       });
     }
+    chapters = chapters.sort((a, b) => b.chapter_number - a.chapter_number);
 
     const staff_list: BookStaffInterface[] = [];
     for (const staff of db_staff) {

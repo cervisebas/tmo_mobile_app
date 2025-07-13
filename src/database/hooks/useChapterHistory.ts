@@ -29,6 +29,7 @@ export function useChapterHistory(chapterList: ChapterInterface[]) {
     DatabaseTableName.BOOK_CHAPTER_HISTORY,
     processChapters,
     [chapterList],
+    100,
   );
 
   useEffect(() => {

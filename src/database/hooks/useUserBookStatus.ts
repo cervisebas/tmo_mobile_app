@@ -20,6 +20,7 @@ export function useUserBookStatus(id_bookinfo: number, userBookStatus: UserBookS
     DatabaseTableName.BOOK_USER_STATUS_BY_BOOK_INFO,
     loadUserStatus,
     [id_bookinfo],
+    0,
   );
 
   return data;

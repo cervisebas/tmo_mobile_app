@@ -1,8 +1,6 @@
 import { ApiEndpoint } from "../enums/ApiEndpoint";
 import { ApiMessageError } from "../enums/ApiMessageError";
-import parse, { HTMLElement } from "node-html-parser";
 import { ChapterInterface } from "../interfaces/ChapterInterface";
-import moment from "moment";
 import { GenderInterface } from "../interfaces/GenderInterface";
 import { UserBookStatusList } from "../interfaces/UserBookStatus";
 import { BookStatus } from "../enums/BookStatus";
@@ -12,10 +10,13 @@ import { axios } from "~/common/utils/Axios";
 import { getUrlParams } from "~/database/utils/getUrlParams";
 import { AxiosError } from "axios";
 import { BookStaffInterface } from "../interfaces/BookStaffInterface";
+import { extractNumberChapter } from "~/utils/extractNumberChapter";
+import parse, { HTMLElement } from "node-html-parser";
+import moment from "moment";
 import he from "he";
 import qs from "qs";
 
-function getChapterInfo(el: HTMLElement, set_title?: string) {
+function getChapterInfo(el: HTMLElement, set_title?: string): ChapterInterface {
   const options: ChapterInterface['options'] = [];
   
   for (const item_el of el.querySelectorAll('.list-group-item')) {
@@ -42,10 +43,13 @@ function getChapterInfo(el: HTMLElement, set_title?: string) {
   const title = el.querySelector('h4')?.innerText.trim() ?? '';
   const number = el.querySelector('span[data-chapter]')?.getAttribute('data-chapter') ?? '0';
 
+  const use_title = set_title ?? he.decode(title);
+
   return {
-    title: set_title ?? he.decode(title),
+    title: use_title,
     data_chapter: Number(number),
     options: options,
+    chapter_number: extractNumberChapter(use_title),
   };
 }
 
@@ -62,7 +66,7 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
     const root = parse(data);
 
     // ##### Chapters
-    const chapters: ChapterInterface[] = [];
+    let chapters: ChapterInterface[] = [];
 
     if (root.querySelector('#chapters ul')) {
       for (const el of root.querySelectorAll('#chapters ul li[data-index]')) {
@@ -74,6 +78,7 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
         chapters.push(getChapterInfo(el, 'Capítulo 0.00'));
       }
     }
+    chapters = chapters.sort((a, b) => b.chapter_number - a.chapter_number);
 
     
     // ##### Genders

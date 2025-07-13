@@ -1,25 +1,6 @@
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { db } from "../database";
-import { BookChapterHistoryModel } from "../schemas/BookChapterHistoryModel";
 import { checkMarkUserBookStatus } from "./checkMarkUserBookStatus";
-
-function makeInBulk(
-  values: {
-    id_chapter: number;
-    status: boolean;
-  }[],
-  on_conflict: boolean,
-) {
-  return db
-    .insert(BookChapterHistoryModel)
-    .values(values)
-    .onConflictDoUpdate({
-      target: BookChapterHistoryModel.id_chapter,
-      set: {
-        status: on_conflict,
-      },
-    });
-}
+import { databaseSaveChaptersHistory } from "../scripts/databaseSaveChaptersHistory";
 
 export async function setDatabaseHistoryChapter(
   id_bookinfo: number,
@@ -39,43 +20,26 @@ export async function setDatabaseHistoryChapter(
     return;
   }
   
-  if (status) {
-    // Set True
-    const listOfTrue = chapterList.splice(indexOf);
+  const chapter_set_list: Parameters<typeof databaseSaveChaptersHistory>[0] = [];
 
-    if (listOfTrue.length) {
-      await makeInBulk(
-        listOfTrue.map(v => ({
-          id_chapter: v.id!,
-          status: true,
-        })),
-        true,
-      );
-    }
-
-    // Set False
-    const listOfFalse = chapterList.splice(0, indexOf);
-
-    if (listOfFalse.length) {
-      await makeInBulk(
-        listOfFalse.map(v => ({
-          id_chapter: v.id!,
-          status: true,
-        })),
-        false,
-      );
-    }
-  } else {
-    const listOfFalse = chapterList.splice(0, indexOf + 1);
-
-    if (listOfFalse.length) {
-      await makeInBulk(
-        listOfFalse.map(v => ({
-          id_chapter: v.id!,
-          status: true,
-        })),
-        false,
-      );
+  for (const item of chapterList) {
+    if (chapter.chapter_number >= item.chapter_number) {
+      chapter_set_list.push({
+        id_chapter: item.id!,
+        //status: true,
+        status:
+          chapter.chapter_number === item.chapter_number
+            ? status
+            : true
+        ,
+      });
+    } else {
+      chapter_set_list.push({
+        id_chapter: item.id!,
+        status: false,
+      });
     }
   }
+
+  await databaseSaveChaptersHistory(chapter_set_list);
 }
