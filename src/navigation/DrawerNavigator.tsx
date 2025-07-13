@@ -4,6 +4,7 @@ import { DrawerMenu } from "~/common/components/DrawerMenu";
 import { DrawerScreen } from "~/enums/DrawerScreen";
 import { ConfigurationScreen } from "~/screens/ConfigurationScreen/ConfigurationScreen";
 import { LibraryScreen } from "~/screens/LibraryScreen/LibraryScreen";
+import { MyProfileScreen } from "~/screens/MyProfileScreen/MyProfile";
 import { PopularScreen } from "~/screens/PopularScreen/PopularScreen";
 
 const Drawer = createDrawerNavigator();
@@ -61,7 +62,7 @@ export function DrawerNavigator() {
           drawerLabel: 'Mi perfil',
           drawerIcon: 'account-circle' as never,
         }}
-        component={PopularScreen}
+        component={MyProfileScreen}
       />
     </Drawer.Navigator>
   );
@@ -72,6 +73,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     ...Platform.select({
       android: {
+        width: '75%',
+        maxWidth: 300,
         borderTopRightRadius: 24,
         borderBottomRightRadius: 24,
       },
