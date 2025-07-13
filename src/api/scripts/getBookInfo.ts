@@ -150,15 +150,21 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
     if (staff_content) {
       for (const el of staff_content.querySelectorAll('div.card')) {
         const img = el.querySelector('img');
-        const name = el.querySelector('h5');
-        const url_search = new URL(name?.parentNode.getAttribute('href')?.trim()!);
+        const name = el.querySelector('h5[title]');
+        const url = name?.parentNode.getAttribute('href')?.trim();
+
+        if ((!img && !name) || !url) {
+          continue;
+        }
+
+        const url_search = new URL(url);
         const url_search_params = qs.parse(url_search.search.slice(1));
 
         staff_list.push({
-          url: img?.parentNode.getAttribute('href')!.trim()!,
-          name: name?.innerText.trim()!,
-          picture: img?.getAttribute('src')!,
-          position: el.querySelector('b')!.innerText.trim(),
+          url: img?.parentNode.getAttribute('href')?.trim() ?? '',
+          name: name?.innerText.trim() ?? '',
+          picture: img?.getAttribute('src') ?? '',
+          position: el.querySelector('b')?.innerText?.trim() ?? '',
           search_name: url_search_params['title'] as string,
         });
       }

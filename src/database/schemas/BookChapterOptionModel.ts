@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { DatabaseTableName } from "../enums/DatabaseTableName";
 
 export const BookChapterOptionModel = sqliteTable(
@@ -9,4 +9,10 @@ export const BookChapterOptionModel = sqliteTable(
     date: integer({mode: 'timestamp'}).notNull(),
     path: text().notNull(),
   },
+  (table) => ({
+    unique_chapter_option: unique().on(
+      table.id_chapter,
+      table.path,
+    ),
+  }),
 );

@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { DatabaseTableName } from "../enums/DatabaseTableName";
 import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 
@@ -10,4 +10,10 @@ export const BookUserStatusByBookInfoModel = sqliteTable(
     value: text().notNull(),
     marked: integer({ mode: 'boolean' }).$type<boolean>(),
   },
+  (table) => ({
+    unique_book_status: unique().on(
+      table.id_bookinfo,
+      table.status,
+    ),
+  }),
 );

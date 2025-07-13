@@ -14,5 +14,5 @@ export const BookStaffByBookInfoModel = sqliteTable(
       table.id_bookstaff,
       table.position,
     ),
-  })
+  }),
 );

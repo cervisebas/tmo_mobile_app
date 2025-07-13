@@ -45,6 +45,66 @@ export const ChapterList = React.memo(function (props: IProps) {
     //chapters.length > MAX_ITEMS_COLAPSE
   ), [showAll]);
 
+  const onPressChapterItem = useCallback((item: ChapterHistoryInterface) => {
+    const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
+      label: v.title,
+      description: moment(v.date).format('DD-MM-YYYY'),
+      leftIcon: 'play',
+      leftIconColor: theme.colors.primary,
+      onPress() {
+        console.log(v.path);
+      },
+    }));
+
+    const aditionalOptions: BottomSheetOptionsInterface[] = [];
+
+    if (item.viewed) {
+      aditionalOptions.push({
+        label: 'Marcar como no visto',
+        leftIcon: 'eye-off-outline',
+        onPress() {
+          setDatabaseHistoryChapter(props.id_bookinfo, chapters, item, false);
+        },
+      });
+    } else {
+      aditionalOptions.push({
+        label: 'Marcar como visto',
+        leftIcon: 'eye-outline',
+        async onPress() {
+          try {
+            await setDatabaseHistoryChapter(
+              props.id_bookinfo,
+              chapters,
+              item,
+              true,
+            );
+          } catch (error) {
+            refDialog.current?.showTost(error as never);
+          }
+        },
+      });
+    }
+
+    refDialog.current?.showBottomSheetOptions(
+      'Opciónes del capítulo',
+      {
+        'Información': [
+          {
+            label: 'Nombre',
+            leftIcon: 'text',
+            description: item.title,
+          },
+        ],
+        'Opciónes de lectura': options,
+        'Opciónes adicionales': aditionalOptions,
+      },
+    );
+  }, [
+    chapters,
+    props.id_bookinfo,
+    theme.colors.primary,
+  ]);
+
   const renderItem = useCallback(
     ({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (
       <ItemWithIcon
@@ -62,66 +122,11 @@ export const ChapterList = React.memo(function (props: IProps) {
             : theme.colors.onSurfaceDisabled
         }
         fixHeight={HEIGHT_ITEMS}
-        onPress={() => {
-          const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
-            label: v.title,
-            description: moment(v.date).format('DD-MM-YYYY'),
-            leftIcon: 'play',
-            leftIconColor: theme.colors.primary,
-            onPress() {
-              console.log(v.path);
-            },
-          }));
-
-          const aditionalOptions: BottomSheetOptionsInterface[] = [];
-
-          if (item.viewed) {
-            aditionalOptions.push({
-              label: 'Marcar como no visto',
-              leftIcon: 'eye-off-outline',
-              onPress() {
-                setDatabaseHistoryChapter(props.id_bookinfo, chapters, item, false);
-              },
-            });
-          } else {
-            aditionalOptions.push({
-              label: 'Marcar como visto',
-              leftIcon: 'eye-outline',
-              async onPress() {
-                try {
-                  await setDatabaseHistoryChapter(
-                    props.id_bookinfo,
-                    chapters,
-                    item,
-                    true,
-                  );
-                } catch (error) {
-                  refDialog.current?.showTost(error as never);
-                }
-              },
-            });
-          }
-
-          refDialog.current?.showBottomSheetOptions(
-            'Opciónes del capítulo',
-            {
-              'Información': [
-                {
-                  label: 'Nombre',
-                  leftIcon: 'text',
-                  description: item.title,
-                },
-              ],
-              'Opciónes de lectura': options,
-              'Opciónes adicionales': aditionalOptions,
-            },
-          );
-        }}
+        onPress={() => onPressChapterItem(item)}
       />
     ),
     [
-      chapters,
-      props.id_bookinfo,
+      onPressChapterItem,
       theme.colors.inversePrimary,
       theme.colors.onSurfaceDisabled,
       theme.colors.primary,

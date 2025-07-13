@@ -14,37 +14,41 @@ export const StaffList = React.memo(function (props: IProps) {
   }
 
   return (
-    <View className={'gap-[8]'}>
-      <Text variant={'titleLarge'}>Staff</Text>
+    <React.Fragment>
+      <Divider />
 
-      <View className={'w-full flex-col'}>
-        {props.data.map((val, index, array) => (
-          <React.Fragment key={`staff-item-${val.id}-${val.position}`}>
-            <List.Item
-              title={val.name}
-              description={val.position}
-              style={styles.item}
-              left={props => (
-                <Image
-                  {...props}
-                  style={[
-                    props.style,
-                    styles.image,
-                  ]}
-                  source={{
-                    uri: val.picture,
-                  }}
-                />
+      <View className={'gap-[8]'}>
+        <Text variant={'titleLarge'}>Staff</Text>
+
+        <View className={'w-full flex-col'}>
+          {props.data.map((val, index, array) => (
+            <React.Fragment key={`staff-item-${val.id}-${val.position}`}>
+              <List.Item
+                title={val.name}
+                description={val.position}
+                style={styles.item}
+                left={props => (
+                  <Image
+                    {...props}
+                    style={[
+                      props.style,
+                      styles.image,
+                    ]}
+                    source={{
+                      uri: val.picture,
+                    }}
+                  />
+                )}
+              />
+
+              {array?.[index + 1] && (
+                <Divider className={'mx-[12]'} />
               )}
-            />
-
-            {array?.[index + 1] && (
-              <Divider className={'mx-[12]'} />
-            )}
-          </React.Fragment>
-        ))}
+            </React.Fragment>
+          ))}
+        </View>
       </View>
-    </View>
+    </React.Fragment>
   );
 });
 

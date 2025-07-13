@@ -126,13 +126,9 @@ export function BookInfoScreen(props: StackScreenProps) {
             />
 
             {data?.staff && (
-              <React.Fragment>
-                <Divider />
-
-                <StaffList
-                  data={data.staff}
-                />
-              </React.Fragment>
+              <StaffList
+                data={data.staff}
+              />
             )}
 
             {data?.chapters && (

@@ -6,6 +6,6 @@ export const BookGenderModel = sqliteTable(
   {
     id: integer().primaryKey({autoIncrement: true}).notNull(),
     name: text().notNull(),
-    value: integer().notNull(),
+    value: integer().notNull().unique(),
   },
 );

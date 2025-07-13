@@ -8,7 +8,7 @@ export const BookInfoModel = sqliteTable(
   {
     id: integer().primaryKey({autoIncrement: true}).notNull(),
     path: text().notNull(),
-    url: text().notNull(),
+    url: text().notNull().unique(),
     title: text().notNull(),
     picture: text().notNull(),
     stars: numeric().notNull().$type<number>(),

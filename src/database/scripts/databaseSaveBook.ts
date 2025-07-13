@@ -1,22 +1,16 @@
 import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 import { db } from "../database";
 import { BookInfoModel } from "../schemas/BookInfoModel";
-import { eq } from "drizzle-orm";
-import { databaseSaveGender } from "./databaseSaveGender";
-import { databaseSaveGenderByBook } from "./databaseSaveGenderByBook";
-import { databaseSaveChapter } from "./databaseSaveChapter";
-import { getIfExistOr } from "../utils/getIfExistOr";
 import { databaseSaveUserStatus } from "./databaseSaveUserStatus";
 import { databaseSaveBookStaff } from "./databaseSaveBookStaff";
+import { databaseSaveGendersByBook } from "./databaseSaveGendersByBook";
+import { databaseSaveChapters } from "./databaseSaveChapters";
+import { getIfExistObject } from "../utils/getIfExistObject";
 
 export async function databaseSaveBook(data: BookInfoInterface) {
-  const find = await db
-    .select()
-    .from(BookInfoModel)
-    .where(eq(BookInfoModel.url, data.url));
-
-  if (!find.length) {
-    const insert = await db.insert(BookInfoModel).values({
+  const [{idBookInfo}] = await db
+    .insert(BookInfoModel)
+    .values({
       path: data.path,
       url: data.url,
       title: data.title,
@@ -28,88 +22,49 @@ export async function databaseSaveBook(data: BookInfoInterface) {
       subtitle: data.subtitle ?? null,
       description: data.description ?? null,
       wallpaper: data.wallpaper ?? null,
+    })
+    .onConflictDoUpdate({
+      target: BookInfoModel.url,
+      set: {
+        picture: data.picture,
+        stars: data.stars,
+        ...getIfExistObject({
+          title: data.title,
+          subtitle: data.subtitle,
+          status: data.status,
+          description: data.description,
+          wallpaper: data.wallpaper,
+        }),
+      },
+    })
+    .returning({
+      idBookInfo: BookInfoModel.id,
     });
 
-    if (data.genders) {
-      for (const gender of data.genders) {
-        const id_bookgender = await databaseSaveGender(gender);
-        
-        await databaseSaveGenderByBook(
-          id_bookgender,
-          insert.lastInsertRowId,
-        );
-      }
-    }
-
-    if (data.chapters) {
-      for (const chapter of data.chapters) {
-        await databaseSaveChapter(
-          insert.lastInsertRowId,
-          chapter,
-        );
-      }
-    }
-
-    if (data.user_status) {
-      await databaseSaveUserStatus(
-        insert.lastInsertRowId,
-        data.user_status,
-      );
-    }
-
-    if (data.staff?.length) {
-      await databaseSaveBookStaff(
-        insert.lastInsertRowId,
-        data.staff,
-      );
-    }
-
-    return;
-  }
-  
-  await db
-    .update(BookInfoModel)
-    .set({
-      picture: data.picture,
-      stars: data.stars,
-      ...getIfExistOr(data.title, {title: data.title}, {}),
-      ...getIfExistOr(data.subtitle, {subtitle: data.subtitle}, {}),
-      ...getIfExistOr(data.status, {status: data.status}, {}),
-      ...getIfExistOr(data.description, {description: data.description}, {}),
-      ...getIfExistOr(data.wallpaper, {wallpaper: data.wallpaper}, {}),
-    })
-    .where(eq(BookInfoModel.url, data.url));
-
   if (data.genders) {
-    for (const gender of data.genders) {
-      const id_bookgender = await databaseSaveGender(gender);
-      
-      await databaseSaveGenderByBook(
-        id_bookgender,
-        find[0]!.id,
-      );
-    }
+    await databaseSaveGendersByBook(
+      data.genders,
+      idBookInfo,
+    );
   }
 
   if (data.chapters) {
-    for (const chapter of data.chapters) {
-      await databaseSaveChapter(
-        find[0]!.id,
-        chapter,
-      );
-    }
+    await databaseSaveChapters(
+      data.chapters,
+      idBookInfo,
+    );
   }
 
   if (data.user_status) {
     await databaseSaveUserStatus(
-      find[0]!.id,
+      idBookInfo,
       data.user_status,
     );
   }
 
   if (data.staff?.length) {
     await databaseSaveBookStaff(
-      find[0]!.id,
+      idBookInfo,
       data.staff,
     );
   }

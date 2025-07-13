@@ -22,9 +22,15 @@ export function useApiBookInfo(url: string, referer?: string) {
               sub.next(data!);
               sub.complete();
             })
-            .catch(sub.error);
+            .catch(err => {
+              console.error(err);
+              sub.error(err);
+            });
         })
-        .catch(sub.error);
+        .catch(err => {
+          console.error(err);
+          sub.error(err);
+        });
     })
   );
 }
