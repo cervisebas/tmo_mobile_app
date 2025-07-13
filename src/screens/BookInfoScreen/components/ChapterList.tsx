@@ -2,6 +2,7 @@ import moment from "moment";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { ListRenderItemInfo, StyleSheet, View } from "react-native";
 import { Button, IconButton, Text } from "react-native-paper";
+import { toast } from "sonner-native";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { BottomSheetOptionsInterface } from "~/common/components/BottomSheetOptions";
 import FlatListDynamicItems from "~/common/components/FlatListDynamicItems";
@@ -58,32 +59,25 @@ export const ChapterList = React.memo(function (props: IProps) {
 
     const aditionalOptions: BottomSheetOptionsInterface[] = [];
 
-    if (item.viewed) {
-      aditionalOptions.push({
-        label: 'Marcar como no visto',
-        leftIcon: 'eye-off-outline',
-        onPress() {
-          setDatabaseHistoryChapter(props.id_bookinfo, chapters, item, false);
-        },
-      });
-    } else {
-      aditionalOptions.push({
-        label: 'Marcar como visto',
-        leftIcon: 'eye-outline',
-        async onPress() {
-          try {
-            await setDatabaseHistoryChapter(
-              props.id_bookinfo,
-              chapters,
-              item,
-              true,
-            );
-          } catch (error) {
-            refDialog.current?.showTost(error as never);
-          }
-        },
-      });
-    }
+    aditionalOptions.push({
+      label: item.viewed
+        ? 'Marcar como no visto'
+        : 'Marcar como visto'
+      ,
+      leftIcon: item.viewed
+        ? 'eye-off-outline'
+        : 'eye-outline'
+      ,
+      onPress() {
+        toast.promise(setDatabaseHistoryChapter(props.id_bookinfo, chapters, item, !item.viewed), {
+          loading: 'Espere por favor...',
+          success(value: boolean) {
+            return `Se ha ${value ? 'marcado' : 'desmarcado'} como visto correctamente`;
+          },
+          error: 'Ocurrio un error inesperado',
+        });
+      },
+    });
 
     refDialog.current?.showBottomSheetOptions(
       'Opciónes del capítulo',
