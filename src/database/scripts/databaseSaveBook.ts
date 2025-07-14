@@ -41,7 +41,7 @@ export async function databaseSaveBook(data: BookInfoInterface) {
       idBookInfo: BookInfoModel.id,
     });
 
-  if (data.genders) {
+  if (data.genders && data.genders.length) {
     await databaseSaveGendersByBook(
       data.genders,
       idBookInfo,
@@ -62,7 +62,7 @@ export async function databaseSaveBook(data: BookInfoInterface) {
     );
   }
 
-  if (data.staff?.length) {
+  if (data.staff && data.staff.length) {
     await databaseSaveBookStaff(
       idBookInfo,
       data.staff,
