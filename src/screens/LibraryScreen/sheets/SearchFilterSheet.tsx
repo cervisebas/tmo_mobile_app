@@ -32,13 +32,13 @@ export const SearchFilterSheet = React.memo(forwardRef(
       ...theme,
       colors: {
         ...theme.colors,
-        background: theme.colors.elevation.level2,
+        background: theme.colors.elevation.level4,
       },
     }), [theme]);
 
     const accordionStyles = useMemo<StyleProp<ViewStyle>>(
       () => ({
-        backgroundColor: theme.colors.elevation.level5,
+        backgroundColor: theme.colors.elevation.level2,
         borderRadius: 2 * theme.roundness,
         marginHorizontal: 8,
         marginVertical: 4,
