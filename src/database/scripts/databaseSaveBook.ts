@@ -48,7 +48,7 @@ export async function databaseSaveBook(data: BookInfoInterface) {
     );
   }
 
-  if (data.chapters) {
+  if (data.chapters && data.chapters.length) {
     await databaseSaveChapters(
       data.chapters,
       idBookInfo,
