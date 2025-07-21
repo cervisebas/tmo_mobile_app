@@ -151,6 +151,7 @@ export function BookInfoScreen(props: StackScreenProps) {
         loading={true}
         visible={!loading && refresh}
         style={styles.fab_loading}
+        expandDisableBottom={false}
         expandArea={{
           right: 18,
           bottom: 18,

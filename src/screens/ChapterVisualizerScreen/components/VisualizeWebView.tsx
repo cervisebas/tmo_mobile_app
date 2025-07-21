@@ -80,7 +80,6 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
             backgroundColor: theme.colors.surface,
           },
         ]}
-        androidLayerType={'software'}
         onLoadEnd={() => {
           setTimeout(() => {
             _onLoadEnd();
