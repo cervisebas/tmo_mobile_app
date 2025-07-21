@@ -53,7 +53,7 @@
           "assetsDir": "assets/bootsplash",
           "android": {
             "parentTheme": "EdgeToEdge",
-            "darkContentBarsStyle": "true"
+            "darkContentBarsStyle": true
           }
         }
       ]

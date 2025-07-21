@@ -3,10 +3,20 @@ import { StackScreens } from "~/enums/StackScreens";
 import { DrawerNavigator } from "./DrawerNavigator";
 import { BookInfoScreen } from "~/screens/BookInfoScreen/BookInfoScreen";
 import { ChapterVisualizerScreen } from "~/screens/ChapterVisualizerScreen/ChapterVisualizerScreen";
+import BootSplash from "react-native-bootsplash";
+import { useEffect } from "react";
 
 const Stack = createStackNavigator();
 
 export function StackNavigator() {
+  useEffect(() => {
+    setTimeout(() => {
+      BootSplash.hide({
+        fade: true,
+      });
+    }, 200);
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{
