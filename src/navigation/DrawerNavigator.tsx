@@ -39,15 +39,6 @@ export function DrawerNavigator() {
       />
       
       <Drawer.Screen
-        name={DrawerScreen.DOWNLOADS}
-        options={{
-          drawerLabel: 'Descargados',
-          drawerIcon: 'download-box-outline' as never,
-        }}
-        component={PopularScreen}
-      />
-      
-      <Drawer.Screen
         name={DrawerScreen.CONFIGURATIONS}
         options={{
           drawerLabel: 'Configuraciones',

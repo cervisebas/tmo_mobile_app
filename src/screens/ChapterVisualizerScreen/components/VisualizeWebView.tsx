@@ -3,7 +3,7 @@ import { LoadingErrorContent } from '~/common/components/LoadingErrorContent';
 import { useHtmlVisualizer } from '../hooks/useHtmlVisualizer';
 import { ImageItemInterface } from '../interfaces/ImageItemInterface';
 import React, { forwardRef, useCallback, useContext, useImperativeHandle, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { DOWNLOAD_IMAGES_FOLDER_PATH } from '../scripts/downloadChapterImages';
 import { useVisualizeWebViewSafeArea } from '../hooks/useVisualizeWebViewSafeArea';
@@ -97,6 +97,7 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
         allowUniversalAccessFromFileURLs={true}
         javaScriptEnabled={true}
         domStorageEnabled={true}
+        scalesPageToFit={Platform.OS === 'android'}
       />
     </LoadingErrorContent>
   );

@@ -41,6 +41,9 @@ export function MyProfileScreen(props: DrawerScreenProps) {
         <View className={'flex-1'}>
           <ListOfBooks
             data={books}
+            showEmpty={true}
+            emptyIcon={'playlist-remove'}
+            emptyMessage={'No hay elementos'}
             keyExtractor={'my-profile-item-{id}'}
           />
         </View>
