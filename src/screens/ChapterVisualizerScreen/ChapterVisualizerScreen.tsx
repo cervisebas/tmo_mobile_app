@@ -4,16 +4,25 @@ import StackScreenProps from "~/common/interfaces/StackScreenProps";
 import { ChapterVisualizerParams } from "./interfaces/ChapterVisualizerParams";
 import { VisualizeWebView, VisualizeWebViewRef } from "./components/VisualizeWebView";
 import { useLoadChapterImages } from "./hooks/useLoadChapterImages";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { View } from "react-native";
 import { toast } from "sonner-native";
 import { goViewChapter } from "../BookInfoScreen/scripts/goViewChapter";
+import { setViewedChapter } from "./scripts/setViewedChapter";
 
 export function ChapterVisualizerScreen(props: StackScreenProps) {
   const params = props.route.params as ChapterVisualizerParams;
 
   const refVisualizeWebView = useRef<VisualizeWebViewRef>(null);
   const progressRef = useRef<string | number | undefined>(undefined);
+
+  const chapter_list = useMemo(() => {
+    return params.chapter_list.sort((a, b) => a.chapter_number - b.chapter_number);
+  }, [params.chapter_list]);
+
+  const chapter_index = useMemo(() => {
+    return chapter_list.findIndex(v => v.id === params.chapter.id);
+  }, [chapter_list]);
 
   const {images, startLoadImages, cancelLoad} = useLoadChapterImages(
     params.images,
@@ -37,8 +46,7 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
   );
 
   const goToChapter = useCallback((move: number) => {
-    const chapter_list = params.chapters.sort((a, b) => a.chapter_number - b.chapter_number);
-    const index = params.index + move;
+    const index = chapter_index + move;
     const chapter = chapter_list.at(index)!;
     const bestOption = chapter.options.sort((a, b) => b.date.getTime() - a.date.getTime())[0];
 
@@ -47,14 +55,22 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
       option: bestOption,
       chapter: chapter,
       book_url: params.book_url,
-      chapters_list: params.chapters,
+      chapters_list: params.chapter_list,
+      id_bookinfo: params.id_bookinfo,
       onLoadImages() {
         props.navigation.goBack();
       },
     });
-  }, []);
+  }, [chapter_index, chapter_list, params.book_url, params.chapter_list, params.id_bookinfo, props.navigation]);
 
   useEffect(() => {
+    setViewedChapter(
+      params.id_bookinfo,
+      params.chapter_list,
+      params.chapter,
+      true,
+    );
+
     return () => {
       if (progressRef.current) {
         cancelLoad();
@@ -74,12 +90,12 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
         />
         <Appbar.Action
           icon={'arrow-left'}
-          disabled={!params.chapters[params.index - 1]}
+          disabled={!chapter_list[chapter_index - 1]}
           onPress={() => goToChapter(-1)}
           />
         <Appbar.Action
           icon={'arrow-right'}
-          disabled={!params.chapters[params.index + 1]}
+          disabled={!chapter_list[chapter_index + 1]}
           onPress={() => goToChapter(1)}
         />
       </Appbar.Header>

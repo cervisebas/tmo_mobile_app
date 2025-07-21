@@ -60,6 +60,7 @@ export const ChapterList = React.memo(function (props: IProps) {
           option: option,
           chapter: item,
           book_url: props.book_url,
+          id_bookinfo: props.id_bookinfo,
           chapters_list: chapters,
         });
       },

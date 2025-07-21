@@ -7,5 +7,7 @@ export interface ChapterVisualizerParams {
   book_url: string;
   originUrl: string;
   chapter_id: string;
-  chapters: ChapterInterface[];
+  id_bookinfo: number;
+  chapter: ChapterInterface;
+  chapter_list: ChapterInterface[];
 }

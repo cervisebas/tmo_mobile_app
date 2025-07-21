@@ -16,6 +16,23 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
       ),
     );
 
+  const chapters = await database
+    .select()
+    .from(BookChapterModel)
+    .where(eq(BookChapterModel.id_bookinfo, id_bookinfo));
+
+  await database
+    .update(BookChapterHistoryModel)
+    .set({
+      status: false,
+    })
+    .where(
+      inArray(
+        BookChapterHistoryModel.id_chapter,
+        chapters.map(v => v.id),
+      ),
+    );
+
   if (find[0].marked) {
     await database
       .update(BookUserStatusByBookInfoModel)
@@ -26,24 +43,6 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
         and(
           eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
           eq(BookUserStatusByBookInfoModel.status, status),
-        ),
-      );
-
-    const chapters = await database
-      .select()
-      .from(BookChapterModel)
-      .where(eq(BookChapterModel.id_bookinfo, id_bookinfo));
-
-
-    await database
-      .update(BookChapterHistoryModel)
-      .set({
-        status: false,
-      })
-      .where(
-        inArray(
-          BookChapterHistoryModel.id_chapter,
-          chapters.map(v => v.id),
         ),
       );
 
