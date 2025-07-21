@@ -23,7 +23,11 @@ export function useLoadChapterImages(
       
       try {
         const data = await downloadChapterImages(image, originImagesUrl, path);
-  
+
+        if (canceled.current) {
+          break;
+        }
+        
         progress.current++;
         onProgress?.(
           progress.current,
