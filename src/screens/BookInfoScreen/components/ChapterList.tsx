@@ -4,17 +4,21 @@ import { ListRenderItemInfo, StyleSheet, View } from "react-native";
 import { Button, IconButton, Text } from "react-native-paper";
 import { toast } from "sonner-native";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
+import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
+import { getImagesOfChapter } from "~/api/scripts/getImagesOfChapter";
 import { BottomSheetOptionsInterface } from "~/common/components/BottomSheetOptions";
 import FlatListDynamicItems from "~/common/components/FlatListDynamicItems";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
-import { refDialog } from "~/common/utils/Ref";
+import { refDialog, refNavigation } from "~/common/utils/Ref";
 import { useChapterHistory } from "~/database/hooks/useChapterHistory";
 import { ChapterHistoryInterface } from "~/database/interfaces/ChapterHistoryInterface";
 import { setDatabaseHistoryChapter } from "~/database/services/setDatabaseHistoryChapter";
+import { StackScreens } from "~/enums/StackScreens";
 
 interface IProps {
   id_bookinfo: number;
+  book_url: string;
   chapters: ChapterInterface[];
 }
 
@@ -46,15 +50,42 @@ export const ChapterList = React.memo(function (props: IProps) {
     //chapters.length > MAX_ITEMS_COLAPSE
   ), [showAll]);
 
+  const goViewChapter = useCallback(async (option: ChapterOptionInterface) => {
+    try {
+      refDialog.current?.showLoading('Obteniendo información...');
+
+      const {images, originUrl} = await getImagesOfChapter(
+        option.path,
+        props.book_url,
+      );
+
+      refNavigation.current?.navigate(
+        StackScreens.CHAPTER_VISUALIZER,
+        {
+          title: option.title,
+          chapter_id: option.path.slice(option.path.lastIndexOf('/') + 1),
+          images: images,
+          originUrl: originUrl,
+        },
+      );
+
+      refDialog.current?.showLoading(false);
+    } catch (error) {
+      refDialog.current?.showLoading(false);
+      refDialog.current?.showAlert({
+        message: String(error),
+        showOk: true,
+      });
+    }
+  }, [props.book_url]);
+
   const onPressChapterItem = useCallback((item: ChapterHistoryInterface) => {
     const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
       label: v.title,
       description: moment(v.date).format('DD-MM-YYYY'),
       leftIcon: 'play',
       leftIconColor: theme.colors.primary,
-      onPress() {
-        console.log(v.path);
-      },
+      onPress: () => goViewChapter(v),
     }));
 
     const aditionalOptions: BottomSheetOptionsInterface[] = [];
@@ -97,11 +128,7 @@ export const ChapterList = React.memo(function (props: IProps) {
         'Opciónes adicionales': aditionalOptions,
       },
     );
-  }, [
-    chapters,
-    props.id_bookinfo,
-    theme.colors.primary,
-  ]);
+  }, [chapters, goViewChapter, props.id_bookinfo, theme.colors.primary]);
 
   const renderItem = useCallback(
     ({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (

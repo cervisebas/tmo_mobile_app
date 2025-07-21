@@ -138,6 +138,7 @@ export function BookInfoScreen(props: StackScreenProps) {
                 <ChapterList
                   chapters={data?.chapters}
                   id_bookinfo={data.id!}
+                  book_url={data.url}
                 />
               </React.Fragment>
             )}

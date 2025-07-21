@@ -1,0 +1,9 @@
+{
+  "platforms": ["android"],
+  "apple": {
+    "modules": ["ExpoInsecureFetchModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.insecurefetch.ExpoInsecureFetchModule"]
+  }
+}

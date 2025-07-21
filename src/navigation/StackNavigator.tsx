@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { StackScreens } from "~/enums/StackScreens";
 import { DrawerNavigator } from "./DrawerNavigator";
 import { BookInfoScreen } from "~/screens/BookInfoScreen/BookInfoScreen";
+import { ChapterVisualizerScreen } from "~/screens/ChapterVisualizerScreen/ChapterVisualizerScreen";
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,11 @@ export function StackNavigator() {
       <Stack.Screen
         name={StackScreens.BOOK_INFO}
         component={BookInfoScreen}
+      />
+
+      <Stack.Screen
+        name={StackScreens.CHAPTER_VISUALIZER}
+        component={ChapterVisualizerScreen}
       />
     </Stack.Navigator>
   );

@@ -3,3 +3,8 @@ declare module '*.webp' {
   const value: ImageSourcePropType;
   export default value;
 }
+
+declare module '*.html' {
+  const html: string;
+  export default html;
+};

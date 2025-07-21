@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { View } from "react-native";
 import { Appbar, List } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
