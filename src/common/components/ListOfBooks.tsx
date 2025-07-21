@@ -70,6 +70,7 @@ export default React.memo(function (props: IProps) {
     return (
       <SafeArea.View
         style={styles.loading_content}
+        expandDisableTop
         expandArea={{
           horizontal: 16,
         }}

@@ -1,11 +1,8 @@
 {
   "expo": {
-    "name": "tmo_app",
+    "name": "TMO",
     "slug": "tmo_app",
     "version": "1.0.0",
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "experiments": {
       "tsconfigPaths": true
     },
@@ -49,16 +46,21 @@
             }
           }
         }
+      ],
+      [
+        "react-native-bootsplash",
+        {
+          "assetsDir": "assets/bootsplash",
+          "android": {
+            "parentTheme": "EdgeToEdge",
+            "darkContentBarsStyle": "true"
+          }
+        }
       ]
     ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -69,8 +71,9 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/foreground-image.png",
+        "monochromeImage": "./assets/monochrome-image.png",
+        "backgroundColor": "#2957BA"
       },
       "package": "com.cervisebas.tmo_app"
     }
