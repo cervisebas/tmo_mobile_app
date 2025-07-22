@@ -42,4 +42,6 @@ export async function setDatabaseHistoryChapter(
   }
 
   await databaseSaveChaptersHistory(chapter_set_list);
+
+  return status;
 }

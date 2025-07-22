@@ -5,6 +5,7 @@ import { BookInfoScreen } from "~/screens/BookInfoScreen/BookInfoScreen";
 import { ChapterVisualizerScreen } from "~/screens/ChapterVisualizerScreen/ChapterVisualizerScreen";
 import BootSplash from "react-native-bootsplash";
 import { useEffect } from "react";
+import { ChapterListScreen } from "~/screens/ChapterListScreen/ChapterListScreen";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,11 @@ export function StackNavigator() {
       <Stack.Screen
         name={StackScreens.CHAPTER_VISUALIZER}
         component={ChapterVisualizerScreen}
+      />
+
+      <Stack.Screen
+        name={StackScreens.CHAPTER_LIST}
+        component={ChapterListScreen}
       />
     </Stack.Navigator>
   );
