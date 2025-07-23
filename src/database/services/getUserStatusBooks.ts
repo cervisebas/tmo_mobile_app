@@ -4,8 +4,9 @@ import { BookInfoModel } from "../schemas/BookInfoModel";
 import { BookUserStatusByBookInfoModel } from "../schemas/BookUserStatusByBookInfoModel";
 import { and, eq } from "drizzle-orm";
 import { DatabaseTableName } from "../enums/DatabaseTableName";
+import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 
-export async function getUserStatusBooks(status: UserBookStatus) {
+export async function getUserStatusBooks(status: UserBookStatus): Promise<BookInfoInterface[]> {
   const books = await db
     .select()
     .from(BookUserStatusByBookInfoModel)

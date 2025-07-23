@@ -56,6 +56,15 @@
             "darkContentBarsStyle": true
           }
         }
+      ],
+      "expo-background-task",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification_icon.png",
+          "color": "#2957BA",
+          "defaultChannel": "default"
+        }
       ]
     ],
     "orientation": "portrait",
@@ -75,6 +84,10 @@
         "monochromeImage": "./assets/monochrome-image.png",
         "backgroundColor": "#2957BA"
       },
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ],
       "package": "com.cervisebas.tmo_app"
     }
   }
