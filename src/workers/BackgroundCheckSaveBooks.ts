@@ -1,22 +1,31 @@
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
-import * as Notifications from 'expo-notifications';
 import { BackgroundTaskName } from './enums/BackgroundTaskName';
 import { getUserStatusBooks } from '~/database/services/getUserStatusBooks';
 import { UserBookStatus } from '~/api/enums/UserBookStatus';
 import { checkUpdateBook } from './scripts/checkUpdateBook';
+import { checkExecuteTask } from './scripts/checkExecuteTask';
+import { BookStatus } from '~/api/enums/BookStatus';
 
 TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
   try {
-    const { status: NotificationPermission } = await Notifications.getPermissionsAsync();
+    // Check Execute Background Task
+    await checkExecuteTask();
 
-    if (NotificationPermission !== Notifications.PermissionStatus.GRANTED) {
-      return BackgroundTask.BackgroundTaskResult.Success;
-    }
-
+    // Init Background Process
     const follow_books = await getUserStatusBooks(UserBookStatus.FOLLOW);
     const wish_books = await getUserStatusBooks(UserBookStatus.WISH);
-    const books = [...follow_books, ...wish_books];
+    const merge_books = [...follow_books, ...wish_books];
+
+    // Filter books
+    const books = merge_books.filter(value => {
+      return (
+        value.status === BookStatus.ACTIVO ||
+        value.status === BookStatus.PUBLICANDOSE ||
+        value.status === BookStatus.EN_ESPERA ||
+        value.status === BookStatus.PAUSADO
+      );
+    });
 
     for (const book of books) {
       await checkUpdateBook(book);
@@ -31,8 +40,18 @@ TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
 });
 
 export default {
-  register() {
-    return BackgroundTask.registerTaskAsync(
+  async register() {
+    const {isAvailable, isRegister} = await this.getStatus();
+
+    if (!isAvailable) {
+      throw 'Tareas en segundo plano no disponibles.';
+    }
+
+    if (isRegister) {
+      throw 'Tarea en segundo plano ya registrada.';
+    }
+    
+    await BackgroundTask.registerTaskAsync(
       BackgroundTaskName.CHECK_SAVE_BOOKS,
       {
         minimumInterval: 30,
@@ -43,5 +62,11 @@ export default {
     return BackgroundTask.unregisterTaskAsync(
       BackgroundTaskName.CHECK_SAVE_BOOKS,
     );
+  },
+  async getStatus() {
+    return {
+      isAvailable: await BackgroundTask.getStatusAsync(),
+      isRegister: await TaskManager.isTaskRegisteredAsync(BackgroundTaskName.CHECK_SAVE_BOOKS),
+    };
   },
 };
