@@ -5,17 +5,7 @@ import { and, eq, inArray, not } from "drizzle-orm";
 import { BookChapterHistoryModel } from "../schemas/BookChapterHistoryModel";
 import { BookChapterModel } from "../schemas/BookChapterModel";
 
-export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof UserBookStatusList) {
-  const find = await database
-    .select()
-    .from(BookUserStatusByBookInfoModel)
-    .where(
-      and(
-        eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
-        eq(BookUserStatusByBookInfoModel.status, status),
-      ),
-    );
-
+async function unmarkAllChapters(id_bookinfo: number) {
   const chapters = await database
     .select()
     .from(BookChapterModel)
@@ -32,6 +22,18 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
         chapters.map(v => v.id),
       ),
     );
+}
+
+export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof UserBookStatusList) {
+  const find = await database
+    .select()
+    .from(BookUserStatusByBookInfoModel)
+    .where(
+      and(
+        eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+        eq(BookUserStatusByBookInfoModel.status, status),
+      ),
+    );
 
   if (find[0].marked) {
     await database
@@ -45,8 +47,24 @@ export async function setMarkUserBookStatus(id_bookinfo: number, status: keyof U
           eq(BookUserStatusByBookInfoModel.status, status),
         ),
       );
+    
+    await unmarkAllChapters(id_bookinfo);
 
     return false;
+  }
+
+  const already_mark = await database
+    .select()
+    .from(BookUserStatusByBookInfoModel)
+    .where(
+      and(
+        eq(BookUserStatusByBookInfoModel.id_bookinfo, id_bookinfo),
+        eq(BookUserStatusByBookInfoModel.marked, true),
+      ),
+    );
+  
+  if (already_mark.length === 0) {
+    await unmarkAllChapters(id_bookinfo);
   }
 
   await database
