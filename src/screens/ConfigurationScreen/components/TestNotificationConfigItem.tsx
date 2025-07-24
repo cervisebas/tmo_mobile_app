@@ -57,6 +57,7 @@ export const TestNotificationConfigItem = React.memo(function () {
         'Envía una notificación de prueba para comprobar que estén funcionando correctamente.'
         + (disabled ? '\n\nNo disponible.' : '')
       }
+      descriptionNumberOfLines={6}
       leftIcon={'bell-ring-outline'}
       disabled={disabled}
       onPress={testNotificactions}
