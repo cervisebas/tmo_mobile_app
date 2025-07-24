@@ -6,6 +6,7 @@ import { ChapterVisualizerScreen } from "~/screens/ChapterVisualizerScreen/Chapt
 import BootSplash from "react-native-bootsplash";
 import { useEffect } from "react";
 import { ChapterListScreen } from "~/screens/ChapterListScreen/ChapterListScreen";
+import { Notifications } from "~/notifications";
 
 const Stack = createStackNavigator();
 
@@ -15,7 +16,9 @@ export function StackNavigator() {
       BootSplash.hide({
         fade: true,
       });
-    }, 200);
+
+      Notifications.checkPermissions();
+    }, 150);
   }, []);
 
   return (

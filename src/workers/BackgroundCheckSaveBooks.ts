@@ -1,5 +1,6 @@
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
+import * as ExpoNotifications from 'expo-notifications';
 import { BackgroundTaskName } from './enums/BackgroundTaskName';
 import { getUserStatusBooks } from '~/database/services/getUserStatusBooks';
 import { UserBookStatus } from '~/api/enums/UserBookStatus';
@@ -33,6 +34,19 @@ TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
 
   } catch (error) {
     console.error(error);
+
+    try {
+      await ExpoNotifications.scheduleNotificationAsync({
+        content: {
+          title: 'Tarea en segundo plano',
+          body: 'La tarea en segundo plano fallo.',
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 
@@ -65,7 +79,7 @@ export default {
   },
   async getStatus() {
     return {
-      isAvailable: await BackgroundTask.getStatusAsync(),
+      isAvailable: await BackgroundTask.getStatusAsync() === BackgroundTask.BackgroundTaskStatus.Available,
       isRegister: await TaskManager.isTaskRegisteredAsync(BackgroundTaskName.CHECK_SAVE_BOOKS),
     };
   },

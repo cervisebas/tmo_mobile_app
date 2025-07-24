@@ -1,12 +1,10 @@
-import * as Notifications from 'expo-notifications';
 import * as Network from 'expo-network';
 import * as Battery from 'expo-battery';
+import { Notifications } from '~/notifications';
 
 export async function checkExecuteTask() {
   // Check Notifications
-  const { status: NotificationPermission } = await Notifications.getPermissionsAsync();
-  
-  if (NotificationPermission !== Notifications.PermissionStatus.GRANTED) {
+  if (!(await Notifications.isAvailable())) {
     throw '[BackgroundTask] Notificaciones no disponibles: abortando.';
   }
 

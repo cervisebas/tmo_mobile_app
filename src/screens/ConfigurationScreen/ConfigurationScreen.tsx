@@ -1,26 +1,14 @@
-import { useMemo } from "react";
-import { Appbar, List } from "react-native-paper";
+import { Appbar, Divider, List } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
 import PrincipalView from "~/common/components/PrincipalView";
 import StackScreenProps from "~/common/interfaces/StackScreenProps";
-import { useSavedBooks } from "./hooks/useSavedBooks";
 import SafeArea from "~/common/components/SafeArea";
+import { DatabaseConfigItem } from "./components/DatabaseConfigItem";
+import { BackgroundTaskConfigItem } from "./components/BackgroundTaskConfigItem";
+import { TestNotificationConfigItem } from "./components/TestNotificationConfigItem";
 
-export function ConfigurationScreen(props: StackScreenProps) {
-  const {booksWithoutInfo, booksWithInfo} = useSavedBooks();
-
-  const databaseDescription = useMemo(
-    () => {
-      let description = '';
-      description += `Libros con información: ${booksWithInfo}\n`;
-      description += `Libros sin información: ${booksWithoutInfo}`;
-
-      return description;
-    },
-    [booksWithoutInfo, booksWithInfo],
-  );
-  
+export function ConfigurationScreen(props: StackScreenProps) {  
   return (
     <PrincipalView hideKeyboard>
       <AppbarHeader mode={'small'}>
@@ -39,11 +27,19 @@ export function ConfigurationScreen(props: StackScreenProps) {
             Almacenamiento
           </List.Subheader>
 
-          <ItemWithIcon
-            title={'Base de datos'}
-            leftIcon={'database'}
-            description={databaseDescription}
-          />
+          <DatabaseConfigItem />
+        </List.Section>
+        
+        <List.Section>
+          <List.Subheader>
+            Servicios
+          </List.Subheader>
+
+          <BackgroundTaskConfigItem />
+
+          <Divider />
+
+          <TestNotificationConfigItem />
         </List.Section>
       </SafeArea.ScrollView>
     </PrincipalView>

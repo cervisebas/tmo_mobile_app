@@ -1,8 +1,8 @@
-import * as Notifications from 'expo-notifications';
+import * as ExpoNotifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { NotificationChannel } from './enums/NotificationChannel';
 
-Notifications.setNotificationHandler({
+ExpoNotifications.setNotificationHandler({
   handleNotification: async () => ({    
     shouldShowBanner: true,
     shouldShowList: true,
@@ -17,20 +17,20 @@ async function initDefaultChannel() {
     return;
   }
 
-  await Notifications.setNotificationChannelAsync(NotificationChannel.DEFAULT, {
+  await ExpoNotifications.setNotificationChannelAsync(NotificationChannel.DEFAULT, {
     name: NotificationChannel.DEFAULT,
-    importance: Notifications.AndroidImportance.HIGH,
+    importance: ExpoNotifications.AndroidImportance.HIGH,
     bypassDnd: true,
   });
 }
 
 async function checkPermissions() {
-  const { status } = await Notifications.getPermissionsAsync();
+  const { status } = await ExpoNotifications.getPermissionsAsync();
 
-  if (status !== Notifications.PermissionStatus.GRANTED) {
-    const { status: newStatus } = await Notifications.requestPermissionsAsync();
+  if (status !== ExpoNotifications.PermissionStatus.GRANTED) {
+    const { status: newStatus } = await ExpoNotifications.requestPermissionsAsync();
 
-    if (newStatus !== Notifications.PermissionStatus.GRANTED) {
+    if (newStatus !== ExpoNotifications.PermissionStatus.GRANTED) {
       return false;
     }
 
@@ -41,7 +41,11 @@ async function checkPermissions() {
   return true;
 }
 
-export default {
-  NotificationChannel,
+export const Notifications = {
   checkPermissions,
+  async isAvailable() {
+    const { status } = await ExpoNotifications.getPermissionsAsync();
+
+    return status === ExpoNotifications.PermissionStatus.GRANTED;
+  },
 };
