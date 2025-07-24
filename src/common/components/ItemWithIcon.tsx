@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleProp, TextStyle, ViewStyle} from 'react-native';
-import {List} from 'react-native-paper';
+import {List, ListItemProps} from 'react-native-paper';
 
 interface IProps {
   title: string;
@@ -14,6 +14,7 @@ interface IProps {
   style?: StyleProp<ViewStyle>;
   descriptionStyle?: StyleProp<TextStyle>;
   descriptionNumberOfLines?: number;
+  right?: ListItemProps['right'];
   onPress?: () => void;
 }
 export default React.memo(function (props: IProps) {
@@ -36,16 +37,18 @@ export default React.memo(function (props: IProps) {
           : undefined
       }
       right={
-        props.rightIcon
-          ?
-            p => (
-              <List.Icon
-                {...p}
-                icon={props.rightIcon!}
-                color={props.rightIconColor ?? p.color}
-              />
-            )
-          : undefined
+        props.right ?? (
+          props.rightIcon
+            ?
+              p => (
+                <List.Icon
+                  {...p}
+                  icon={props.rightIcon!}
+                  color={props.rightIconColor ?? p.color}
+                />
+              )
+            : undefined
+        )
       }
       disabled={props.disabled}
       style={[props.style, props.fixHeight ? {height: props.fixHeight} : {}]}
