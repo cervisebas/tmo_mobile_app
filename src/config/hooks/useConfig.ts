@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 interface IProps<T> {
   initValue: T;
+  dependencies?: any[];
   set(value: T): Promise<void>;
   get(): Promise<T>;
   isDisabled?(): Promise<boolean>;
@@ -27,6 +28,10 @@ export function useConfig<T>(props: IProps<T>) {
   useEffect(() => {
     loadValue();
   }, []);
+
+  useEffect(() => {
+    loadValue();
+  }, props.dependencies ?? []);
 
   return {
     value: value,

@@ -7,6 +7,9 @@ import { UserBookStatus } from '~/api/enums/UserBookStatus';
 import { checkUpdateBook } from './scripts/checkUpdateBook';
 import { checkExecuteTask } from './scripts/checkExecuteTask';
 import { BookStatus } from '~/api/enums/BookStatus';
+import { ConfigStorage } from '~/config';
+import { ConfigKey } from '~/config/enums/ConfigKey';
+import { DefaultValueConfig } from '~/config/enums/DefaultValueConfig';
 
 TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
   try {
@@ -65,10 +68,12 @@ export default {
       throw 'Tarea en segundo plano ya registrada.';
     }
     
+    const minimumInterval = ConfigStorage.getNumber(ConfigKey.BACKGROUND_TASK_INTERVAL) ?? DefaultValueConfig.BACKGROUND_TASK_INTERVAL;
+    
     await BackgroundTask.registerTaskAsync(
       BackgroundTaskName.CHECK_SAVE_BOOKS,
       {
-        minimumInterval: 30,
+        minimumInterval: minimumInterval,
       },
     );
   },
