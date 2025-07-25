@@ -6,14 +6,15 @@ import useSafeArea from '../hooks/useSafeArea';
 
 interface IProps {
   title: string;
+  titleNumberOfLines?: number;
   description?: string | React.ReactNode;
+  descriptionStyle?: StyleProp<TextStyle>;
+  descriptionNumberOfLines?: number;
   icon?: string;
   iconColor?: string;
   fixHeight?: number;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
-  descriptionStyle?: StyleProp<TextStyle>;
-  descriptionNumberOfLines?: number;
 
   options: {
     label: string;
@@ -41,9 +42,11 @@ export default React.memo(function (props: IProps) {
         width: '60%',
         left: '40%',
       }}
+      disabled={props.disabled}
       CustomDropdownInput={dProps => (
         <List.Item
           title={props.title}
+          titleNumberOfLines={props.titleNumberOfLines}
           description={props.description}
           descriptionStyle={props.descriptionStyle}
           descriptionNumberOfLines={props.descriptionNumberOfLines}

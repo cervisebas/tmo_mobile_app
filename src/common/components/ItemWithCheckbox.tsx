@@ -4,14 +4,15 @@ import { Checkbox, List, Switch } from "react-native-paper";
 
 interface IProps {
   title: string;
+  titleNumberOfLines?: number;
   description?: string | React.ReactNode;
+  descriptionStyle?: StyleProp<TextStyle>;
+  descriptionNumberOfLines?: number;
   fixHeight?: number;
   disabled?: boolean;
   leftIcon?: string;
   leftIconColor?: string;
   style?: StyleProp<ViewStyle>;
-  descriptionStyle?: StyleProp<TextStyle>;
-  descriptionNumberOfLines?: number;
   checked?: boolean;
   useSwitch?: boolean;
   onChecked(val: boolean): void;
@@ -21,6 +22,7 @@ export const ItemWithCheckbox = React.memo(function (props: IProps) {
   return (
     <List.Item
       title={props.title}
+      titleNumberOfLines={props.titleNumberOfLines}
       description={props.description}
       descriptionStyle={props.descriptionStyle}
       descriptionNumberOfLines={props.descriptionNumberOfLines}
