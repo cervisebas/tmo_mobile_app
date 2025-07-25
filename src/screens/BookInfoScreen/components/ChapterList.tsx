@@ -19,6 +19,7 @@ interface IProps {
 }
 
 const MAX_ITEMS_COLAPSE = 6;
+const MAX_ITEMS_UNCOLAPSE = 12;
 export const CHAPTER_HEIGHT_ITEMS = 52;
 
 export const ChapterList = React.memo(function (props: IProps) {
@@ -35,7 +36,7 @@ export const ChapterList = React.memo(function (props: IProps) {
       : chapters;
 
     const items = showAll
-      ? use_data
+      ? use_data.slice(0, MAX_ITEMS_UNCOLAPSE)
       : use_data.slice(0, MAX_ITEMS_COLAPSE);
 
     return items;
@@ -93,24 +94,6 @@ export const ChapterList = React.memo(function (props: IProps) {
         </Text>
 
         <View className={'flex-row'}>
-          <IconButton
-            icon={'magnify'}
-            mode={'contained'}
-            style={styles.button_actions}
-            size={20}
-            onPress={() => {
-              refNavigation.current?.navigate(
-                StackScreens.CHAPTER_LIST,
-                {
-                  title: props.book_title,
-                  chapters: props.chapters,
-                  book_url: props.book_url,
-                  id_bookinfo: props.id_bookinfo,
-                },
-              );
-            }}
-          />
-
           {!canShowMore && (
             <IconButton
               icon={'format-list-group'}
@@ -127,6 +110,7 @@ export const ChapterList = React.memo(function (props: IProps) {
                 ? 'sort-ascending'
                 : 'sort-descending'
             }
+            disabled={chapters.length === 1}
             animated={true}
             mode={'contained'}
             style={styles.button_actions}
@@ -146,17 +130,35 @@ export const ChapterList = React.memo(function (props: IProps) {
         useKeyExtractor={'chapter-item-{id}'}
       />
 
-      {canShowMore && chapters.length > MAX_ITEMS_COLAPSE && (
-        <View className={'pt-[12]'}>
+      <View className={'pt-[12] gap-[12]'}>
+        {canShowMore && chapters.length > MAX_ITEMS_COLAPSE && <Button
+          mode={'contained'}
+          className={'w-full'}
+          onPress={() => setShowAll(true)}
+        >
+          VER MÁS (MAX {MAX_ITEMS_UNCOLAPSE} ITEMS)
+        </Button>}
+
+        {chapters.length > MAX_ITEMS_COLAPSE && (
           <Button
             mode={'contained'}
             className={'w-full'}
-            onPress={() => setShowAll(true)}
+            onPress={() => {
+              refNavigation.current?.navigate(
+                StackScreens.CHAPTER_LIST,
+                {
+                  title: props.book_title,
+                  chapters: props.chapters,
+                  book_url: props.book_url,
+                  id_bookinfo: props.id_bookinfo,
+                },
+              );
+            }}
           >
             VER TODO
           </Button>
-        </View>
-      )}
+        )}
+      </View>
     </View>
   );
 });
