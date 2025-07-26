@@ -1,9 +1,9 @@
 import {
+  EventConsumer,
   NavigationHelpers,
   ParamListBase,
   RouteProp,
 } from '@react-navigation/native';
-import {EventConsumer} from '@react-navigation/core/src/types';
 
 interface StackScreenProps {
   navigation: NavigationHelpers<{}> &

@@ -1,14 +1,14 @@
 import { Appbar, Divider, List } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import PrincipalView from "~/common/components/PrincipalView";
-import StackScreenProps from "~/common/interfaces/StackScreenProps";
 import SafeArea from "~/common/components/SafeArea";
 import { DatabaseConfigItem } from "./components/DatabaseConfigItem";
 import { BackgroundTaskConfigItem } from "./components/BackgroundTaskConfigItem";
 import { TestNotificationConfigItem } from "./components/TestNotificationConfigItem";
 import { StorageConfigItem } from "./components/StorageConfigItem";
+import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
 
-export function ConfigurationScreen(props: StackScreenProps) {
+export function ConfigurationScreen(props: DrawerScreenProps) {
   return (
     <PrincipalView hideKeyboard>
       <AppbarHeader mode={'small'}>

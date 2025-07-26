@@ -1,6 +1,6 @@
 import * as Network from 'expo-network';
 import * as Battery from 'expo-battery';
-import { Notifications } from '~/notifications';
+import { Notifications } from '~/services/notifications';
 
 export async function checkExecuteTask() {
   // Check Notifications

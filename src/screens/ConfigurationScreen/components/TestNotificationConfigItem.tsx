@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
 import { getAllSavedBooks } from "~/database/services/getAllSavedBooks";
 import { getRandomIntInclusive } from "~/database/utils/getRandomIntInclusive";
-import { Notifications } from "~/notifications";
+import { Notifications } from "~/services/notifications";
 import * as ExpoNotifications from 'expo-notifications';
-import { NotificationAction } from "~/notifications/enums/NotificationAction";
+import { NotificationAction } from "~/services/notifications/enums/NotificationAction";
 
 export const TestNotificationConfigItem = React.memo(function () {
   const [disabled, setDisabled] = useState(true);

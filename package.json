@@ -10,7 +10,8 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "preandroid": "drizzle-kit generate",
     "preios": "drizzle-kit generate",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "checkbuild": "tsc --noEmit"
   },
   "dependencies": {
     "@codeherence/react-native-header": "^0.14.0",

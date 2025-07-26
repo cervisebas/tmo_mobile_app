@@ -6,7 +6,7 @@ import { ChapterVisualizerScreen } from "~/screens/ChapterVisualizerScreen/Chapt
 import BootSplash from "react-native-bootsplash";
 import { useEffect } from "react";
 import { ChapterListScreen } from "~/screens/ChapterListScreen/ChapterListScreen";
-import { Notifications } from "~/notifications";
+import { Notifications } from "~/services/notifications";
 
 const Stack = createStackNavigator();
 

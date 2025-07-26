@@ -2,7 +2,7 @@ import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
 import { getBookInfo } from '~/api/scripts/getBookInfo';
 import { databaseSaveBook } from '~/database/scripts/databaseSaveBook';
 import { getDatabaseBookInfo } from '~/database/services/getDatabaseBookInfo';
-import { NotificationAction } from '~/notifications/enums/NotificationAction';
+import { NotificationAction } from '~/services/notifications/enums/NotificationAction';
 import * as Notifications from 'expo-notifications';
 
 export async function checkUpdateBook(book: BookInfoInterface) {
