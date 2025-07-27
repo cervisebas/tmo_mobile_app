@@ -156,7 +156,7 @@ export default React.memo(
         backgroundStyle={[
           styles.background,
           {
-            backgroundColor: theme.colors.elevation.level2,
+            backgroundColor: theme.colors.elevation.level4,
           },
         ]}
         backdropComponent={renderBackdrop}

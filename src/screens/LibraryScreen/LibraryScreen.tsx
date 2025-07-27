@@ -1,5 +1,5 @@
 import { Keyboard, StyleSheet, View } from "react-native";
-import { Appbar, Button, Tooltip } from "react-native-paper";
+import { Appbar, Button } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import PrincipalView from "~/common/components/PrincipalView";
 import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";

@@ -1,11 +1,8 @@
 {
   "expo": {
-    "name": "tmo_app",
+    "name": "TMO",
     "slug": "tmo_app",
     "version": "1.0.0",
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "experiments": {
       "tsconfigPaths": true
     },
@@ -49,16 +46,30 @@
             }
           }
         }
+      ],
+      [
+        "react-native-bootsplash",
+        {
+          "assetsDir": "assets/bootsplash",
+          "android": {
+            "parentTheme": "EdgeToEdge",
+            "darkContentBarsStyle": true
+          }
+        }
+      ],
+      "expo-background-task",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification_icon.png",
+          "color": "#2957BA",
+          "defaultChannel": "default"
+        }
       ]
     ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -69,9 +80,14 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/foreground-image.png",
+        "monochromeImage": "./assets/monochrome-image.png",
+        "backgroundColor": "#2957BA"
       },
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ],
       "package": "com.cervisebas.tmo_app"
     }
   }

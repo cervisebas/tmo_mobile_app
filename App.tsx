@@ -10,6 +10,7 @@ import { Dialogs } from '~/common/components/Dialogs';
 import { refDialog } from '~/common/utils/Ref';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { SystemBars } from "react-native-edge-to-edge";
 import './global.css';
 
 export default function App() {
@@ -28,7 +29,7 @@ export default function App() {
   if (!success) {
     return (
       <ThemeProvider>
-        <View className={'bg-black items-center justify-center'}>
+        <View className={'bg-black flex-1 items-center justify-center'}>
           <Text>Migración en progreso...</Text>
         </View>
       </ThemeProvider>
@@ -39,6 +40,7 @@ export default function App() {
     <ThemeProvider>
       <GestureHandlerRootView style={styles.content}>
         <BottomSheetModalProvider>
+          <SystemBars style={{navigationBar: 'auto'}} />
           <StatusBar animated style={'light'} />
 
           <RootNavigator />

@@ -8,7 +8,7 @@ interface IProps extends UserBookStatusList {
   onToggleStatus(key: keyof UserBookStatusList): void;
 }
 
-export function BookStatusPanel(props: IProps) {
+export const BookStatusPanel = React.memo(function (props: IProps) {
   return (
     <View className={'flex-col mx-[-12]'}>
       <View className={'w-full flex-wrap justify-start flex-row'}>
@@ -82,4 +82,4 @@ export function BookStatusPanel(props: IProps) {
       </View>
     </View>
   );
-}
+});

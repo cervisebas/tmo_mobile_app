@@ -1,25 +1,26 @@
-import moment from "moment";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { ListRenderItemInfo, StyleSheet, View } from "react-native";
 import { Button, IconButton, Text } from "react-native-paper";
-import { toast } from "sonner-native";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { BottomSheetOptionsInterface } from "~/common/components/BottomSheetOptions";
 import FlatListDynamicItems from "~/common/components/FlatListDynamicItems";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
-import { refDialog } from "~/common/utils/Ref";
+import { refNavigation } from "~/common/utils/Ref";
 import { useChapterHistory } from "~/database/hooks/useChapterHistory";
 import { ChapterHistoryInterface } from "~/database/interfaces/ChapterHistoryInterface";
-import { setDatabaseHistoryChapter } from "~/database/services/setDatabaseHistoryChapter";
+import { StackScreens } from "~/enums/StackScreens";
+import { onPressChapterItem } from "../scripts/onPressChapterItem";
 
 interface IProps {
+  book_title: string;
   id_bookinfo: number;
+  book_url: string;
   chapters: ChapterInterface[];
 }
 
 const MAX_ITEMS_COLAPSE = 6;
-const HEIGHT_ITEMS = 52;
+const MAX_ITEMS_UNCOLAPSE = 12;
+export const CHAPTER_HEIGHT_ITEMS = 52;
 
 export const ChapterList = React.memo(function (props: IProps) {
   const {theme} = useContext(ThemeContext);
@@ -35,7 +36,7 @@ export const ChapterList = React.memo(function (props: IProps) {
       : chapters;
 
     const items = showAll
-      ? use_data
+      ? use_data.slice(0, MAX_ITEMS_UNCOLAPSE)
       : use_data.slice(0, MAX_ITEMS_COLAPSE);
 
     return items;
@@ -46,66 +47,10 @@ export const ChapterList = React.memo(function (props: IProps) {
     //chapters.length > MAX_ITEMS_COLAPSE
   ), [showAll]);
 
-  const onPressChapterItem = useCallback((item: ChapterHistoryInterface) => {
-    const options: BottomSheetOptionsInterface[] = item.options.map(v => ({
-      label: v.title,
-      description: moment(v.date).format('DD-MM-YYYY'),
-      leftIcon: 'play',
-      leftIconColor: theme.colors.primary,
-      onPress() {
-        console.log(v.path);
-      },
-    }));
-
-    const aditionalOptions: BottomSheetOptionsInterface[] = [];
-
-    aditionalOptions.push({
-      label: item.viewed
-        ? 'Marcar como no visto'
-        : 'Marcar como visto'
-      ,
-      leftIcon: item.viewed
-        ? 'eye-off-outline'
-        : 'eye-outline'
-      ,
-      onPress() {
-        toast.promise(setDatabaseHistoryChapter(props.id_bookinfo, chapters, item, !item.viewed), {
-          loading: 'Espere por favor...',
-          success(value: boolean) {
-            return `Se ha ${value ? 'marcado' : 'desmarcado'} como visto correctamente`;
-          },
-          error(error) {
-            return typeof error === 'string'
-              ? error
-              : 'Ocurrio un error inesperado';
-          },
-        });
-      },
-    });
-
-    refDialog.current?.showBottomSheetOptions(
-      'Opciónes del capítulo',
-      {
-        'Información': [
-          {
-            label: 'Nombre',
-            leftIcon: 'text',
-            description: item.title,
-          },
-        ],
-        'Opciónes de lectura': options,
-        'Opciónes adicionales': aditionalOptions,
-      },
-    );
-  }, [
-    chapters,
-    props.id_bookinfo,
-    theme.colors.primary,
-  ]);
-
   const renderItem = useCallback(
     ({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (
       <ItemWithIcon
+        key={`chapter-item-${item.id}`}
         title={item.title}
         leftIcon={'chevron-down'}
         leftIconColor={theme.colors.primary}
@@ -119,12 +64,22 @@ export const ChapterList = React.memo(function (props: IProps) {
             ? theme.colors.inversePrimary
             : theme.colors.onSurfaceDisabled
         }
-        fixHeight={HEIGHT_ITEMS}
-        onPress={() => onPressChapterItem(item)}
+        fixHeight={CHAPTER_HEIGHT_ITEMS}
+        onPress={() => {
+          onPressChapterItem({
+            chapter: item,
+            primaryColor: theme.colors.primary,
+            book_url: props.book_url,
+            id_bookinfo: props.id_bookinfo,
+            chapters: chapters,
+          });
+        }}
       />
     ),
     [
-      onPressChapterItem,
+      chapters,
+      props.book_url,
+      props.id_bookinfo,
       theme.colors.inversePrimary,
       theme.colors.onSurfaceDisabled,
       theme.colors.primary,
@@ -155,6 +110,7 @@ export const ChapterList = React.memo(function (props: IProps) {
                 ? 'sort-ascending'
                 : 'sort-descending'
             }
+            disabled={chapters.length === 1}
             animated={true}
             mode={'contained'}
             style={styles.button_actions}
@@ -169,22 +125,40 @@ export const ChapterList = React.memo(function (props: IProps) {
         renderItem={renderItem}
         loading={false}
         no_scrollview={true}
-        heightItems={HEIGHT_ITEMS}
-        useDivider
-        useKeyExtractor={'chapter-item-{data_chapter}'}
+        heightItems={CHAPTER_HEIGHT_ITEMS}
+        useDivider={true}
+        useKeyExtractor={'chapter-item-{id}'}
       />
 
-      {canShowMore && chapters.length > MAX_ITEMS_COLAPSE && (
-        <View className={'pt-[12]'}>
+      <View className={'pt-[12] gap-[12]'}>
+        {canShowMore && chapters.length > MAX_ITEMS_COLAPSE && <Button
+          mode={'contained'}
+          className={'w-full'}
+          onPress={() => setShowAll(true)}
+        >
+          VER MÁS (MAX {MAX_ITEMS_UNCOLAPSE} ITEMS)
+        </Button>}
+
+        {chapters.length > MAX_ITEMS_COLAPSE && (
           <Button
             mode={'contained'}
             className={'w-full'}
-            onPress={() => setShowAll(true)}
+            onPress={() => {
+              refNavigation.current?.navigate(
+                StackScreens.CHAPTER_LIST,
+                {
+                  title: props.book_title,
+                  chapters: props.chapters,
+                  book_url: props.book_url,
+                  id_bookinfo: props.id_bookinfo,
+                },
+              );
+            }}
           >
             VER TODO
           </Button>
-        </View>
-      )}
+        )}
+      </View>
     </View>
   );
 });

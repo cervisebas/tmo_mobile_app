@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
   content: {
     overflow: 'hidden',
     width: `${100 / 3}%`,
+    height: 64,
   },
   touchable: {
     gap: 8,

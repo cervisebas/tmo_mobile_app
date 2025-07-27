@@ -16,6 +16,7 @@ import React, { useMemo } from "react";
 import useDimension from "~/common/hooks/useDimension";
 import { BookStatusList } from "~/constants/BookStatusList";
 import { StaffList } from "./components/StaffList";
+import { UserHistoryChapter } from "./components/UserHistoryChapter";
 
 export function BookInfoScreen(props: StackScreenProps) {
   const info = props.route.params as BookInfoInterface & {referer?: string};
@@ -111,6 +112,12 @@ export function BookInfoScreen(props: StackScreenProps) {
               </React.Fragment>
             )}
 
+            <UserHistoryChapter
+              id_bookinfo={data?.id!}
+              book_url={data?.url!}
+              chapters={data?.chapters!}
+            />
+
             <View className={'gap-[8]'}>
               <Text variant={'titleLarge'}>Descripción</Text>
 
@@ -138,6 +145,8 @@ export function BookInfoScreen(props: StackScreenProps) {
                 <ChapterList
                   chapters={data?.chapters}
                   id_bookinfo={data.id!}
+                  book_title={data.title}
+                  book_url={data.url}
                 />
               </React.Fragment>
             )}
@@ -150,6 +159,7 @@ export function BookInfoScreen(props: StackScreenProps) {
         loading={true}
         visible={!loading && refresh}
         style={styles.fab_loading}
+        expandDisableBottom={false}
         expandArea={{
           right: 18,
           bottom: 18,

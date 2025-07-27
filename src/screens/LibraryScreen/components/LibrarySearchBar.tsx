@@ -43,6 +43,7 @@ export const LibrarySearchBar = React.memo(forwardRef(
           }}
           onChangeText={setValue}
           returnKeyType={'search'}
+          autoCapitalize={'none'}
           onSubmitEditing={() => props.onSearch?.(value)}
           onClearIconPress={() => {
             setTimeout(() => {

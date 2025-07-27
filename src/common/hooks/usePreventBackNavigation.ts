@@ -4,7 +4,7 @@ import StackScreenProps from '../interfaces/StackScreenProps';
 export default function (
   props: StackScreenProps | undefined,
   prevent: boolean,
-  callback?: () => void,
+  callback?: (remove?: () => void) => void,
 ) {
   useEffect(() => {
     const saveEvent = props?.navigation.addListener(
@@ -12,7 +12,7 @@ export default function (
       (event: any) => {
         if (prevent) {
           (event as any).preventDefault();
-          callback?.();
+          callback?.(saveEvent);
         }
       },
     );

@@ -60,7 +60,7 @@ export const BookItem = React.memo(function (props: IProps) {
         </View>
 
         <View className={'w-full mt-[8] mx-[4]'}>
-          <Text variant={'titleSmall'}>
+          <Text variant={'titleSmall'} numberOfLines={4}>
             {props.title}
           </Text>
         </View>

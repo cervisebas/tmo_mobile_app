@@ -10,7 +10,8 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "preandroid": "drizzle-kit generate",
     "preios": "drizzle-kit generate",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "checkbuild": "tsc --noEmit"
   },
   "dependencies": {
     "@codeherence/react-native-header": "^0.14.0",
@@ -20,19 +21,25 @@
     "@react-navigation/material-top-tabs": "^7.2.17",
     "@react-navigation/native": "^7.0.3",
     "@react-navigation/stack": "^7.0.4",
-    "@shopify/flash-list": "^1.8.3",
-    "@types/he": "^1.2.3",
+    "@shopify/flash-list": "1.7.6",
     "axios": "^1.10.0",
     "babel-plugin-inline-import": "^3.0.0",
+    "base-64": "^1.0.0",
     "color": "^5.0.0",
     "drizzle-orm": "^0.44.2",
-    "expo": "^53.0.19",
+    "expo": "^53.0.20",
+    "expo-background-task": "~0.2.8",
+    "expo-battery": "~9.1.4",
     "expo-build-properties": "~0.14.8",
     "expo-file-system": "~18.1.11",
-    "expo-image": "~2.3.2",
+    "expo-image": "~2.4.0",
+    "expo-network": "~7.1.5",
+    "expo-notifications": "~0.31.4",
     "expo-sharing": "~13.1.5",
     "expo-sqlite": "~15.2.14",
     "expo-status-bar": "~2.2.3",
+    "expo-task-manager": "~13.1.6",
+    "fuse.js": "^7.1.0",
     "he": "^1.2.0",
     "moment": "^2.30.1",
     "nativewind": "latest",
@@ -42,9 +49,11 @@
     "qs": "^6.14.0",
     "react": "19.0.0",
     "react-native": "0.79.5",
+    "react-native-bootsplash": "^6.3.10",
     "react-native-edge-to-edge": "1.6.0",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-image-viewing": "^0.2.2",
+    "react-native-mmkv": "^3.3.0",
     "react-native-modal": "^14.0.0-rc.1",
     "react-native-pager-view": "6.7.1",
     "react-native-paper": "^5.14.5",
@@ -53,11 +62,15 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-svg": "15.11.2",
+    "react-native-webview": "13.13.5",
     "rxjs": "^7.8.2",
-    "sonner-native": "^0.21.0"
+    "sonner-native": "^0.21.0",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/base-64": "^1.0.2",
+    "@types/he": "^1.2.3",
     "@types/qs": "^6.14.0",
     "@types/react": "~19.0.10",
     "drizzle-kit": "^0.31.1",
@@ -70,5 +83,6 @@
     "typescript": "~5.8.3"
   },
   "main": "node_modules/expo/AppEntry.js",
-  "private": true
+  "private": true,
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
