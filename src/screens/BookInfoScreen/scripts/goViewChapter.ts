@@ -12,7 +12,7 @@ interface IProps {
   book_url: string;
   id_bookinfo: number;
   chapters_list: ChapterInterface[];
-  onLoadImages?(): void;
+  onLoadImages?(): Promise<void> | void;
 }
 
 export async function goViewChapter(props: IProps) {
@@ -24,7 +24,9 @@ export async function goViewChapter(props: IProps) {
       props.book_url,
     );
 
-    props.onLoadImages?.();
+    if (props.onLoadImages) {
+      await props.onLoadImages();
+    }
 
     const chapter_id = props.option.path.slice(props.option.path.lastIndexOf('/') + 1);
     const params: ChapterVisualizerParams = {

@@ -11,7 +11,6 @@ import { goViewChapter } from "../BookInfoScreen/scripts/goViewChapter";
 import { setViewedChapter } from "./scripts/setViewedChapter";
 import { useAutoSaveChapterBookHistory } from "~/services/history/hooks/useAutoSaveChapterBookHistory";
 import { MiniBanner } from "./components/MiniBanner";
-import { refDialog } from "~/common/utils/Ref";
 
 export function ChapterVisualizerScreen(props: StackScreenProps) {
   const params = props.route.params as ChapterVisualizerParams;
@@ -78,13 +77,6 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
     });
   }, [chapter_index, chapter_list, params.book_url, params.chapter_list, params.id_bookinfo, props.navigation]);
 
-  const closeVisualizer = useCallback(async () => {
-    refDialog.current?.showLoading('Guardando progreso...');
-    await saveNowPosition();
-    props.navigation.goBack();
-    refDialog.current?.showLoading(false);
-  }, []);
-
   useEffect(() => {
     setViewedChapter(
       params.id_bookinfo,
@@ -105,7 +97,7 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
     <PrincipalView>
       <Appbar.Header elevated>
         <Appbar.BackAction
-          onPress={closeVisualizer}
+          onPress={props.navigation.goBack}
         />
         <Appbar.Content
           title={params.title}

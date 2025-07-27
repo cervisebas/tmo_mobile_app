@@ -41,7 +41,7 @@ export function useAutoSaveChapterBookHistory(
     }
   }, []);
 
-  const interval = useInterval(saveNow, 10000, false);
+  const interval = useInterval(saveNow, 2500, false);
 
   const checkAvailableProgress = useCallback(async () => {
     const info = ChapterProgressStorage.getNumber(CHAPTER_ID);
