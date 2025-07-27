@@ -57,6 +57,13 @@
       "when": 1752422887993,
       "tag": "0007_unusual_miss_america",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1753557348941,
+      "tag": "0008_unusual_slayback",
+      "breakpoints": true
     }
   ]
 }

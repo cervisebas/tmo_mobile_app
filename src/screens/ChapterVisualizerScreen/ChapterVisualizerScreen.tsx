@@ -9,12 +9,25 @@ import { View } from "react-native";
 import { toast } from "sonner-native";
 import { goViewChapter } from "../BookInfoScreen/scripts/goViewChapter";
 import { setViewedChapter } from "./scripts/setViewedChapter";
+import { useAutoSaveChapterBookHistory } from "~/services/history/hooks/useAutoSaveChapterBookHistory";
+import { MiniBanner } from "./components/MiniBanner";
+import { refDialog } from "~/common/utils/Ref";
 
 export function ChapterVisualizerScreen(props: StackScreenProps) {
   const params = props.route.params as ChapterVisualizerParams;
 
   const refVisualizeWebView = useRef<VisualizeWebViewRef>(null);
   const progressRef = useRef<string | number | undefined>(undefined);
+
+  const {availableProgress, init: initAutoSave, saveNow: saveNowPosition} = useAutoSaveChapterBookHistory(
+    params.id_bookinfo,
+    params.chapter,
+    params.selected_option,
+    async () => {
+      const position = await refVisualizeWebView.current?.getCurrentPosition();
+      return position!;
+    },
+  );
 
   const chapter_list = useMemo(() => {
     return params.chapter_list.sort((a, b) => a.chapter_number - b.chapter_number);
@@ -24,11 +37,13 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
     return chapter_list.findIndex(v => v.id === params.chapter.id);
   }, [chapter_list]);
 
-  const {images, startLoadImages, cancelLoad} = useLoadChapterImages(
+  const {images, loaded, startLoadImages, cancelLoad} = useLoadChapterImages(
     params.images,
     params.originUrl,
     params.chapter_id,
-    (index, image) => refVisualizeWebView.current?.loadImage(index, image),
+    async (index, image) => {
+      await refVisualizeWebView.current?.loadImage(index, image);
+    },
     (current, max) => {
       progressRef.current = toast.loading(
         `Cargando imagenes: ${current} de ${max}`,
@@ -63,6 +78,13 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
     });
   }, [chapter_index, chapter_list, params.book_url, params.chapter_list, params.id_bookinfo, props.navigation]);
 
+  const closeVisualizer = useCallback(async () => {
+    refDialog.current?.showLoading('Guardando progreso...');
+    await saveNowPosition();
+    props.navigation.goBack();
+    refDialog.current?.showLoading(false);
+  }, []);
+
   useEffect(() => {
     setViewedChapter(
       params.id_bookinfo,
@@ -83,7 +105,7 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
     <PrincipalView>
       <Appbar.Header elevated>
         <Appbar.BackAction
-          onPress={props.navigation.goBack}
+          onPress={closeVisualizer}
         />
         <Appbar.Content
           title={params.title}
@@ -92,13 +114,35 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
           icon={'arrow-left'}
           disabled={!chapter_list[chapter_index - 1]}
           onPress={() => goToChapter(-1)}
-          />
+        />
         <Appbar.Action
           icon={'arrow-right'}
           disabled={!chapter_list[chapter_index + 1]}
           onPress={() => goToChapter(1)}
         />
       </Appbar.Header>
+      
+      <MiniBanner
+        visible={availableProgress !== null}
+        message={'¿Reestablecer ultima posición?'}
+        actions={[
+          {
+            label: 'No gracias',
+            onPress() {
+              initAutoSave();
+            },
+          },
+          {
+            label: 'Aceptar',
+            loading: !loaded,
+            mode: 'contained',
+            onPress() {
+              refVisualizeWebView.current?.setCurrentPosition(availableProgress as number);
+              initAutoSave();
+            },
+          },
+        ]}
+      />
 
       <View className={'flex-1'}>
         <VisualizeWebView

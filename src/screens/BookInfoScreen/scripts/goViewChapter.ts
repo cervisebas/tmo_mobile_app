@@ -37,6 +37,7 @@ export async function goViewChapter(props: IProps) {
       chapter: props.chapter,
       chapter_list: props.chapters_list,
       id_bookinfo: props.id_bookinfo,
+      selected_option: props.option,
     };
 
     refNavigation.current?.navigate(

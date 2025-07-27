@@ -1,4 +1,5 @@
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
+import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
 
 export interface ChapterVisualizerParams {
   index: number;
@@ -10,4 +11,5 @@ export interface ChapterVisualizerParams {
   id_bookinfo: number;
   chapter: ChapterInterface;
   chapter_list: ChapterInterface[];
+  selected_option: ChapterOptionInterface;
 }

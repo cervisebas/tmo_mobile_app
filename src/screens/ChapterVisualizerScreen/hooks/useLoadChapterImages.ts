@@ -6,10 +6,11 @@ export function useLoadChapterImages(
   images: string[],
   originImagesUrl: string,
   path: string,
-  onLoadImage: (index: number, data: ImageItemInterface) => void,
+  onLoadImage: (index: number, data: ImageItemInterface) => Promise<void>,
   onProgress?: (current: number, max: number) => void,
 ) {
   const [data, setData] = useState<ImageItemInterface[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const progress = useRef<number>(0);
   const canceled = useRef(false);
 
@@ -33,11 +34,13 @@ export function useLoadChapterImages(
           progress.current,
           images.length,
         );
-        onLoadImage(i, {
+        await onLoadImage(i, {
           name_file: data.fileName,
           loading: false,
           source: data.fileName,
         });
+
+        setLoaded(images.length === progress.current);
       } catch (error) {
         console.error(error);
       }
@@ -52,6 +55,7 @@ export function useLoadChapterImages(
   }, []);
 
   return {
+    loaded,
     images: data,
     startLoadImages,
     cancelLoad: () => canceled.current = true,

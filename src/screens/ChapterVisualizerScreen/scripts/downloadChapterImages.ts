@@ -16,7 +16,7 @@ export async function downloadChapterImages(url: string, originUrl: string, fold
     const {exists: IS_EXIST} = await FileSystem.getInfoAsync(IMAGE_PATH);
 
     if (IS_EXIST) {
-      await waitTo(200);
+      await waitTo(10);
       return {
         fileName: FILE_NAME,
         path: IMAGE_PATH,
