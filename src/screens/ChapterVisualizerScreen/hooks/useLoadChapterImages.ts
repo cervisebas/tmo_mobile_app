@@ -17,33 +17,43 @@ export function useLoadChapterImages(
   const startLoadImages = useCallback(async () => {
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
-
+      let loading = true;
+      
       if (canceled.current) {
         break;
       }
-      
-      try {
-        const data = await downloadChapterImages(image, originImagesUrl, path);
 
+      while (loading) {
         if (canceled.current) {
           break;
         }
         
-        progress.current++;
-        onProgress?.(
-          progress.current,
-          images.length,
-        );
-        await onLoadImage(i, {
-          name_file: data.fileName,
-          loading: false,
-          source: data.fileName,
-        });
-
-        setLoaded(images.length === progress.current);
-      } catch (error) {
-        console.error(error);
+        try {
+          const data = await downloadChapterImages(image, originImagesUrl, path);
+  
+          if (canceled.current) {
+            break;
+          }
+          
+          await onLoadImage(i, {
+            name_file: data.fileName,
+            loading: false,
+            source: data.fileName,
+          });
+          
+          progress.current++;
+          onProgress?.(
+            progress.current,
+            images.length,
+          );
+  
+          loading = false;
+          setLoaded(images.length === progress.current);
+        } catch (error) {
+          console.error(error);
+        }
       }
+
     }
   }, [images, onLoadImage, onProgress, originImagesUrl, path]);
 

@@ -119,13 +119,13 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
         message={'¿Reestablecer ultima posición?'}
         actions={[
           {
-            label: 'No gracias',
+            label: 'No',
             onPress() {
               initAutoSave();
             },
           },
           {
-            label: 'Aceptar',
+            label: 'Si',
             loading: !loaded,
             mode: 'contained',
             onPress() {

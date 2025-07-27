@@ -8,6 +8,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import { DOWNLOAD_IMAGES_FOLDER_PATH } from '../scripts/downloadChapterImages';
 import { useVisualizeWebViewSafeArea } from '../hooks/useVisualizeWebViewSafeArea';
 import { ThemeContext } from '~/common/providers/ThemeProvider';
+import { withTimeout } from '~/common/utils/WithTimeout';
 
 interface IProps {
   images: ImageItemInterface[];
@@ -65,15 +66,18 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
 
   useImperativeHandle(ref, () => ({
     loadImage(index, image) {
-      return new Promise(resolve => {
-        const jsonVal = JSON.stringify(image);
-        refWebView.current?.injectJavaScript(`
-          setImage(${index}, ${jsonVal});
-          true;
-        `);
+      return withTimeout(
+        new Promise(resolve => {
+          const jsonVal = JSON.stringify(image);
+          refWebView.current?.injectJavaScript(`
+            setImage(${index}, ${jsonVal});
+            true;
+          `);
 
-        refAction.current = resolve;
-      });
+          refAction.current = resolve;
+        }),
+        5000,
+      );
     },
     getCurrentPosition() {
       return new Promise(resolve => {
