@@ -16,6 +16,7 @@ import React, { useMemo } from "react";
 import useDimension from "~/common/hooks/useDimension";
 import { BookStatusList } from "~/constants/BookStatusList";
 import { StaffList } from "./components/StaffList";
+import { UserHistoryChapter } from "./components/UserHistoryChapter";
 
 export function BookInfoScreen(props: StackScreenProps) {
   const info = props.route.params as BookInfoInterface & {referer?: string};
@@ -110,6 +111,12 @@ export function BookInfoScreen(props: StackScreenProps) {
                 <Divider />
               </React.Fragment>
             )}
+
+            <UserHistoryChapter
+              id_bookinfo={data?.id!}
+              book_url={data?.url!}
+              chapters={data?.chapters!}
+            />
 
             <View className={'gap-[8]'}>
               <Text variant={'titleLarge'}>Descripción</Text>

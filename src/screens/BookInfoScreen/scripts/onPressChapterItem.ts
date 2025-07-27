@@ -8,7 +8,7 @@ import { setDatabaseHistoryChapter } from "~/database/services/setDatabaseHistor
 import { refDialog } from "~/common/utils/Ref";
 
 interface IProps {
-  chapter: ChapterHistoryInterface;
+  chapter: ChapterHistoryInterface | ChapterInterface;
   primaryColor: string;
   book_url: string;
   id_bookinfo: number;
@@ -35,34 +35,36 @@ export function onPressChapterItem(props: IProps) {
 
   const aditionalOptions: BottomSheetOptionsInterface[] = [];
 
-  aditionalOptions.push({
-    label: props.chapter.viewed
-      ? 'Marcar como no visto'
-      : 'Marcar como visto'
-    ,
-    leftIcon: props.chapter.viewed
-      ? 'eye-off-outline'
-      : 'eye-outline'
-    ,
-    onPress() {
-      toast.promise(setDatabaseHistoryChapter(
-        props.id_bookinfo,
-        props.chapters,
-        props.chapter,
-        !props.chapter.viewed
-      ), {
-        loading: 'Espere por favor...',
-        success(value: boolean) {
-          return `Se ha ${value ? 'marcado' : 'desmarcado'} como visto correctamente`;
-        },
-        error(error) {
-          return typeof error === 'string'
-            ? error
-            : 'Ocurrio un error inesperado';
-        },
-      });
-    },
-  });
+  if ('viewed' in props.chapter) {
+    aditionalOptions.push({
+      label: props.chapter.viewed
+        ? 'Marcar como no visto'
+        : 'Marcar como visto'
+      ,
+      leftIcon: props.chapter.viewed
+        ? 'eye-off-outline'
+        : 'eye-outline'
+      ,
+      onPress() {
+        toast.promise(setDatabaseHistoryChapter(
+          props.id_bookinfo,
+          props.chapters,
+          props.chapter,
+          !(props.chapter as ChapterHistoryInterface).viewed
+        ), {
+          loading: 'Espere por favor...',
+          success(value: boolean) {
+            return `Se ha ${value ? 'marcado' : 'desmarcado'} como visto correctamente`;
+          },
+          error(error) {
+            return typeof error === 'string'
+              ? error
+              : 'Ocurrio un error inesperado';
+          },
+        });
+      },
+    });
+  }
 
   refDialog.current?.showBottomSheetOptions(
     'Opciónes del capítulo',
@@ -75,7 +77,13 @@ export function onPressChapterItem(props: IProps) {
         },
       ],
       'Opciónes de lectura': options,
-      'Opciónes adicionales': aditionalOptions,
+      ...(
+        aditionalOptions.length
+           ? {
+             'Opciónes adicionales': aditionalOptions,
+           }
+           : {}
+      )
     },
   );
 }

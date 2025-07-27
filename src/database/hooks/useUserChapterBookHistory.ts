@@ -28,7 +28,7 @@ export function useUserChapterBookHistory(id_bookinfo: number) {
   }, []);
 
   useTableChanges(
-    DatabaseTableName.BOOK_CHAPTER_HISTORY,
+    DatabaseTableName.BOOK_USER_CHAPTER_BOOK_HISTORY,
     loadData,
     [],
     0,
