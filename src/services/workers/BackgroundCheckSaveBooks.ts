@@ -1,6 +1,5 @@
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
-import * as ExpoNotifications from 'expo-notifications';
 import { BackgroundTaskName } from './enums/BackgroundTaskName';
 import { getUserStatusBooks } from '~/database/services/getUserStatusBooks';
 import { UserBookStatus } from '~/api/enums/UserBookStatus';
@@ -10,8 +9,16 @@ import { BookStatus } from '~/api/enums/BookStatus';
 import { ConfigStorage } from '~/config';
 import { ConfigKey } from '~/config/enums/ConfigKey';
 import { DefaultValueConfig } from '~/config/enums/DefaultValueConfig';
+import { showBasicNotification } from './scripts/showBasicNotification';
 
 TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
+  console.log('Ejecutando tarea en segundo plano...');
+
+  const taskNotification = await showBasicNotification({
+    title: 'Verificando actualizaciones...',
+    interruptionLevel: 'passive',
+  });
+
   try {
     // Check Execute Background Task
     await checkExecuteTask();
@@ -38,21 +45,16 @@ TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
   } catch (error) {
     console.error(error);
 
-    try {
-      await ExpoNotifications.scheduleNotificationAsync({
-        content: {
-          title: 'Tarea en segundo plano',
-          body: 'La tarea en segundo plano fallo.',
-        },
-        trigger: null,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    await taskNotification?.dismiss();
+    await showBasicNotification({
+      title: 'Tarea en segundo plano',
+      message: 'La tarea en segundo plano fallo.',
+    });
 
     return BackgroundTask.BackgroundTaskResult.Failed;
   }
 
+  await taskNotification?.dismiss();
   return BackgroundTask.BackgroundTaskResult.Success;
 });
 
@@ -88,4 +90,7 @@ export default {
       isRegister: await TaskManager.isTaskRegisteredAsync(BackgroundTaskName.CHECK_SAVE_BOOKS),
     };
   },
+  test() {
+    return BackgroundTask.triggerTaskWorkerForTestingAsync();
+  }
 };

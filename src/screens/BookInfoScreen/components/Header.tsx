@@ -2,7 +2,7 @@ import { ScrollHeaderProps } from "@codeherence/react-native-header";
 import Color from "color";
 import { Image } from "expo-image";
 import { useCallback, useContext, useMemo } from "react";
-import { Platform, Share, StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { Appbar } from "react-native-paper";
 import Animated, { interpolate, interpolateColor, useAnimatedStyle } from "react-native-reanimated";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
@@ -11,6 +11,7 @@ import { ThemeContext } from "~/common/providers/ThemeProvider";
 import { ImageBook } from "~/common/components/ImageBook";
 import { BookType } from "~/api/enums/BookType";
 import { refDialog } from "~/common/utils/Ref";
+import { ShareURL } from "~/common/scripts/ShareURL";
 
 interface IProps extends ScrollHeaderProps {
   link: string;
@@ -58,16 +59,7 @@ export function Header(props: IProps) {
   }));
 
   const goShareLink = useCallback(async () => {
-    Share.share(
-      Platform.select({
-        ios: {
-          url: props.link
-        },
-        default: {
-          message: props.link,
-        },
-      }),
-    );
+    ShareURL(props.link);
   }, [props.link]);
 
   if (props.loading) {

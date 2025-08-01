@@ -7,6 +7,8 @@ import { BackgroundTaskConfigItem } from "./components/BackgroundTaskConfigItem"
 import { TestNotificationConfigItem } from "./components/TestNotificationConfigItem";
 import { StorageConfigItem } from "./components/StorageConfigItem";
 import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
+import { TestBackgroundTaskConfigItem } from "./components/TestBackgroundTaskConfigItem";
+import React from "react";
 
 export function ConfigurationScreen(props: DrawerScreenProps) {
   return (
@@ -42,6 +44,14 @@ export function ConfigurationScreen(props: DrawerScreenProps) {
           <BackgroundTaskConfigItem />
 
           <Divider />
+
+          {__DEV__ && (
+            <React.Fragment>
+              <TestBackgroundTaskConfigItem />
+              
+              <Divider />
+            </React.Fragment>
+          )}
 
           <TestNotificationConfigItem />
         </List.Section>

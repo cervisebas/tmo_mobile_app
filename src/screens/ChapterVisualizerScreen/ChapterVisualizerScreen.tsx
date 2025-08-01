@@ -11,20 +11,22 @@ import { goViewChapter } from "../BookInfoScreen/scripts/goViewChapter";
 import { setViewedChapter } from "./scripts/setViewedChapter";
 import { useAutoSaveChapterBookHistory } from "~/services/history/hooks/useAutoSaveChapterBookHistory";
 import { MiniBanner } from "./components/MiniBanner";
+import { VisualizerOptionsSheet, VisualizerOptionsSheetRef } from "./sheets/VisualizerOptionsSheet";
 
 export function ChapterVisualizerScreen(props: StackScreenProps) {
   const params = props.route.params as ChapterVisualizerParams;
 
   const refVisualizeWebView = useRef<VisualizeWebViewRef>(null);
+  const refVisualizerOptionsSheet = useRef<VisualizerOptionsSheetRef>(null);
   const progressRef = useRef<string | number | undefined>(undefined);
 
-  const {availableProgress, init: initAutoSave, saveNow: saveNowPosition} = useAutoSaveChapterBookHistory(
+  const {availableProgress, init: initAutoSave} = useAutoSaveChapterBookHistory(
     params.id_bookinfo,
     params.chapter,
     params.selected_option,
     async () => {
       const position = await refVisualizeWebView.current?.getCurrentPosition();
-      return position!;
+      return position;
     },
   );
 
@@ -103,14 +105,10 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
           title={params.title}
         />
         <Appbar.Action
-          icon={'arrow-left'}
-          disabled={!chapter_list[chapter_index - 1]}
-          onPress={() => goToChapter(-1)}
-        />
-        <Appbar.Action
-          icon={'arrow-right'}
-          disabled={!chapter_list[chapter_index + 1]}
-          onPress={() => goToChapter(1)}
+          icon={'cog-outline'}
+          onPress={() => {
+            refVisualizerOptionsSheet.current?.open();
+          }}
         />
       </Appbar.Header>
       
@@ -144,6 +142,16 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
           onLoadEnd={startLoadImages}
         />
       </View>
+
+      <VisualizerOptionsSheet
+        ref={refVisualizerOptionsSheet}
+        chapter={params.chapter}
+        selectedOption={params.selected_option}
+        book_url={params.book_url}
+        nextChapter={chapter_list[chapter_index + 1]}
+        previusChapter={chapter_list[chapter_index - 1]}
+        goToChapter={goToChapter}        
+      />
     </PrincipalView>
   );
 }

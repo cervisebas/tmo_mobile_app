@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
 import { databaseSaveUserHistory } from "~/database/scripts/databaseSaveUserHistory";
-import { getCurrentHistoryBook } from "~/database/services/getCurrentHistoryBook";
 import { ChapterProgressStorage } from "..";
 import { useInterval } from "~/common/hooks/useInterval";
 
@@ -10,7 +9,7 @@ export function useAutoSaveChapterBookHistory(
   id_bookinfo: number,
   chapter: ChapterInterface,
   option: ChapterOptionInterface,
-  getProgress: () => Promise<number | null>,
+  getProgress: () => Promise<number | null | undefined>,
 ) {
   const [saving, setSaving] = useState(false);
   const [availableProgress, setAvailableProgress] = useState<number | null>(null);

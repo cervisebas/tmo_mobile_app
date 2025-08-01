@@ -17,13 +17,19 @@ import { BookStaffByBookInfoModel } from "../schemas/BookStaffByBookInfoModel";
 import { BookStaffModel } from "../schemas/BookStaffModel";
 import { extractNumberChapter } from "~/utils/extractNumberChapter";
 
-export async function getDatabaseBookInfo(url: string) {
+export async function getDatabaseBookInfo(url: string | null, id_bookinfo?: number) {
   try {
+    if (!url && !id_bookinfo) {
+      throw 'Información proporcionada no valida';
+    }
+
     const find_book = await db
       .select()
       .from(BookInfoModel)
       .where(
-        eq(BookInfoModel.url, url),
+        id_bookinfo
+          ? eq(BookInfoModel.id, id_bookinfo)
+          : eq(BookInfoModel.url, url!),
       );
 
     if (!find_book.length) {
