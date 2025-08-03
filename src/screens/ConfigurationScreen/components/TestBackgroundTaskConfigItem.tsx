@@ -5,7 +5,7 @@ import { ToastAndroid } from "react-native";
 
 export const TestBackgroundTaskConfigItem = React.memo(function () {
   const testNow = useCallback(async () => {
-    const {isAvailable, isRegister} = await BackgroundCheckSaveBooks.getStatus();
+    /* const {isAvailable, isRegister} = await BackgroundCheckSaveBooks.getStatus();
 
     if (!isAvailable || !isRegister) {
       ToastAndroid.show(
@@ -13,7 +13,7 @@ export const TestBackgroundTaskConfigItem = React.memo(function () {
         ToastAndroid.SHORT,
       );
       return;
-    }
+    } */
     
     try {
       ToastAndroid.show(
@@ -21,7 +21,7 @@ export const TestBackgroundTaskConfigItem = React.memo(function () {
         ToastAndroid.SHORT,
       );
 
-      console.log(await BackgroundCheckSaveBooks.test());
+      await BackgroundCheckSaveBooks.test();
     } catch (error) {
       console.error(error);
     }

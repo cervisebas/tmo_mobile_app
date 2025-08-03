@@ -38,5 +38,6 @@ export async function getUserStatusBooks(status: UserBookStatus): Promise<BookIn
     picture: value[DatabaseTableName.BOOKS_INFO].picture,
     stars: value[DatabaseTableName.BOOKS_INFO].stars,
     type: value[DatabaseTableName.BOOKS_INFO].type,
+    status: value[DatabaseTableName.BOOKS_INFO].status!,
   }));
 }

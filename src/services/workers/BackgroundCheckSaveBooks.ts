@@ -1,6 +1,3 @@
-import * as BackgroundTask from 'expo-background-task';
-import * as TaskManager from 'expo-task-manager';
-import { BackgroundTaskName } from './enums/BackgroundTaskName';
 import { getUserStatusBooks } from '~/database/services/getUserStatusBooks';
 import { UserBookStatus } from '~/api/enums/UserBookStatus';
 import { checkUpdateBook } from './scripts/checkUpdateBook';
@@ -10,23 +7,34 @@ import { ConfigStorage } from '~/config';
 import { ConfigKey } from '~/config/enums/ConfigKey';
 import { DefaultValueConfig } from '~/config/enums/DefaultValueConfig';
 import { showBasicNotification } from './scripts/showBasicNotification';
+import BackgroundFetch, { HeadlessEvent } from 'react-native-background-fetch';
+import { waitTo } from '~/common/utils/WaitTo';
 
-TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
-  console.log('Ejecutando tarea en segundo plano...');
+
+async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
+  if (typeof taskId === 'object') {
+    taskId = taskId.taskId;
+  }
+
+  console.info('[BackgroundTask] Executed task');
 
   const taskNotification = await showBasicNotification({
     title: 'Verificando actualizaciones...',
     interruptionLevel: 'passive',
+    sound: false,
+    sticky: true,
   });
 
   try {
     // Check Execute Background Task
     await checkExecuteTask();
+    console.info('[BackgroundTask] Check success');
 
     // Init Background Process
     const follow_books = await getUserStatusBooks(UserBookStatus.FOLLOW);
     const wish_books = await getUserStatusBooks(UserBookStatus.WISH);
     const merge_books = [...follow_books, ...wish_books];
+    console.info('[BackgroundTask] Get', merge_books);
 
     // Filter books
     const books = merge_books.filter(value => {
@@ -37,60 +45,68 @@ TaskManager.defineTask(BackgroundTaskName.CHECK_SAVE_BOOKS, async function () {
         value.status === BookStatus.PAUSADO
       );
     });
+    console.info('[BackgroundTask] Filters', books);
+
+    if (books.length === 0) {
+      await waitTo(1000);
+      throw 'No found books.';
+    }
 
     for (const book of books) {
+      console.info(`[BackgroundTask] Progress -> ${books.indexOf(book) + 1} de ${books.length}`);
       await checkUpdateBook(book);
     }
 
   } catch (error) {
-    console.error(error);
+    console.error('[BackgroundTask]', error);
 
-    await taskNotification?.dismiss();
     await showBasicNotification({
       title: 'Tarea en segundo plano',
       message: 'La tarea en segundo plano fallo.',
     });
+  } finally {
+    await taskNotification?.dismiss();
+    console.info('[BackgroundTask] Finish');
 
-    return BackgroundTask.BackgroundTaskResult.Failed;
+    if (taskId !== undefined) {
+      BackgroundFetch.finish(taskId);
+    }
   }
+}
 
-  await taskNotification?.dismiss();
-  return BackgroundTask.BackgroundTaskResult.Success;
-});
+function backgrounTaskTimeout(taskId: string) {
+  console.error('[BackgroundTask] Timeout');
+  BackgroundFetch.finish(taskId);
+}
 
 export default {
-  async register() {
-    const {isAvailable, isRegister} = await this.getStatus();
-
-    if (!isAvailable) {
-      throw 'Tareas en segundo plano no disponibles.';
-    }
-
-    if (isRegister) {
-      throw 'Tarea en segundo plano ya registrada.';
-    }
-    
+  configure() {
     const minimumInterval = ConfigStorage.getNumber(ConfigKey.BACKGROUND_TASK_INTERVAL) ?? DefaultValueConfig.BACKGROUND_TASK_INTERVAL;
     
-    await BackgroundTask.registerTaskAsync(
-      BackgroundTaskName.CHECK_SAVE_BOOKS,
+    BackgroundFetch.registerHeadlessTask(backgrounTaskFunction);
+    return BackgroundFetch.configure(
       {
-        minimumInterval: minimumInterval,
+        minimumFetchInterval: minimumInterval,
+        stopOnTerminate: false,
+        startOnBoot: true,
+        enableHeadless: true,
+        forceAlarmManager: false,
       },
+      backgrounTaskFunction,
+      backgrounTaskTimeout,
     );
+  },
+  async register() {
+    return BackgroundFetch.start();
   },
   unregister() {
-    return BackgroundTask.unregisterTaskAsync(
-      BackgroundTaskName.CHECK_SAVE_BOOKS,
-    );
+    return BackgroundFetch.stop();
   },
   async getStatus() {
-    return {
-      isAvailable: await BackgroundTask.getStatusAsync() === BackgroundTask.BackgroundTaskStatus.Available,
-      isRegister: await TaskManager.isTaskRegisteredAsync(BackgroundTaskName.CHECK_SAVE_BOOKS),
-    };
+    const status = await BackgroundFetch.status();
+    return status === BackgroundFetch.STATUS_AVAILABLE;
   },
   test() {
-    return BackgroundTask.triggerTaskWorkerForTestingAsync();
-  }
+    backgrounTaskFunction();
+  },
 };

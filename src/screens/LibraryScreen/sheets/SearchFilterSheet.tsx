@@ -49,7 +49,7 @@ export const SearchFilterSheet = React.memo(forwardRef(
     // Search options
     const [filterBy, setFilterBy] = useState(LibraryFilterbyOptions[0].value);
     const [orderBy, setOrderBy] = useState(LibraryOrderByOptions[0].value);
-    const [orderDir, setOrderDir] = useState(LibraryOrderDirOptions[0].value);
+    const [orderDir, setOrderDir] = useState(LibraryOrderDirOptions[1].value);
     
     // Filters
     const [type, setType] = useState(LibraryTypeOptions[0].value);
@@ -113,7 +113,7 @@ export const SearchFilterSheet = React.memo(forwardRef(
 
         quantity += Number(filterBy !== LibraryFilterbyOptions[0].value);
         quantity += Number(orderBy !== LibraryOrderByOptions[0].value);
-        quantity += Number(orderDir !== LibraryOrderDirOptions[0].value);
+        quantity += Number(orderDir !== LibraryOrderDirOptions[1].value);
         quantity += Number(type !== LibraryTypeOptions[0].value);
         quantity += Number(demography !== LibraryDemographyOptions[0].value);
         quantity += Number(webcomic !== LibraryCheckOptions[0].value);

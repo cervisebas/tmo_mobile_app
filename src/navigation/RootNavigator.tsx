@@ -2,9 +2,11 @@ import React, { useContext } from "react";
 import { StackNavigator } from "./StackNavigator";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
 import { Toaster } from 'sonner-native';
+import { useBackgroundFetch } from "~/services/workers/hooks/useBackgroundFetch";
 
 export function RootNavigator() {
   const {theme} = useContext(ThemeContext);
+  useBackgroundFetch();
 
   return (
     <React.Fragment>

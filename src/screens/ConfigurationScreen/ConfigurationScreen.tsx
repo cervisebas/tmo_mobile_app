@@ -50,10 +50,10 @@ export function ConfigurationScreen(props: DrawerScreenProps) {
               <TestBackgroundTaskConfigItem />
               
               <Divider />
+
+              <TestNotificationConfigItem />
             </React.Fragment>
           )}
-
-          <TestNotificationConfigItem />
         </List.Section>
       </SafeArea.ScrollView>
     </PrincipalView>

@@ -1,21 +1,18 @@
-import BackgroundCheckSaveBooks from "~/services/workers/BackgroundCheckSaveBooks";
 import { useConfig } from "./useConfig";
+import { DefaultValueConfig } from "../enums/DefaultValueConfig";
+import { ConfigStorage } from "..";
+import { ConfigKey } from "../enums/ConfigKey";
 
 export function useBackgroundTask() {
   return useConfig<boolean>({
-    initValue: false,
+    initValue: Boolean(DefaultValueConfig.BACKGROUND_TASK),
     async get() {
-      return (await BackgroundCheckSaveBooks.getStatus()).isRegister;
+      const val = ConfigStorage.getBoolean(ConfigKey.BACKGROUND_TASK) ?? DefaultValueConfig.BACKGROUND_TASK;
+
+      return Boolean(val);
     },
     async set(value) {
-      if (value) {
-        await BackgroundCheckSaveBooks.register();
-      } else {
-        await BackgroundCheckSaveBooks.unregister();
-      }
-    },
-    async isDisabled() {
-      return (await BackgroundCheckSaveBooks.getStatus()).isAvailable;
+      ConfigStorage.set(ConfigKey.BACKGROUND_TASK, value);
     },
   });
 }

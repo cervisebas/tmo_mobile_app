@@ -26,25 +26,29 @@ export const BackgroundTaskConfigItem = React.memo(function () {
         leftIcon={'message-badge-outline'}
       />
 
-      <Divider />
+      {__DEV__ && (
+        <React.Fragment>
+          <Divider />
 
-      <ItemWithOptions
-        icon={'timer-sand'}
-        title={'Tiempo de actualización'}
-        titleNumberOfLines={2}
-        //description={'Define cada cuánto tiempo se revisarán nuevas actualizaciones en los mangas que seguís o marcaste como favoritos.'}
-        descriptionNumberOfLines={6}
-        options={BackgroundTaskListInterval}
-        value={valueInterval}
-        onChange={changeInterval}
-        disabled={value}
-        style={{
-          backgroundColor: value
-            ? theme.colors.onSurfaceDisabled
-            : undefined
-          ,
-        }}
-      />
+          <ItemWithOptions
+            icon={'timer-sand'}
+            title={'Tiempo de actualización'}
+            titleNumberOfLines={2}
+            //description={'Define cada cuánto tiempo se revisarán nuevas actualizaciones en los mangas que seguís o marcaste como favoritos.'}
+            descriptionNumberOfLines={6}
+            options={BackgroundTaskListInterval}
+            value={valueInterval}
+            onChange={changeInterval}
+            disabled={value}
+            style={{
+              backgroundColor: value
+                ? theme.colors.onSurfaceDisabled
+                : undefined
+              ,
+            }}
+          />
+        </React.Fragment>
+      )}
     </React.Fragment>
   );
 });
