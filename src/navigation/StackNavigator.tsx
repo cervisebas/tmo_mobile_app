@@ -7,6 +7,7 @@ import BootSplash from "react-native-bootsplash";
 import { useEffect } from "react";
 import { ChapterListScreen } from "~/screens/ChapterListScreen/ChapterListScreen";
 import { Notifications } from "~/services/notifications";
+import { GenderListScreen } from "~/screens/GenderListScreen/GenderListScreen";
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,11 @@ export function StackNavigator() {
       <Stack.Screen
         name={StackScreens.CHAPTER_LIST}
         component={ChapterListScreen}
+      />
+
+      <Stack.Screen
+        name={StackScreens.GENDER_LIST}
+        component={GenderListScreen}
       />
     </Stack.Navigator>
   );

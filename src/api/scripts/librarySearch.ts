@@ -10,7 +10,7 @@ import { LibrarySearchInterface } from "../interfaces/LibrarySearchInterface";
 import { LibraryQueries } from "../enums/LibraryQueries";
 import he from "he";
 
-export async function librarySearch(queries: LibraryQueriesInterface): Promise<LibrarySearchInterface> {
+export async function librarySearch(queries: Partial<LibraryQueriesInterface>): Promise<LibrarySearchInterface> {
   try {
     const url = `${ApiEndpoint.LIBRARY}?${qs.stringify(queries)}`;
     const {data} = await axios.get<string>(
