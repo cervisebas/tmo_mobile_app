@@ -1,51 +1,27 @@
-import * as ExpoNotifications from 'expo-notifications';
-import { Platform } from 'react-native';
-import { NotificationChannel } from './enums/NotificationChannel';
-
-ExpoNotifications.setNotificationHandler({
-  handleNotification: async () => ({    
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
-
-// Methods
-async function initDefaultChannel() {
-  if (Platform.OS !== 'android') {
-    return;
-  }
-
-  await ExpoNotifications.setNotificationChannelAsync(NotificationChannel.DEFAULT, {
-    name: NotificationChannel.DEFAULT,
-    importance: ExpoNotifications.AndroidImportance.HIGH,
-    bypassDnd: true,
-  });
-}
+import Notifee, { AuthorizationStatus } from '@notifee/react-native';
+import { BackgroundNotifee } from './events/BackgroundNotifee';
+import { ForegroundNotifee } from './events/ForegoundNotifee';
 
 async function checkPermissions() {
-  const { status } = await ExpoNotifications.getPermissionsAsync();
+  const settings = await Notifee.requestPermission();
 
-  if (status !== ExpoNotifications.PermissionStatus.GRANTED) {
-    const { status: newStatus } = await ExpoNotifications.requestPermissionsAsync();
-
-    if (newStatus !== ExpoNotifications.PermissionStatus.GRANTED) {
-      return false;
-    }
-
-    initDefaultChannel();
-    return true;
+  if (settings.authorizationStatus !== AuthorizationStatus.AUTHORIZED) {
+    return false;
   }
 
   return true;
 }
 
+function registEvents() {
+  Notifee.onBackgroundEvent(async event => BackgroundNotifee.next(event));
+  Notifee.onForegroundEvent(event => ForegroundNotifee.next(event));
+}
+
 export const Notifications = {
   checkPermissions,
+  registEvents,
   async isAvailable() {
-    const { status } = await ExpoNotifications.getPermissionsAsync();
-
-    return status === ExpoNotifications.PermissionStatus.GRANTED;
+    const settings = await Notifee.requestPermission();
+    return settings.authorizationStatus === AuthorizationStatus.AUTHORIZED;
   },
 };

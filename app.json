@@ -58,14 +58,21 @@
         }
       ],
       [
-        "expo-notifications",
+        "@evennit/notifee-expo-plugin",
         {
-          "icon": "./assets/notification_icon.png",
-          "color": "#2957BA",
-          "defaultChannel": "default"
+          "androidIcons": [
+            {
+              "name": "ic_notification",
+              "path": "./assets/notification_icon.png",
+              "type": "small"
+            }
+          ],
+          "iosDeploymentTarget": "13.4",
+          "apsEnvMode": "development"
         }
       ],
-      "react-native-background-fetch"
+      "react-native-background-fetch",
+      "./plugins/withNotifeeAndroidFix"
     ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
