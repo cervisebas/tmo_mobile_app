@@ -9,9 +9,10 @@ import { View } from "react-native";
 import { toast } from "sonner-native";
 import { goViewChapter } from "../BookInfoScreen/scripts/goViewChapter";
 import { setViewedChapter } from "./scripts/setViewedChapter";
-import { useAutoSaveChapterBookHistory } from "~/services/history/hooks/useAutoSaveChapterBookHistory";
 import { MiniBanner } from "./components/MiniBanner";
 import { VisualizerOptionsSheet, VisualizerOptionsSheetRef } from "./sheets/VisualizerOptionsSheet";
+import { useAutoSaveChapterBookHistory } from "~/services/chapter-progress/hooks/useAutoSaveChapterBookHistory";
+import { UserHistory } from "~/services/user-history";
 
 export function ChapterVisualizerScreen(props: StackScreenProps) {
   const params = props.route.params as ChapterVisualizerParams;
@@ -85,6 +86,11 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
       params.chapter_list,
       params.chapter,
       true,
+    );
+
+    UserHistory.addUserHistory(
+      params.id_bookinfo,
+      params.chapter.id!,
     );
 
     return () => {

@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { ChapterListScreen } from "~/screens/ChapterListScreen/ChapterListScreen";
 import { Notifications } from "~/services/notifications";
 import { GenderListScreen } from "~/screens/GenderListScreen/GenderListScreen";
+import { UserHistoryScreen } from "~/screens/UserHistoryScreen/UserHistoryScreen";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,11 @@ export function StackNavigator() {
       <Stack.Screen
         name={StackScreens.GENDER_LIST}
         component={GenderListScreen}
+      />
+
+      <Stack.Screen
+        name={StackScreens.USER_HISTORY}
+        component={UserHistoryScreen}
       />
     </Stack.Navigator>
   );

@@ -11,6 +11,7 @@ interface IProps {
   chapter: ChapterHistoryInterface | ChapterInterface;
   primaryColor: string;
   book_url: string;
+  book_title?: string;
   id_bookinfo: number;
   chapters: ChapterInterface[];
 }
@@ -66,16 +67,28 @@ export function onPressChapterItem(props: IProps) {
     });
   }
 
+  const information: BottomSheetOptionsInterface[] = [
+    {
+      label: props.book_title
+        ? 'Nombre del capítulo'
+        : 'Nombre',
+      leftIcon: 'text',
+      description: props.chapter.title,
+    },
+  ];
+
+  if (props.book_title) {
+    information.unshift({
+      label: 'Nombre del libro',
+      leftIcon: 'book-outline',
+      description: props.book_title,
+    });
+  }
+
   refDialog.current?.showBottomSheetOptions(
     'Opciónes del capítulo',
     {
-      'Información': [
-        {
-          label: 'Nombre',
-          leftIcon: 'text',
-          description: props.chapter.title,
-        },
-      ],
+      'Información': information,
       'Opciónes de lectura': options,
       ...(
         aditionalOptions.length

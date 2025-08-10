@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
 import { databaseSaveUserHistory } from "~/database/scripts/databaseSaveUserHistory";
-import { ChapterProgressStorage } from "..";
+import { ChapterProgressStorage } from "../../chapter-progress";
 import { useInterval } from "~/common/hooks/useInterval";
 
 export function useAutoSaveChapterBookHistory(

@@ -1,18 +1,26 @@
-import { Appbar } from "react-native-paper";
+import { Appbar, Tooltip } from "react-native-paper";
 import { AppbarHeader } from "~/common/components/AppbarHeader";
 import PrincipalView from "~/common/components/PrincipalView";
 import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
 import { BookStatusPanel } from "../BookInfoScreen/components/BookStatusPanel";
 import { useProfileBooks } from "./hooks/useProfileBooks";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { UserBookStatus } from "~/api/enums/UserBookStatus";
 import SafeArea from "~/common/components/SafeArea";
 import ListOfBooks from "~/common/components/ListOfBooks";
 import { View } from "react-native";
+import { refNavigation } from "~/common/utils/Ref";
+import { StackScreens } from "~/enums/StackScreens";
 
 export function MyProfileScreen(props: DrawerScreenProps) {
   const [select, setSelect] = useState(UserBookStatus.WATCH);
   const {stateList, books} = useProfileBooks(select);
+
+  const goToHistory = useCallback(() => {
+    refNavigation.current?.navigate(
+      StackScreens.USER_HISTORY,
+    );
+  }, []);
 
   return (
     <PrincipalView hideKeyboard>
@@ -24,6 +32,13 @@ export function MyProfileScreen(props: DrawerScreenProps) {
         <Appbar.Content
           title={'Mi Perfil'}
         />
+
+        <Tooltip title={'Historial'}>
+          <Appbar.Action
+            icon={'history'}
+            onPress={goToHistory}
+          />
+        </Tooltip>
       </AppbarHeader>
 
       <SafeArea.View

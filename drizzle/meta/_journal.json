@@ -64,6 +64,13 @@
       "when": 1753557348941,
       "tag": "0008_unusual_slayback",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1754864627379,
+      "tag": "0009_magenta_vance_astro",
+      "breakpoints": true
     }
   ]
 }

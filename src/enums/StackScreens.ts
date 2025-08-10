@@ -4,4 +4,5 @@ export enum StackScreens {
   CHAPTER_VISUALIZER = 'chapter-visualizer',
   CHAPTER_LIST = 'chapter-list',
   GENDER_LIST = 'gender-list',
+  USER_HISTORY = 'user-history',
 }
