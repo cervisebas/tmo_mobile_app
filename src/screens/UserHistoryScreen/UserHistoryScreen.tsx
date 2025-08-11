@@ -87,6 +87,7 @@ export function UserHistoryScreen(props: StackScreenProps) {
 
   const renderItem = useCallback(({item}: ListRenderItemInfo<UserChapterHistoryInterface>) => (
     <UserHistoryItem
+      date={item.date}
       title={item.book.title}
       chapter={item.chapter.title}
       onDelete={() => removeItem(item.id)}
@@ -107,7 +108,7 @@ export function UserHistoryScreen(props: StackScreenProps) {
         <Tooltip title={'Limpiar historial'}>
           <Appbar.Action
             icon={'delete-sweep-outline'}
-            disabled={!data?.length}
+            disabled={!data?.length || data.length < 2}
             onPress={removeAllItems}
           />
         </Tooltip>

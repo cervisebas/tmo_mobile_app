@@ -1,12 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { IconButton } from "react-native-paper";
+import { IconButton, Text } from "react-native-paper";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
+import { timeAgoShort } from "~/common/utils/TimeAgoShort";
 
 interface IProps {
   title: string;
   chapter: string;
+  date: Date;
   onPress?(): void;
   onDelete?(): void;
 }
@@ -14,10 +16,17 @@ interface IProps {
 export const UserHistoryItem = React.memo(function (props: IProps) {
   const {theme} = useContext(ThemeContext);
 
+  const timeAgo = useMemo(() => timeAgoShort(props.date), [props.date]);
+
   return (
     <ItemWithIcon
       title={props.title}
-      description={props.chapter}
+      //description={`Hace ${timeAgo} • ${props.chapter}`}
+      description={
+        <Text>
+          <Text style={styles.timeAgo}>Hace {timeAgo}</Text>  •  {props.chapter}
+        </Text>
+      }
       descriptionNumberOfLines={2}
       leftIcon={'play'}
       leftIconColor={theme.colors.primary}
@@ -39,5 +48,8 @@ export const UserHistoryItem = React.memo(function (props: IProps) {
 const styles = StyleSheet.create({
   icon: {
     margin: 0,
+  },
+  timeAgo: {
+    fontStyle: 'italic',
   },
 });
