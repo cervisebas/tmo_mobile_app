@@ -11,8 +11,10 @@ import { refDialog } from '~/common/utils/Ref';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SystemBars } from "react-native-edge-to-edge";
+import { Notifications } from "~/services/notifications";
 import './global.css';
 
+Notifications.registEvents();
 export default function App() {
   const { success, error } = useMigrations(db, migrations);
   

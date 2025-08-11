@@ -6,6 +6,7 @@ import SafeArea, { SafeAreaCompsProps } from './SafeArea';
 import { ActivityIndicator, Icon, Text } from 'react-native-paper';
 import Color from 'color';
 import { ThemeContext } from '../providers/ThemeProvider';
+import { RefreshControl } from './RefreshControl';
 
 type IProps<T> = FlatListProps<T> & SafeAreaCompsProps & {
   loading: boolean;
@@ -31,14 +32,14 @@ export default function <T>(props: IProps<T>) {
     () => {
       let offset = 0;
 
-      return (props.data as any[]).map(val => {
+      return (props.data as any[])?.map(val => {
         const height = val?.hide ? 0 : props.heightItems;
 
         const res = {length: height, offset};
         offset += height;
 
         return res;
-      });
+      }) ?? [];
     },
     [
       props.data,
@@ -47,9 +48,14 @@ export default function <T>(props: IProps<T>) {
   );
 
   function getItemLayout(_data: any, index: number) {
-    const {length, offset} = preCalcLayout[index];
+    const calcLayout = preCalcLayout[index];
+    //const {length, offset} = preCalcLayout[index];
 
-    return {length, offset, index};
+    return {
+      length: calcLayout?.length ?? 0,
+      offset: calcLayout?.offset ?? 0,
+      index: index,
+    };
   }
 
   function _keyExtractor(item: any, index: number) {
@@ -79,11 +85,20 @@ export default function <T>(props: IProps<T>) {
       );
     } else {
       return (
-        <SafeArea.View
-          style={styles.loading_content}
+        <SafeArea.ScrollView
+          style={{flex: 1}}
+          contentContainerStyle={styles.loading_content}
           expandArea={{
             horizontal: 16,
           }}
+          refreshControl={
+            props.refreshing !== undefined
+              ? <RefreshControl
+                refreshing={!!props.refreshing}
+                onRefresh={props.onRefresh!}
+              />
+              : undefined
+          }
         >
           <View style={styles.empty_content}>
             <Icon
@@ -104,7 +119,7 @@ export default function <T>(props: IProps<T>) {
               />
             )}
           </View>
-        </SafeArea.View>
+        </SafeArea.ScrollView>
       );
     }
   }
@@ -138,7 +153,11 @@ export default function <T>(props: IProps<T>) {
 
   return (
     <SafeArea.FlatList
-      {...props}
+      {...({
+        ...props,
+        refreshing: undefined,
+        onRefresh: undefined,
+      })}
       getItemLayout={getItemLayout}
       keyExtractor={props.useKeyExtractor ? _keyExtractor : props.keyExtractor}
       renderItem={value => (
@@ -150,6 +169,14 @@ export default function <T>(props: IProps<T>) {
           children={props.renderItem!(value) as any}
         />
       )}
+      refreshControl={
+        props.refreshing !== undefined
+          ? <RefreshControl
+            refreshing={!!props.refreshing}
+            onRefresh={props.onRefresh!}
+          />
+          : undefined
+      }
       ItemSeparatorComponent={
         props.useDivider ? _Divider : props.ItemSeparatorComponent
       }

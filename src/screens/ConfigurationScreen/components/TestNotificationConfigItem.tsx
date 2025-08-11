@@ -1,10 +1,11 @@
+import { AndroidImportance, AndroidVisibility } from "@notifee/react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
 import { getAllSavedBooks } from "~/database/services/getAllSavedBooks";
 import { getRandomIntInclusive } from "~/database/utils/getRandomIntInclusive";
 import { Notifications } from "~/services/notifications";
-import * as ExpoNotifications from 'expo-notifications';
 import { NotificationAction } from "~/services/notifications/enums/NotificationAction";
+import { showNotification } from "~/services/workers/scripts/showNotification";
 
 export const TestNotificationConfigItem = React.memo(function () {
   const [disabled, setDisabled] = useState(true);
@@ -28,12 +29,14 @@ export const TestNotificationConfigItem = React.memo(function () {
         return;
       }
 
-      ExpoNotifications.scheduleNotificationAsync({
-        content: {
-          title: book.title,
-          body: 'Se acaba de actualizar este libro',
+      showNotification({
+        title: book.title,
+        message: 'Se acaba de actualizar este libro',
+        importance: AndroidImportance.HIGH,
+        visibility: AndroidVisibility.PUBLIC,
+        action: {
+          id: NotificationAction.OPEN_DETAILS,
           data: {
-            action: NotificationAction.OPEN_DETAILS,
             id: book.id,
             path: book.path,
             url: book.url,
@@ -43,7 +46,6 @@ export const TestNotificationConfigItem = React.memo(function () {
             type: book.type,
           },
         },
-        trigger: null,
       });
     } catch (error) {
       console.error(error);

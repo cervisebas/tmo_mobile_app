@@ -3,7 +3,7 @@ import { getBookInfo } from '~/api/scripts/getBookInfo';
 import { databaseSaveBook } from '~/database/scripts/databaseSaveBook';
 import { getDatabaseBookInfo } from '~/database/services/getDatabaseBookInfo';
 import { NotificationAction } from '~/services/notifications/enums/NotificationAction';
-import * as Notifications from 'expo-notifications';
+import { showNotification } from './showNotification';
 
 export async function checkUpdateBook(book: BookInfoInterface) {
   const database = await getDatabaseBookInfo(book.url);
@@ -15,13 +15,12 @@ export async function checkUpdateBook(book: BookInfoInterface) {
   const new_data = await getBookInfo(book.url);
 
   if (database.chapters?.length !== new_data.chapters?.length) {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: book.title,
-        body: 'Se acaba de actualizar este libro',
+    await showNotification({
+      title: book.title,
+      message: 'Se acaba de actualizar este libro',
+      action: {
+        id: NotificationAction.OPEN_DETAILS,
         data: {
-          action: NotificationAction.OPEN_DETAILS,
-
           id: book.id,
           path: book.path,
           url: book.url,
@@ -31,7 +30,6 @@ export async function checkUpdateBook(book: BookInfoInterface) {
           type: book.type,
         },
       },
-      trigger: null,
     });
   }
 

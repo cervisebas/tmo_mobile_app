@@ -6,9 +6,11 @@ import { BookStatus } from '~/api/enums/BookStatus';
 import { ConfigStorage } from '~/config';
 import { ConfigKey } from '~/config/enums/ConfigKey';
 import { DefaultValueConfig } from '~/config/enums/DefaultValueConfig';
-import { showBasicNotification } from './scripts/showBasicNotification';
+import { showNotification } from './scripts/showNotification';
 import BackgroundFetch, { HeadlessEvent } from 'react-native-background-fetch';
 import { waitTo } from '~/common/utils/WaitTo';
+import Notifee, { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
+import { NotificationChannel } from '../notifications/enums/NotificationChannel';
 
 
 async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
@@ -18,11 +20,23 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
 
   console.info('[BackgroundTask] Executed task');
 
-  const taskNotification = await showBasicNotification({
-    title: 'Verificando actualizaciones...',
-    interruptionLevel: 'passive',
-    sound: false,
+  const channelId = await Notifee.createChannel({
+    id: NotificationChannel.BACKGROUND_TASK_CHECK_BOOKS,
+    name: 'Check Save Books',
+    importance: AndroidImportance.MIN,
+    visibility: AndroidVisibility.SECRET,
+    vibration: false,
+  });
+
+  const taskNotification = await showNotification({
+    title: 'Verificando actualizaciones',
+    channelId: channelId,
     sticky: true,
+    progress: {
+      max: 0,
+      current: 0,
+      indeterminate: true,
+    },
   });
 
   try {
@@ -52,18 +66,29 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
       throw 'No found books.';
     }
 
+    
     for (const book of books) {
-      console.info(`[BackgroundTask] Progress -> ${books.indexOf(book) + 1} de ${books.length}`);
+      const position = books.indexOf(book) + 1;
+      console.info(`[BackgroundTask] Progress -> ${position} de ${books.length}`);
+      
+      taskNotification?.update({
+        message: `Escaneando ${position} de ${books.length}`,
+        progress: {
+          max: books.length,
+          current: position,
+          indeterminate: false,
+        },
+      });
       await checkUpdateBook(book);
     }
 
   } catch (error) {
     console.error('[BackgroundTask]', error);
 
-    await showBasicNotification({
+    /* await showNotification({
       title: 'Tarea en segundo plano',
       message: 'La tarea en segundo plano fallo.',
-    });
+    }); */
   } finally {
     await taskNotification?.dismiss();
     console.info('[BackgroundTask] Finish');

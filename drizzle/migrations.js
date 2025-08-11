@@ -10,6 +10,7 @@ import m0005 from './0005_goofy_blacklash.sql';
 import m0006 from './0006_tense_phalanx.sql';
 import m0007 from './0007_unusual_miss_america.sql';
 import m0008 from './0008_unusual_slayback.sql';
+import m0009 from './0009_magenta_vance_astro.sql';
 
   export default {
     journal,
@@ -22,7 +23,8 @@ m0004,
 m0005,
 m0006,
 m0007,
-m0008
+m0008,
+m0009
     }
   }
   
