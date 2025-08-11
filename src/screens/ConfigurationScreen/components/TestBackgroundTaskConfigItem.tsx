@@ -21,7 +21,7 @@ export const TestBackgroundTaskConfigItem = React.memo(function () {
         ToastAndroid.SHORT,
       );
 
-      await BackgroundCheckSaveBooks.test();
+      BackgroundCheckSaveBooks.test();
     } catch (error) {
       console.error(error);
     }

@@ -45,7 +45,7 @@ export function ConfigurationScreen(props: DrawerScreenProps) {
 
           <Divider />
 
-          {__DEV__ && (
+          {true && (
             <React.Fragment>
               <TestBackgroundTaskConfigItem />
               
