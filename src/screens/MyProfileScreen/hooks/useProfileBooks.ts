@@ -2,10 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { UserBookStatus } from "~/api/enums/UserBookStatus";
 import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 import { DatabaseTableName } from "~/database/enums/DatabaseTableName";
 import { useTableChanges } from "~/database/hooks/useTableChange";
-import { getUserStatusBooks } from "~/database/services/getUserStatusBooks";
-import { getUserStatusCount } from "~/database/services/getUserStatusCount";
 
 export function useProfileBooks(select: UserBookStatus) {
   const [stateList, setStateList] = useState<UserBookStatusList>({
@@ -39,7 +38,8 @@ export function useProfileBooks(select: UserBookStatus) {
 
 
   const calculate = useCallback(async () => {
-    const state_list = await getUserStatusCount();
+    const dbService = new DatabaseService();
+    const state_list = await dbService.getUserStatusCount();
 
     setStateList({
       ...state_list,
@@ -49,7 +49,7 @@ export function useProfileBooks(select: UserBookStatus) {
       },
     });
 
-    setBooks(await getUserStatusBooks(select));
+    setBooks(await dbService.getUserStatusBooks(select));
   }, [select]);
 
   useEffect(() => {

@@ -3,8 +3,8 @@ import { BookStatusPanel } from "./BookStatusPanel";
 import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
 import { useUserBookStatus } from "~/database/hooks/useUserBookStatus";
 import { useCallback, useRef } from "react";
-import { setMarkUserBookStatus } from "~/database/services/setMarkUserBookStatus";
 import { toast } from "sonner-native";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
 interface IProps extends ScrollLargeHeaderProps {
   id_bookinfo: number;
@@ -20,8 +20,10 @@ export function LargeHeader(props: IProps) {
       return;
     }
 
+    const dbService = new DatabaseService();
+    
     inProgress.current = true;
-    toast.promise(setMarkUserBookStatus(props.id_bookinfo, key), {
+    toast.promise(dbService.setMarkUserBookStatus(props.id_bookinfo, key), {
       loading: 'Espere por favor...',
       success(value: boolean) {
         inProgress.current = false;

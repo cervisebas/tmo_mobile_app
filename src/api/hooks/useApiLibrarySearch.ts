@@ -3,10 +3,10 @@ import { BookInfoInterface } from "../interfaces/BookInfoInterface";
 import { LibraryQueriesInterface } from "../interfaces/LibraryQueriesInterface";
 import { useApi } from "./useApi";
 import { librarySearch } from "../scripts/librarySearch";
-import { setDatabaseBooks } from "~/database/services/setDatabaseBooks";
 import { clearSearchFilters } from "../utils/clearSearchFilters";
 import { useRef, useState } from "react";
 import { ApiEndpoint } from "../enums/ApiEndpoint";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
 export function useApiLibrarySearch(getFilters: (page: number) => Partial<LibraryQueriesInterface>) {
   const [url, setUrl] = useState(ApiEndpoint.LIBRARY as string);
@@ -31,7 +31,8 @@ export function useApiLibrarySearch(getFilters: (page: number) => Partial<Librar
 
           sub.complete();
           
-          setDatabaseBooks(value.books);
+          const dbService = new DatabaseService();
+          dbService.setDatabaseBooks(value.books);
         })
         .catch(sub.error);
     }),

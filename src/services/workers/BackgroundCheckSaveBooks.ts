@@ -1,6 +1,4 @@
-import { getUserStatusBooks } from '~/database/services/getUserStatusBooks';
 import { UserBookStatus } from '~/api/enums/UserBookStatus';
-import { checkUpdateBook } from './scripts/checkUpdateBook';
 import { checkExecuteTask } from './scripts/checkExecuteTask';
 import { BookStatus } from '~/api/enums/BookStatus';
 import { ConfigStorage } from '~/config';
@@ -11,6 +9,13 @@ import BackgroundFetch, { HeadlessEvent } from 'react-native-background-fetch';
 import { waitTo } from '~/common/utils/WaitTo';
 import Notifee, { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
 import { NotificationChannel } from '../notifications/enums/NotificationChannel';
+import { DatabaseService } from '~/database/classes/DatabaseService';
+import { getBookInfo } from '~/api/scripts/getBookInfo';
+import { NotificationAction } from '../notifications/enums/NotificationAction';
+import { DatabaseSave } from '~/database/classes/DatabaseSave';
+import { openDatabaseAsync } from 'expo-sqlite';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { DatabaseFileName } from '~/database/enums/DatabaseFileName';
 
 
 async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
@@ -18,7 +23,7 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
     taskId = taskId.taskId;
   }
 
-  console.info('[BackgroundTask] Executed task');
+  console.info('[BackgroundTask] Executing task...');
 
   const channelId = await Notifee.createChannel({
     id: NotificationChannel.BACKGROUND_TASK_CHECK_BOOKS,
@@ -39,14 +44,31 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
     },
   });
 
+  console.info('[BackgroundTask] Showed notification');
+  
   try {
+    // Init Database
+    console.info('[BackgroundTask] Initializing database');
+    const expo = await openDatabaseAsync(
+      DatabaseFileName.DEFAULT,
+      {
+        useNewConnection: true,
+      },
+    );
+    const db = drizzle(expo);
+    console.info('[BackgroundTask] Database started');
+
+    // Init Database Models
+    const dbService = new DatabaseService(db);
+    const dbSave = new DatabaseSave(db);
+
     // Check Execute Background Task
     await checkExecuteTask();
     console.info('[BackgroundTask] Check success');
 
     // Init Background Process
-    const follow_books = await getUserStatusBooks(UserBookStatus.FOLLOW);
-    const wish_books = await getUserStatusBooks(UserBookStatus.WISH);
+    const follow_books = await dbService.getUserStatusBooks(UserBookStatus.FOLLOW);
+    const wish_books = await dbService.getUserStatusBooks(UserBookStatus.WISH);
     const merge_books = [...follow_books, ...wish_books];
     console.info('[BackgroundTask] Get', merge_books);
 
@@ -66,7 +88,6 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
       throw 'No found books.';
     }
 
-    
     for (const book of books) {
       const position = books.indexOf(book) + 1;
       console.info(`[BackgroundTask] Progress -> ${position} de ${books.length}`);
@@ -79,7 +100,36 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
           indeterminate: false,
         },
       });
-      await checkUpdateBook(book);
+
+      // Check Update Book
+      const database = await dbService.getDatabaseBookInfo(book.url);
+      
+      if (!database) {
+        return;
+      }
+    
+      const new_data = await getBookInfo(book.url);
+    
+      if (database.chapters?.length !== new_data.chapters?.length) {
+        await showNotification({
+          title: book.title,
+          message: 'Se acaba de actualizar este libro',
+          action: {
+            id: NotificationAction.OPEN_DETAILS,
+            data: {
+              id: book.id,
+              path: book.path,
+              url: book.url,
+              title: book.title,
+              picture: book.picture,
+              stars: book.stars,
+              type: book.type,
+            },
+          },
+        });
+      }
+    
+      await dbSave.saveBook(new_data);
     }
 
   } catch (error) {

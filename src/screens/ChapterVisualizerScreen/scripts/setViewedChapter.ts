@@ -1,6 +1,5 @@
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { getDatabaseHistoryChapter } from "~/database/services/getDatabaseHistoryChapter";
-import { setDatabaseHistoryChapter } from "~/database/services/setDatabaseHistoryChapter";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
 export async function setViewedChapter(
   id_bookinfo: number,
@@ -8,10 +7,11 @@ export async function setViewedChapter(
   chapter: ChapterInterface,
   status: boolean,
 ) {
-  const is_viewed = await getDatabaseHistoryChapter(chapter.id!);
+  const dbService = new DatabaseService();
+  const is_viewed = await dbService.getDatabaseHistoryChapter(chapter.id!);
 
   if (!is_viewed) {
-    await setDatabaseHistoryChapter(
+    await dbService.setDatabaseHistoryChapter(
       id_bookinfo,
       chapterList,
       chapter,

@@ -11,10 +11,10 @@ import { UserHistoryItem } from "./components/UserHistoryItem";
 import { refDialog } from "~/common/utils/Ref";
 import { UserHistory } from "~/services/user-history";
 import { getBookInfo } from "~/api/scripts/getBookInfo";
-import { getDatabaseBookInfo } from "~/database/services/getDatabaseBookInfo";
-import { databaseSaveBook } from "~/database/scripts/databaseSaveBook";
 import { onPressChapterItem } from "../BookInfoScreen/scripts/onPressChapterItem";
 import { ThemeContext } from "~/common/providers/ThemeProvider";
+import { DatabaseSave } from "~/database/classes/DatabaseSave";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
 export function UserHistoryScreen(props: StackScreenProps) {
   const {data, refresh, loading, reload} = useUserHistory();
@@ -62,13 +62,16 @@ export function UserHistoryScreen(props: StackScreenProps) {
     try {
       refDialog.current?.showLoading('Obteniendo información...');
       try {
+        const dbSave = new DatabaseSave();
         const info = await getBookInfo(data.book.url);
-        await databaseSaveBook(info);
+
+        await dbSave.saveBook(info);
       } catch (error) {
         console.error(error);
       }
       
-      const dbInfo = await getDatabaseBookInfo(null, data.book.id);
+      const dbService = new DatabaseService();
+      const dbInfo = await dbService.getDatabaseBookInfo(null, data.book.id);
       onPressChapterItem({
         chapter: data.chapter,
         primaryColor: theme.colors.primary,

@@ -1,7 +1,7 @@
 import { AndroidImportance, AndroidVisibility } from "@notifee/react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import ItemWithIcon from "~/common/components/ItemWithIcon";
-import { getAllSavedBooks } from "~/database/services/getAllSavedBooks";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 import { getRandomIntInclusive } from "~/database/utils/getRandomIntInclusive";
 import { Notifications } from "~/services/notifications";
 import { NotificationAction } from "~/services/notifications/enums/NotificationAction";
@@ -17,7 +17,8 @@ export const TestNotificationConfigItem = React.memo(function () {
 
   const testNotificactions = useCallback(async () => {
     try {
-      const all = await getAllSavedBooks();
+      const dbService = new DatabaseService();
+      const all = await dbService.getAllSavedBooks();
 
       if (!all.length) {
         return;

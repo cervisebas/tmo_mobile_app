@@ -5,7 +5,7 @@ import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface"
 import { BottomSheetOptionsInterface } from "~/common/components/BottomSheetOptions";
 import { ShareURL } from "~/common/scripts/ShareURL";
 import { refDialog } from "~/common/utils/Ref";
-import { getDatabaseBookInfo } from "~/database/services/getDatabaseBookInfo";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
 interface IProps {
   chapter: ChapterInterface;
@@ -26,7 +26,8 @@ export const VisualizerOptionsSheet = React.memo(forwardRef(
     const [bookInfo, setBookInfo] = useState<BookInfoInterface | null>(null);
 
     useEffect(() => {
-      getDatabaseBookInfo(props.book_url)
+      const dbService = new DatabaseService();
+      dbService.getDatabaseBookInfo(props.book_url)
         .then(setBookInfo);
     }, [props.book_url]);
 
