@@ -1,17 +1,18 @@
 import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { databaseSaveUserChapterHistory } from "~/database/scripts/databaseSaveUserChapterHistory";
-import { getAllUserChapterHistory } from "~/database/services/getAllUserChapterHistory";
-import { removeAllUserChapterHistory } from "~/database/services/removeAllUserChapterHistory";
-import { removeUserChapterHistory } from "~/database/services/removeUserChapterHistory";
+import { DatabaseSave } from "~/database/classes/DatabaseSave";
+import { DatabaseService } from "~/database/classes/DatabaseService";
+
+const dbService = new DatabaseService();
 
 async function addUserHistory(book: BookInfoInterface | number, chapter: ChapterInterface | number) {
   try {
     const id_bookinfo = typeof book === 'number' ? book : book.id;
     const id_chapter = typeof chapter === 'number' ? chapter : chapter.id;
-  
+    
     if (id_bookinfo !== undefined && id_chapter !== undefined) {
-      await databaseSaveUserChapterHistory(id_bookinfo, id_chapter);
+      const dbSave = new DatabaseSave();
+      await dbSave.saveUserChapterHistory(id_bookinfo, id_chapter);
     }
   } catch (error) {
     console.error(error);
@@ -19,15 +20,15 @@ async function addUserHistory(book: BookInfoInterface | number, chapter: Chapter
 }
 
 async function removeUserHistory(id: number) {
-  return removeUserChapterHistory(id);
+  return dbService.removeUserChapterHistory(id);
 }
 
 async function removeAllUserHistory() {
-  return removeAllUserChapterHistory();
+  return dbService.removeAllUserChapterHistory();
 }
 
 function allUserHistory() {
-  return getAllUserChapterHistory();
+  return dbService.getAllUserChapterHistory();
 }
 
 export const UserHistory = {

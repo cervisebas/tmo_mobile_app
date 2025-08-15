@@ -1,14 +1,15 @@
 import { Observable } from "rxjs";
 import { BookInfoInterface } from "../interfaces/BookInfoInterface";
 import { useApi } from "./useApi";
-import { getDatabaseBookInfo } from "~/database/services/getDatabaseBookInfo";
 import { getBookInfo } from "../scripts/getBookInfo";
-import { databaseSaveBook } from "~/database/scripts/databaseSaveBook";
+import { DatabaseSave } from "~/database/classes/DatabaseSave";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
+const dbService = new DatabaseService();
 export function useApiBookInfo(url: string, referer?: string) {
   return useApi<BookInfoInterface>(
     new Observable<BookInfoInterface>(function (sub) {
-      getDatabaseBookInfo(url)
+      dbService.getDatabaseBookInfo(url)
         .then(value => {
           if (value) {
             sub.next(value);
@@ -16,8 +17,11 @@ export function useApiBookInfo(url: string, referer?: string) {
 
           getBookInfo(url, referer)
             .then(async value => {
-              await databaseSaveBook(value);
-              const data = await getDatabaseBookInfo(url);
+              const dbSave = new DatabaseSave();
+              await dbSave.saveBook(value);
+
+              const dbService = new DatabaseService();
+              const data = await dbService.getDatabaseBookInfo(url);
 
               sub.next(data!);
               sub.complete();

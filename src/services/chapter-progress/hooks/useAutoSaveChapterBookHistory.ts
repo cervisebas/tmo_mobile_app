@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
-import { databaseSaveUserHistory } from "~/database/scripts/databaseSaveUserHistory";
 import { ChapterProgressStorage } from "../../chapter-progress";
 import { useInterval } from "~/common/hooks/useInterval";
+import { DatabaseSave } from "~/database/classes/DatabaseSave";
 
 export function useAutoSaveChapterBookHistory(
   id_bookinfo: number,
@@ -27,12 +27,15 @@ export function useAutoSaveChapterBookHistory(
       }
 
       ChapterProgressStorage.set(CHAPTER_ID, progress);
-      await databaseSaveUserHistory(
+
+      const dbSave = new DatabaseSave();
+      await dbSave.saveUserHistory(
         id_bookinfo,
         chapter,
         option,
         progress,
       );
+
       setSaving(false);
     } catch (error) {
       setSaving(false);

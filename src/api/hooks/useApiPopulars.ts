@@ -3,7 +3,7 @@ import { getAllPopulars } from "../scripts/getAllPopulars";
 import { useApi } from "./useApi";
 import { PopularsInterface } from "../interfaces/PopularsInterface";
 import { BookInfoInterface } from "../interfaces/BookInfoInterface";
-import { setDatabaseBooks } from "~/database/services/setDatabaseBooks";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
 export function useApiPopulars() {
   return useApi<PopularsInterface>(
@@ -14,7 +14,8 @@ export function useApiPopulars() {
           sub.complete();
           
           const all = Object.values(value).flat() as BookInfoInterface[];
-          setDatabaseBooks(all);
+          const dbService = new DatabaseService();
+          dbService.setDatabaseBooks(all);
         })
         .catch(sub.error);
     }),

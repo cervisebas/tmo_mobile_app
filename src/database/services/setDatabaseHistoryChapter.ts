@@ -1,6 +1,6 @@
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { checkMarkUserBookStatus } from "./checkMarkUserBookStatus";
-import { databaseSaveChaptersHistory } from "../scripts/databaseSaveChaptersHistory";
+import { DatabaseSave } from "../classes/DatabaseSave";
 
 export async function setDatabaseHistoryChapter(
   id_bookinfo: number,
@@ -19,8 +19,9 @@ export async function setDatabaseHistoryChapter(
   if (indexOf === -1) {
     return;
   }
-  
-  const chapter_set_list: Parameters<typeof databaseSaveChaptersHistory>[0] = [];
+
+  const dbSave = new DatabaseSave();
+  const chapter_set_list: Parameters<typeof dbSave.saveChaptersHistory>[0] = [];
 
   for (const item of chapterList) {
     if (chapter.chapter_number >= item.chapter_number) {
@@ -41,7 +42,7 @@ export async function setDatabaseHistoryChapter(
     }
   }
 
-  await databaseSaveChaptersHistory(chapter_set_list);
+  await dbSave.saveChaptersHistory(chapter_set_list);
 
   return status;
 }

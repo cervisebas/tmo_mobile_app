@@ -4,8 +4,8 @@ import { ChapterHistoryInterface } from "~/database/interfaces/ChapterHistoryInt
 import { goViewChapter } from "./goViewChapter";
 import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
 import { toast } from "sonner-native";
-import { setDatabaseHistoryChapter } from "~/database/services/setDatabaseHistoryChapter";
 import { refDialog } from "~/common/utils/Ref";
+import { DatabaseService } from "~/database/classes/DatabaseService";
 
 interface IProps {
   chapter: ChapterHistoryInterface | ChapterInterface;
@@ -47,7 +47,8 @@ export function onPressChapterItem(props: IProps) {
         : 'eye-outline'
       ,
       onPress() {
-        toast.promise(setDatabaseHistoryChapter(
+        const dbService = new DatabaseService();
+        toast.promise(dbService.setDatabaseHistoryChapter(
           props.id_bookinfo,
           props.chapters,
           props.chapter,
