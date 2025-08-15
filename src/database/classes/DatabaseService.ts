@@ -372,7 +372,7 @@ export class DatabaseService {
     return data as unknown as UserBookStatusList;
   }
 
-  public async getUserStatusBooks(status: UserBookStatus): Promise<BookInfoInterface[]> {
+  public async getUserStatusBooks(status: UserBookStatus | 'all'): Promise<BookInfoInterface[]> {
     const books = await this.db
       .select()
       .from(BookUserStatusByBookInfoModel)
@@ -384,16 +384,21 @@ export class DatabaseService {
         ),
       )
       .where(
-        and(
-          eq(
-            BookUserStatusByBookInfoModel.status,
-            status,
-          ),
-          eq(
+        status === 'all'
+          ? eq(
             BookUserStatusByBookInfoModel.marked,
             true,
+          )
+          : and(
+            eq(
+              BookUserStatusByBookInfoModel.status,
+              status,
+            ),
+            eq(
+              BookUserStatusByBookInfoModel.marked,
+              true,
+            ),
           ),
-        ),
       );
   
     return books.map(value => ({
@@ -606,5 +611,27 @@ export class DatabaseService {
       );
     
     return true;
+  }
+
+  public async removeDatabaseChapter(id_chapter: number) {
+    this.db.transaction(async tx => {
+      await tx
+        .delete(BookChapterOptionModel)
+        .where(
+          eq(
+            BookChapterOptionModel.id_chapter,
+            id_chapter,
+          ),
+        );
+
+      await tx
+        .delete(BookChapterModel)
+        .where(
+          eq(
+            BookChapterModel.id,
+            id_chapter,
+          ),
+        );
+    });
   }
 }

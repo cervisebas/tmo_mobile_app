@@ -9,6 +9,7 @@ import { StorageConfigItem } from "./components/StorageConfigItem";
 import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
 import { TestBackgroundTaskConfigItem } from "./components/TestBackgroundTaskConfigItem";
 import React from "react";
+import { TestRemoveChapter } from "./components/TestRemoveChapter";
 
 export function ConfigurationScreen(props: DrawerScreenProps) {
   return (
@@ -52,6 +53,10 @@ export function ConfigurationScreen(props: DrawerScreenProps) {
               <Divider />
 
               <TestNotificationConfigItem />
+
+              <Divider />
+
+              <TestRemoveChapter />
             </React.Fragment>
           )}
         </List.Section>
