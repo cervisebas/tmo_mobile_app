@@ -17,6 +17,7 @@ import useDimension from "~/common/hooks/useDimension";
 import { BookStatusList } from "~/constants/BookStatusList";
 import { StaffList } from "./components/StaffList";
 import { UserHistoryChapter } from "./components/UserHistoryChapter";
+import { useProvicionalPersistenceBook } from "~/common/storage/provisional-persistence-service/hooks/useProvicionalPersistenceBook";
 
 export function BookInfoScreen(props: StackScreenProps) {
   const info = props.route.params as BookInfoInterface & {referer?: string};
@@ -34,6 +35,8 @@ export function BookInfoScreen(props: StackScreenProps) {
       };
     }
   }, [data?.status]);
+
+  useProvicionalPersistenceBook(data);
 
   return (
     <PrincipalView>
