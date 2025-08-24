@@ -1,7 +1,6 @@
 import { MMKV, Mode } from 'react-native-mmkv';
 import { ConfigKey } from '~/config/enums/ConfigKey';
 import { DefaultValueConfig } from '~/config/enums/DefaultValueConfig';
-import { Notifications } from '~/services/notifications';
 
 export async function checkExecuteTask() {
   // Check enabled
@@ -15,8 +14,12 @@ export async function checkExecuteTask() {
   }
 
   // Check Notifications
-  if (!(await Notifications.isAvailable())) {
+  console.info(
+    '[BackgroundTask] Notification status:',
+    ConfigStorage.getBoolean(ConfigKey.NOTIFICATION_STATUS),
+  );
+  
+  if (!ConfigStorage.getBoolean(ConfigKey.NOTIFICATION_STATUS)) {
     throw '[BackgroundTask] Notificaciones no disponibles: abortando.';
   }
-
 }
