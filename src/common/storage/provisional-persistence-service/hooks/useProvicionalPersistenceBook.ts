@@ -11,13 +11,14 @@ export function useProvicionalPersistenceBook(book: BookInfoInterface | null) {
       return;
     }
 
+    const provisionalPersistenceService = new ProvisionalPersistenceService();
     const databaseInfo = await getDatabaseBookInfo(book.url);
 
     if (databaseInfo) {
       const userBookStatusList = Object.entries(databaseInfo.user_status!) as [string, UserStatus][];
       const userBookStatus = userBookStatusList.find(([, value]) => value.user_select);
 
-      ProvisionalPersistenceService.set(
+      provisionalPersistenceService.set(
         databaseInfo,
         userBookStatus?.[0] as UserBookStatus,
       );

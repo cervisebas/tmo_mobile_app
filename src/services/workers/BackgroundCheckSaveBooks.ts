@@ -12,6 +12,8 @@ import { NotificationChannel } from '../notifications/enums/NotificationChannel'
 import { getBookInfo } from '~/api/scripts/getBookInfo';
 import { NotificationAction } from '../notifications/enums/NotificationAction';
 import { ProvisionalPersistenceService } from '~/common/storage/provisional-persistence-service';
+import { MMKV, Mode } from 'react-native-mmkv';
+import { StorageKey } from '~/common/enums/StorageKey';
 
 
 async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
@@ -43,12 +45,18 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
   console.info('[BackgroundTask] Showed notification');
 
   try {
+    const storage = new MMKV({
+      id: StorageKey.PROVISIONAL_PERSISTENCE_STORAGE,
+      mode: Mode.MULTI_PROCESS,
+    });
+    const provisionalPersistenceService = new ProvisionalPersistenceService(storage);
+
     // Check Execute Background Task
     await checkExecuteTask();
     console.info('[BackgroundTask] Check success');
 
     // Init Background Process
-    const user_books = ProvisionalPersistenceService.getAllWithUserStatus([
+    const user_books = provisionalPersistenceService.getAllWithUserStatus([
       UserBookStatus.WISH,
       UserBookStatus.FOLLOW,
     ]);
@@ -111,7 +119,7 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
         }
       }
     
-      ProvisionalPersistenceService.set(new_data, book.user_book_status);
+      provisionalPersistenceService.set(new_data, book.user_book_status);
     }
 
   } catch (error) {

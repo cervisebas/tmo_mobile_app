@@ -10,6 +10,7 @@ import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
 import { TestBackgroundTaskConfigItem } from "./components/TestBackgroundTaskConfigItem";
 import React from "react";
 import { TestRemoveChapter } from "./components/TestRemoveChapter";
+import { TestDropProvicionalStorage } from "./components/TestDropProvicionalStorage";
 
 export function ConfigurationScreen(props: DrawerScreenProps) {
   return (
@@ -57,6 +58,10 @@ export function ConfigurationScreen(props: DrawerScreenProps) {
               <Divider />
 
               <TestRemoveChapter />
+
+              <Divider />
+
+              <TestDropProvicionalStorage />
             </React.Fragment>
           )}
         </List.Section>

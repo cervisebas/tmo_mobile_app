@@ -7,8 +7,9 @@ import { UserBookStatus } from "~/api/enums/UserBookStatus";
 export function useInitProvicionalPersistenceBook() {
   const initNow = useCallback(async () => {
     const dbService = new DatabaseService();
+    const provisionalPersistenceService = new ProvisionalPersistenceService();
     
-    const localBooks = ProvisionalPersistenceService.getAll();
+    const localBooks = provisionalPersistenceService.getAll();
     const databaseBooks = await dbService.getUserStatusBooks('all');
 
     if (localBooks.length === databaseBooks.length) {
@@ -22,7 +23,7 @@ export function useInitProvicionalPersistenceBook() {
       const userBookStatus = userBookStatusList.find(([, value]) => value.user_select);
 
       if (databaseInfo) {
-        ProvisionalPersistenceService.set(
+        provisionalPersistenceService.set(
           databaseInfo,
           userBookStatus?.[0] as UserBookStatus,
         );

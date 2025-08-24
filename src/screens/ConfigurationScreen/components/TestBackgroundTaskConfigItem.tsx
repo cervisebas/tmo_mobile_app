@@ -15,16 +15,18 @@ export const TestBackgroundTaskConfigItem = React.memo(function () {
       return;
     } */
     
-    try {
-      ToastAndroid.show(
-        'Ejecutando....',
-        ToastAndroid.SHORT,
-      );
+    setTimeout(() => {
+      try {
+        ToastAndroid.show(
+          'Ejecutando....',
+          ToastAndroid.SHORT,
+        );
 
-      BackgroundCheckSaveBooks.test();
-    } catch (error) {
-      console.error(error);
-    }
+        BackgroundCheckSaveBooks.test();
+      } catch (error) {
+        console.error(error);
+      }
+    }, 3000);
   }, []);
 
   return (
