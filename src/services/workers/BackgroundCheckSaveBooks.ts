@@ -52,6 +52,7 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
     const provisionalPersistenceService = new ProvisionalPersistenceService(storage);
 
     // Check Execute Background Task
+    console.info('[BackgroundTask] Check requrequirements...');
     await checkExecuteTask();
     console.info('[BackgroundTask] Check success');
 
