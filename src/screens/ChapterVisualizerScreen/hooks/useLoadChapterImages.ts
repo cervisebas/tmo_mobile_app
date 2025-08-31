@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageItemInterface } from "../interfaces/ImageItemInterface";
 import { downloadChapterImages } from "../scripts/downloadChapterImages";
+import { Platform } from "react-native";
 
 export function useLoadChapterImages(
   images: string[],
@@ -38,7 +39,10 @@ export function useLoadChapterImages(
           await onLoadImage(i, {
             name_file: data.fileName,
             loading: false,
-            source: data.fileName,
+            source: Platform.select({
+              ios: data.path,
+              default: data.fileName,
+            }),
           });
           
           progress.current++;

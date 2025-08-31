@@ -103,7 +103,9 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
         ref={refWebView}
         source={{
           html: html,
-          baseUrl: `${DOWNLOAD_IMAGES_FOLDER_PATH}/${props.bookPath}/`,
+          baseUrl: Platform.select({
+            android: `${DOWNLOAD_IMAGES_FOLDER_PATH}/${props.bookPath}/`,
+          }),
         }}
         style={[
           styles.webview,
@@ -130,6 +132,11 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
         javaScriptEnabled={true}
         domStorageEnabled={true}
         scalesPageToFit={Platform.OS === 'android'}
+        webviewDebuggingEnabled={
+          Platform.select({
+            ios: __DEV__,
+          })
+        }
       />
     </LoadingErrorContent>
   );

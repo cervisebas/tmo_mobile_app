@@ -4,8 +4,23 @@ import { AxiosUserAgent } from '~/common/utils/Axios';
 import * as FileSystem from 'expo-file-system';
 import { checkOrMakeFolder } from './checkOrMakeFolder';
 import { waitTo } from '~/common/utils/WaitTo';
+import { Platform } from 'react-native';
+import mime from 'mime';
 
 export const DOWNLOAD_IMAGES_FOLDER_PATH = `${FileSystem.documentDirectory}images`;
+
+async function getImageIos(fileName: string, path: string) {
+  const base64 = await FileSystem.readAsStringAsync(path, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+
+  const mimeType = mime.getType(path) || 'application/octet-stream';
+
+  return {
+    fileName: fileName,
+    path: `data:${mimeType};base64,${base64}`,
+  };
+}
 
 export async function downloadChapterImages(url: string, originUrl: string, folder: string) {
   try {
@@ -16,7 +31,12 @@ export async function downloadChapterImages(url: string, originUrl: string, fold
     const {exists: IS_EXIST} = await FileSystem.getInfoAsync(IMAGE_PATH);
 
     if (IS_EXIST) {
-      await waitTo(10);
+      await waitTo(100);
+
+      if (Platform.OS === 'ios') {
+        return getImageIos(FILE_NAME, IMAGE_PATH);
+      }
+
       return {
         fileName: FILE_NAME,
         path: IMAGE_PATH,
@@ -40,6 +60,10 @@ export async function downloadChapterImages(url: string, originUrl: string, fold
       data.body,
       {encoding: 'base64'},
     );
+
+    if (Platform.OS === 'ios') {
+      return getImageIos(FILE_NAME, IMAGE_PATH);
+    }
 
     return {
       fileName: FILE_NAME,
