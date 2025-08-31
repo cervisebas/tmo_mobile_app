@@ -24,3 +24,5 @@ android
 
 !modules/**/android
 modules/**/android/build
+
+!assets/bootsplash/*
