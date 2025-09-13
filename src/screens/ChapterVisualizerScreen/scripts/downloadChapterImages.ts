@@ -7,11 +7,11 @@ import { waitTo } from '~/common/utils/WaitTo';
 import { Platform } from 'react-native';
 import mime from 'mime';
 
-export const DOWNLOAD_IMAGES_FOLDER_PATH = `${FileSystem.documentDirectory}images`;
+export const DOWNLOAD_IMAGES_FOLDER_PATH = `${FileSystem.Paths.document}images`;
 
 async function getImageIos(fileName: string, path: string) {
   const base64 = await FileSystem.readAsStringAsync(path, {
-    encoding: FileSystem.EncodingType.Base64,
+    encoding: 'base64',
   });
 
   const mimeType = mime.getType(path) || 'application/octet-stream';
