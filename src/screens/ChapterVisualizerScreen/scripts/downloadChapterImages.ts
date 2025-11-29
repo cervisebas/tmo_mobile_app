@@ -22,6 +22,13 @@ async function getImageIos(fileName: string, path: string) {
   };
 }
 
+export async function prepareDownloadChapter(folder: string) {
+  const CHAPTER_FOLDER = `${DOWNLOAD_IMAGES_FOLDER_PATH}/${folder}`;
+  
+  await checkOrMakeFolder(DOWNLOAD_IMAGES_FOLDER_PATH);
+  await checkOrMakeFolder(CHAPTER_FOLDER);
+}
+
 export async function downloadChapterImages(url: string, originUrl: string, folder: string) {
   try {
     const CHAPTER_FOLDER = `${DOWNLOAD_IMAGES_FOLDER_PATH}/${folder}`;

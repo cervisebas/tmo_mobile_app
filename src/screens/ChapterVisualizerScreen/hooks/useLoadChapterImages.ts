@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageItemInterface } from "../interfaces/ImageItemInterface";
-import { downloadChapterImages } from "../scripts/downloadChapterImages";
+import { downloadChapterImages, prepareDownloadChapter } from "../scripts/downloadChapterImages";
 import { Platform } from "react-native";
+import { runPromisesInBatches } from "~/common/utils/RunPromisesInBatches";
 
 export function useLoadChapterImages(
   images: string[],
@@ -16,49 +17,38 @@ export function useLoadChapterImages(
   const canceled = useRef(false);
 
   const startLoadImages = useCallback(async () => {
-    for (let i = 0; i < images.length; i++) {
-      const image = images[i];
-      let loading = true;
-      
-      if (canceled.current) {
-        break;
-      }
+    await prepareDownloadChapter(path);
 
-      while (loading) {
+    return runPromisesInBatches({
+      promises: images.map((image) => downloadChapterImages(image, originImagesUrl, path)),
+      concurrency: 3,
+      retryOnCatch: true,
+      checkContinue() {
+        return !canceled.current;
+      },
+      async onResult(data, index) {
         if (canceled.current) {
-          break;
+          return;
         }
-        
-        try {
-          const data = await downloadChapterImages(image, originImagesUrl, path);
-  
-          if (canceled.current) {
-            break;
-          }
-          
-          await onLoadImage(i, {
-            name_file: data.fileName,
-            loading: false,
-            source: Platform.select({
-              ios: data.path,
-              default: data.fileName,
-            }),
-          });
-          
-          progress.current++;
-          onProgress?.(
-            progress.current,
-            images.length,
-          );
-  
-          loading = false;
-          setLoaded(images.length === progress.current);
-        } catch (error) {
-          console.error(error);
-        }
-      }
 
-    }
+        await onLoadImage(index, {
+          name_file: data.fileName,
+          loading: false,
+          source: Platform.select({
+            ios: data.path,
+            default: data.fileName,
+          }),
+        });
+        
+        progress.current++;
+        onProgress?.(
+          progress.current,
+          images.length,
+        );
+
+        setLoaded(images.length === progress.current);
+      },
+    });
   }, [images, onLoadImage, onProgress, originImagesUrl, path]);
 
   useEffect(() => {
