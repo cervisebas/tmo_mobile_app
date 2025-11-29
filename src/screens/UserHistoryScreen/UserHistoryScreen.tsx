@@ -72,12 +72,15 @@ export function UserHistoryScreen(props: StackScreenProps) {
 
       const dbService = new DatabaseService();
       const dbInfo = await dbService.getDatabaseBookInfo(null, data.book.id);
+
       onPressChapterItem({
         chapter: data.chapter,
         primaryColor: theme.colors.primary,
         book_url: dbInfo!.url,
         id_bookinfo: data.book.id!,
         book_title: data.book.title,
+        showOpenBook: true,
+        bookInfo: dbInfo!,
         chapters: dbInfo?.chapters!,
       });
 

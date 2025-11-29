@@ -4,8 +4,10 @@ import { ChapterHistoryInterface } from '~/database/interfaces/ChapterHistoryInt
 import { goViewChapter } from './goViewChapter';
 import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
 import { toast } from 'sonner-native';
-import { refDialog } from '~/common/utils/Ref';
+import { refDialog, refNavigation } from '~/common/utils/Ref';
 import { DatabaseService } from '~/database/classes/DatabaseService';
+import { StackScreens } from '~/enums/StackScreens';
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
 
 interface IProps {
   chapter: ChapterHistoryInterface | ChapterInterface;
@@ -13,6 +15,8 @@ interface IProps {
   book_url: string;
   book_title?: string;
   id_bookinfo: number;
+  showOpenBook?: boolean;
+  bookInfo?: BookInfoInterface;
   chapters: ChapterInterface[];
 }
 
@@ -78,11 +82,28 @@ export function onPressChapterItem(props: IProps) {
   ];
 
   if (props.book_title) {
-    information.unshift({
-      label: 'Nombre del libro',
-      leftIcon: 'book-outline',
-      description: props.book_title,
-    });
+    const bookInformation: BottomSheetOptionsInterface[] = [
+      {
+        label: 'Nombre del libro',
+        leftIcon: 'book-outline',
+        description: props.book_title,
+      },
+    ];
+
+    if (props.showOpenBook && props.bookInfo) {
+      bookInformation.push({
+        label: 'Abrir información del libro',
+        leftIcon: 'book-outline',
+        onPress() {
+          refNavigation.current?.navigate(
+            StackScreens.BOOK_INFO,
+            props.bookInfo,
+          );
+        },
+      });
+    }
+
+    information.unshift(...bookInformation);
   }
 
   refDialog.current?.showBottomSheetOptions('Opciónes del capítulo', {
