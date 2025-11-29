@@ -9,6 +9,7 @@ import { ChapterListScreen } from '~/screens/ChapterListScreen/ChapterListScreen
 import { Notifications } from '~/services/notifications';
 import { GenderListScreen } from '~/screens/GenderListScreen/GenderListScreen';
 import { UserHistoryScreen } from '~/screens/UserHistoryScreen/UserHistoryScreen';
+import { AuthorInfoScreen } from '~/screens/AuthorInfoScreen/AuthorInfoScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,11 @@ export function StackNavigator() {
       <Stack.Screen
         name={StackScreens.USER_HISTORY}
         component={UserHistoryScreen}
+      />
+
+      <Stack.Screen
+        name={StackScreens.AUTHOR_INFO}
+        component={AuthorInfoScreen}
       />
     </Stack.Navigator>
   );

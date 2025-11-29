@@ -5,4 +5,5 @@ export enum StackScreens {
   CHAPTER_LIST = 'chapter-list',
   GENDER_LIST = 'gender-list',
   USER_HISTORY = 'user-history',
+  AUTHOR_INFO = 'author-info',
 }

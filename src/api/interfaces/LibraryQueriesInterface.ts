@@ -13,28 +13,28 @@ import {
 
 export interface LibraryQueriesInterface {
   // Order
-  [LibraryQueries.ORDER_ITEM]: LibraryOrderItems;
-  [LibraryQueries.ORDER_DIR]: LibraryOrderDir;
+  [LibraryQueries.ORDER_ITEM]?: LibraryOrderItems;
+  [LibraryQueries.ORDER_DIR]?: LibraryOrderDir;
 
   // Search
   [LibraryQueries.TITLE]: string;
-  [LibraryQueries.FILTER_BY]: LibraryFilterby;
+  [LibraryQueries.FILTER_BY]?: LibraryFilterby;
 
   // Page number
   [LibraryQueries.PAGINATOR]: string | number;
   [LibraryQueries.PAGE]: string | number;
 
   // Filters
-  [LibraryQueries.TYPE]: LibraryType;
-  [LibraryQueries.DEMOGRAPHY]: LibraryDemography;
-  [LibraryQueries.STATUS]: LibraryStatus;
-  [LibraryQueries.TRANSLATION_STATUS]: LibraryTranslationStatus;
-  [LibraryQueries.WEBCOMIC]: LibraryCheck;
-  [LibraryQueries.YONKOMA]: LibraryCheck;
-  [LibraryQueries.AMATEUR]: LibraryCheck;
-  [LibraryQueries.EROTIC]: LibraryCheck;
+  [LibraryQueries.TYPE]?: LibraryType;
+  [LibraryQueries.DEMOGRAPHY]?: LibraryDemography;
+  [LibraryQueries.STATUS]?: LibraryStatus;
+  [LibraryQueries.TRANSLATION_STATUS]?: LibraryTranslationStatus;
+  [LibraryQueries.WEBCOMIC]?: LibraryCheck;
+  [LibraryQueries.YONKOMA]?: LibraryCheck;
+  [LibraryQueries.AMATEUR]?: LibraryCheck;
+  [LibraryQueries.EROTIC]?: LibraryCheck;
 
   // Genders
-  [LibraryQueries.GENDERS]: LibraryGenders[];
-  [LibraryQueries.EXCLUDE_GENDERS]: LibraryGenders[];
+  [LibraryQueries.GENDERS]?: LibraryGenders[];
+  [LibraryQueries.EXCLUDE_GENDERS]?: LibraryGenders[];
 }
