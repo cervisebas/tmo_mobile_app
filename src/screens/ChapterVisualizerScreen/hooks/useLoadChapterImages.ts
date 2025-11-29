@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageItemInterface } from "../interfaces/ImageItemInterface";
 import { downloadChapterImages, prepareDownloadChapter } from "../scripts/downloadChapterImages";
 import { Platform } from "react-native";
-import { runPromisesInBatches } from "~/common/utils/RunPromisesInBatches";
+import { runObserversInBatches } from "~/common/utils/runObserversInBatches";
 
 export function useLoadChapterImages(
   images: string[],
@@ -24,9 +24,9 @@ export function useLoadChapterImages(
       images.length,
     );
 
-    return runPromisesInBatches({
-      promises: images.map((image) => downloadChapterImages(image, originImagesUrl, path)),
-      concurrency: 3,
+    return runObserversInBatches({
+      observables: images.map((image) => downloadChapterImages(image, originImagesUrl, path)),
+      concurrency: 5,
       retryOnCatch: true,
       catchErrorOnResult: true,
       checkContinue: () => {

@@ -1,7 +1,8 @@
+import { lastValueFrom, Observable } from "rxjs";
 import { chunkArray } from "./ChunkArray";
 
 interface IProps<T> {
-  promises: Promise<T>[];
+  observables: Observable<T>[];
   concurrency?: number;
   retryOnCatch?: boolean;
   catchErrorOnResult?: boolean;
@@ -11,15 +12,16 @@ interface IProps<T> {
   onFinish?(total: number): void;
 }
 
-export async function runPromisesInBatches<T>(props: IProps<T>) {
+export async function runObserversInBatches<T>(props: IProps<T>) {
   const concurrency = props.concurrency || 3;
-  const promises = chunkArray(props.promises, concurrency);
+  const observables = chunkArray(props.observables, concurrency);
 
-  console.info(`PromiseInBatches: Recortado en ${promises.length} de ${concurrency}`);
+  console.info(`ObserversInBatches: Recortado en ${observables.length} de ${concurrency}`);
 
   let index = 0;
 
-  for (const tasks of promises) {
+  console.log('tasks:', observables);
+  for (const tasks of observables) {
     let loaded = false;
 
     const _continue = props.checkContinue?.() ?? true;
@@ -31,10 +33,11 @@ export async function runPromisesInBatches<T>(props: IProps<T>) {
 
     while (!loaded) {
       try {
-        console.info(`PromiseInBatches: Ejecutando ${promises.indexOf(tasks)} de ${promises.length}...`);
-        const results = await Promise.all(tasks);
+        console.log('tasks:', tasks);
+        console.info(`ObserversInBatches: Ejecutando ${observables.indexOf(tasks)} de ${observables.length}...`);
+        const results = await Promise.all(tasks.map((task) => lastValueFrom(task)));
         
-        console.info(`PromiseInBatches: Ejecucion ${promises.indexOf(tasks)} completada!`);
+        console.info(`ObserversInBatches: Ejecucion ${observables.indexOf(tasks)} completada!`);
 
         for (const result of results) {
           const _continue = props.checkContinue?.() ?? true;
@@ -44,22 +47,24 @@ export async function runPromisesInBatches<T>(props: IProps<T>) {
             return;
           }  
 
-          console.info(`PromiseInBatches: Esperando ${results.indexOf(result)} resultado...`);
+          console.info(`ObserversInBatches: Esperando ${results.indexOf(result)} resultado...`);
           try {
             await props.onResult(result, index);
+            index++;
           } catch (error) {
-            console.error(error);
+            console.error('Error in "OnResult" ->', error);
 
             if (props.catchErrorOnResult) {
               throw error;
+            } else {
+              index++;
             }
           }
-          index++;
         }
 
         loaded = true;
       } catch (error) {
-        console.error(error);
+        console.error('Error in "RunPromisesInBatches" ->', error);
 
         loaded = !props.retryOnCatch;
       }
