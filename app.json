@@ -4,7 +4,8 @@
     "slug": "tmo_app",
     "version": "1.2.1",
     "experiments": {
-      "tsconfigPaths": true
+      "tsconfigPaths": true,
+      "reactCompiler": true
     },
     "plugins": [
       [
