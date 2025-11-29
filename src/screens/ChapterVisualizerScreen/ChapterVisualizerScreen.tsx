@@ -1,18 +1,24 @@
-import { Appbar } from "react-native-paper";
-import PrincipalView from "~/common/components/PrincipalView";
-import StackScreenProps from "~/common/interfaces/StackScreenProps";
-import { ChapterVisualizerParams } from "./interfaces/ChapterVisualizerParams";
-import { VisualizeWebView, VisualizeWebViewRef } from "./components/VisualizeWebView";
-import { useLoadChapterImages } from "./hooks/useLoadChapterImages";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { View } from "react-native";
-import { toast } from "sonner-native";
-import { goViewChapter } from "../BookInfoScreen/scripts/goViewChapter";
-import { setViewedChapter } from "./scripts/setViewedChapter";
-import { MiniBanner } from "./components/MiniBanner";
-import { VisualizerOptionsSheet, VisualizerOptionsSheetRef } from "./sheets/VisualizerOptionsSheet";
-import { useAutoSaveChapterBookHistory } from "~/services/chapter-progress/hooks/useAutoSaveChapterBookHistory";
-import { UserHistory } from "~/services/user-history";
+import { Appbar } from 'react-native-paper';
+import PrincipalView from '~/common/components/PrincipalView';
+import StackScreenProps from '~/common/interfaces/StackScreenProps';
+import { ChapterVisualizerParams } from './interfaces/ChapterVisualizerParams';
+import {
+  VisualizeWebView,
+  VisualizeWebViewRef,
+} from './components/VisualizeWebView';
+import { useLoadChapterImages } from './hooks/useLoadChapterImages';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { View } from 'react-native';
+import { toast } from 'sonner-native';
+import { goViewChapter } from '../BookInfoScreen/scripts/goViewChapter';
+import { setViewedChapter } from './scripts/setViewedChapter';
+import { MiniBanner } from './components/MiniBanner';
+import {
+  VisualizerOptionsSheet,
+  VisualizerOptionsSheetRef,
+} from './sheets/VisualizerOptionsSheet';
+import { useAutoSaveChapterBookHistory } from '~/services/chapter-progress/hooks/useAutoSaveChapterBookHistory';
+import { UserHistory } from '~/services/user-history';
 
 export function ChapterVisualizerScreen(props: StackScreenProps) {
   const params = props.route.params as ChapterVisualizerParams;
@@ -21,25 +27,29 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
   const refVisualizerOptionsSheet = useRef<VisualizerOptionsSheetRef>(null);
   const progressRef = useRef<string | number | undefined>(undefined);
 
-  const {availableProgress, init: initAutoSave} = useAutoSaveChapterBookHistory(
-    params.id_bookinfo,
-    params.chapter,
-    params.selected_option,
-    async () => {
-      const position = await refVisualizeWebView.current?.getCurrentPosition();
-      return position;
-    },
-  );
+  const { availableProgress, init: initAutoSave } =
+    useAutoSaveChapterBookHistory(
+      params.id_bookinfo,
+      params.chapter,
+      params.selected_option,
+      async () => {
+        const position =
+          await refVisualizeWebView.current?.getCurrentPosition();
+        return position;
+      },
+    );
 
   const chapter_list = useMemo(() => {
-    return params.chapter_list.sort((a, b) => a.chapter_number - b.chapter_number);
+    return params.chapter_list.sort(
+      (a, b) => a.chapter_number - b.chapter_number,
+    );
   }, [params.chapter_list]);
 
   const chapter_index = useMemo(() => {
-    return chapter_list.findIndex(v => v.id === params.chapter.id);
+    return chapter_list.findIndex((v) => v.id === params.chapter.id);
   }, [chapter_list]);
 
-  const {images, loaded, startLoadImages, cancelLoad} = useLoadChapterImages(
+  const { images, loaded, startLoadImages, cancelLoad } = useLoadChapterImages(
     params.images,
     params.originUrl,
     params.chapter_id,
@@ -62,23 +72,35 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
     },
   );
 
-  const goToChapter = useCallback((move: number) => {
-    const index = chapter_index + move;
-    const chapter = chapter_list.at(index)!;
-    const bestOption = chapter.options.sort((a, b) => b.date.getTime() - a.date.getTime())[0];
+  const goToChapter = useCallback(
+    (move: number) => {
+      const index = chapter_index + move;
+      const chapter = chapter_list.at(index)!;
+      const bestOption = chapter.options.sort(
+        (a, b) => b.date.getTime() - a.date.getTime(),
+      )[0];
 
-    goViewChapter({
-      index: index,
-      option: bestOption,
-      chapter: chapter,
-      book_url: params.book_url,
-      chapters_list: params.chapter_list,
-      id_bookinfo: params.id_bookinfo,
-      onLoadImages() {
-        props.navigation.goBack();
-      },
-    });
-  }, [chapter_index, chapter_list, params.book_url, params.chapter_list, params.id_bookinfo, props.navigation]);
+      goViewChapter({
+        index: index,
+        option: bestOption,
+        chapter: chapter,
+        book_url: params.book_url,
+        chapters_list: params.chapter_list,
+        id_bookinfo: params.id_bookinfo,
+        onLoadImages() {
+          props.navigation.goBack();
+        },
+      });
+    },
+    [
+      chapter_index,
+      chapter_list,
+      params.book_url,
+      params.chapter_list,
+      params.id_bookinfo,
+      props.navigation,
+    ],
+  );
 
   useEffect(() => {
     setViewedChapter(
@@ -88,10 +110,7 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
       true,
     );
 
-    UserHistory.addUserHistory(
-      params.id_bookinfo,
-      params.chapter.id!,
-    );
+    UserHistory.addUserHistory(params.id_bookinfo, params.chapter.id!);
 
     return () => {
       if (progressRef.current) {
@@ -104,12 +123,8 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
   return (
     <PrincipalView>
       <Appbar.Header elevated>
-        <Appbar.BackAction
-          onPress={props.navigation.goBack}
-        />
-        <Appbar.Content
-          title={params.title}
-        />
+        <Appbar.BackAction onPress={props.navigation.goBack} />
+        <Appbar.Content title={params.title} />
         <Appbar.Action
           icon={'cog-outline'}
           onPress={() => {
@@ -117,7 +132,7 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
           }}
         />
       </Appbar.Header>
-      
+
       <MiniBanner
         visible={availableProgress !== null}
         message={'¿Reestablecer ultima posición?'}
@@ -133,7 +148,9 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
             loading: !loaded,
             mode: 'contained',
             onPress() {
-              refVisualizeWebView.current?.setCurrentPosition(availableProgress as number);
+              refVisualizeWebView.current?.setCurrentPosition(
+                availableProgress as number,
+              );
               initAutoSave();
             },
           },
@@ -156,7 +173,7 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
         book_url={params.book_url}
         nextChapter={chapter_list[chapter_index + 1]}
         previusChapter={chapter_list[chapter_index - 1]}
-        goToChapter={goToChapter}        
+        goToChapter={goToChapter}
       />
     </PrincipalView>
   );

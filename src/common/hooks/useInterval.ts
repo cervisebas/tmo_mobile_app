@@ -1,6 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-export function useInterval(callback: () => void, ms: number, autoStart = true) {
+export function useInterval(
+  callback: () => void,
+  ms: number,
+  autoStart = true,
+) {
   const interval = useRef<NodeJS.Timeout | undefined>(undefined);
 
   function start() {
@@ -20,5 +24,5 @@ export function useInterval(callback: () => void, ms: number, autoStart = true) 
     };
   }, []);
 
-  return {start};
+  return { start };
 }

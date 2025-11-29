@@ -8,8 +8,13 @@ export async function checkExecuteTask() {
     id: ConfigKey.DEFAULT,
     mode: Mode.MULTI_PROCESS,
   });
-  
-  if (!(ConfigStorage.getBoolean(ConfigKey.BACKGROUND_TASK) ?? DefaultValueConfig.BACKGROUND_TASK)) {
+
+  if (
+    !(
+      ConfigStorage.getBoolean(ConfigKey.BACKGROUND_TASK) ??
+      DefaultValueConfig.BACKGROUND_TASK
+    )
+  ) {
     throw '[BackgroundTask] No habilitado por el usuario: abortando.';
   }
 
@@ -18,7 +23,7 @@ export async function checkExecuteTask() {
     '[BackgroundTask] Notification status:',
     ConfigStorage.getBoolean(ConfigKey.NOTIFICATION_STATUS),
   );
-  
+
   if (!ConfigStorage.getBoolean(ConfigKey.NOTIFICATION_STATUS)) {
     throw '[BackgroundTask] Notificaciones no disponibles: abortando.';
   }

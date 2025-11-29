@@ -1,4 +1,4 @@
-import React, {useContext, useMemo} from 'react';
+import React, { useContext, useMemo } from 'react';
 import {
   Keyboard,
   LayoutChangeEvent,
@@ -26,16 +26,14 @@ export default React.memo(function ({
   onLayout,
   children,
 }: IProps) {
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   const _view = useMemo(
     () =>
       onlyView ? (
         children
       ) : (
-        <View style={[styles.full, style]}>
-          {children}
-        </View>
+        <View style={[styles.full, style]}>{children}</View>
       ),
     [children, onlyView, style],
   );
@@ -64,7 +62,8 @@ export default React.memo(function ({
           overflow: overflow ? 'hidden' : undefined,
           backgroundColor: theme.colors.surface,
         },
-      ]}>
+      ]}
+    >
       {_content}
     </View>
   );

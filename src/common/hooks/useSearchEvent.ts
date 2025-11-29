@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function (event?: (v: string) => void) {
   const [valueSearch, setValueSearch] = useState('');
@@ -15,8 +15,7 @@ export default function (event?: (v: string) => void) {
         event?.(valueSearch);
       }, 800);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valueSearch]);
 
-  return {valueSearch, setValueSearch};
+  return { valueSearch, setValueSearch };
 }

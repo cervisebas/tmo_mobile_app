@@ -1,23 +1,26 @@
-import { eq } from "drizzle-orm";
-import { db } from "../database";
-import { BookInfoModel } from "../schemas/BookInfoModel";
-import { BookChapterModel } from "../schemas/BookChapterModel";
-import { BookChapterOptionModel } from "../schemas/BookChapterOptionModel";
-import { BookGenderByBookInfoModel } from "../schemas/BookGenderByBookInfoModel";
-import { BookGenderModel } from "../schemas/BookGenderModel";
-import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
-import { BookType } from "~/api/enums/BookType";
-import { BookStatus } from "~/api/enums/BookStatus";
-import { GenderInterface } from "~/api/interfaces/GenderInterface";
-import { DatabaseTableName } from "../enums/DatabaseTableName";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { getMarkUserBookStatus } from "./getMarkUserBookStatus";
-import { BookStaffInterface } from "~/api/interfaces/BookStaffInterface";
-import { BookStaffByBookInfoModel } from "../schemas/BookStaffByBookInfoModel";
-import { BookStaffModel } from "../schemas/BookStaffModel";
-import { extractNumberChapter } from "~/utils/extractNumberChapter";
+import { eq } from 'drizzle-orm';
+import { db } from '../database';
+import { BookInfoModel } from '../schemas/BookInfoModel';
+import { BookChapterModel } from '../schemas/BookChapterModel';
+import { BookChapterOptionModel } from '../schemas/BookChapterOptionModel';
+import { BookGenderByBookInfoModel } from '../schemas/BookGenderByBookInfoModel';
+import { BookGenderModel } from '../schemas/BookGenderModel';
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
+import { BookType } from '~/api/enums/BookType';
+import { BookStatus } from '~/api/enums/BookStatus';
+import { GenderInterface } from '~/api/interfaces/GenderInterface';
+import { DatabaseTableName } from '../enums/DatabaseTableName';
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { getMarkUserBookStatus } from './getMarkUserBookStatus';
+import { BookStaffInterface } from '~/api/interfaces/BookStaffInterface';
+import { BookStaffByBookInfoModel } from '../schemas/BookStaffByBookInfoModel';
+import { BookStaffModel } from '../schemas/BookStaffModel';
+import { extractNumberChapter } from '~/utils/extractNumberChapter';
 
-export async function getDatabaseBookInfo(url: string | null, id_bookinfo?: number) {
+export async function getDatabaseBookInfo(
+  url: string | null,
+  id_bookinfo?: number,
+) {
   try {
     if (!url && !id_bookinfo) {
       throw 'Información proporcionada no valida';
@@ -45,57 +48,35 @@ export async function getDatabaseBookInfo(url: string | null, id_bookinfo?: numb
       .from(BookChapterModel)
       .leftJoin(
         BookChapterOptionModel,
-        eq(
-          BookChapterModel.id,
-          BookChapterOptionModel.id_chapter,
-        ),
+        eq(BookChapterModel.id, BookChapterOptionModel.id_chapter),
       )
-      .where(
-        eq(BookChapterModel.id_bookinfo, find_book[0].id),
-      );
-    
+      .where(eq(BookChapterModel.id_bookinfo, find_book[0].id));
+
     if (!db_chapters.length) {
       // TODO: Ver que hago aquí
       //throw 'Información incompleta';
     }
-    
+
     const db_genders = await db
       .select()
       .from(BookGenderByBookInfoModel)
       .leftJoin(
         BookGenderModel,
-        eq(
-          BookGenderByBookInfoModel.id_bookgender,
-          BookGenderModel.id,
-        )
+        eq(BookGenderByBookInfoModel.id_bookgender, BookGenderModel.id),
       )
-      .where(
-        eq(
-          BookGenderByBookInfoModel.id_bookinfo,
-          find_book[0].id,
-        ),
-      );
-    
+      .where(eq(BookGenderByBookInfoModel.id_bookinfo, find_book[0].id));
+
     const db_staff = await db
       .select()
       .from(BookStaffByBookInfoModel)
       .leftJoin(
         BookStaffModel,
-        eq(
-          BookStaffByBookInfoModel.id_bookstaff,
-          BookStaffModel.id,
-        ),
+        eq(BookStaffByBookInfoModel.id_bookstaff, BookStaffModel.id),
       )
-      .where(
-        eq(
-          BookStaffByBookInfoModel.id_bookinfo,
-          find_book[0].id,
-        )
-      );
+      .where(eq(BookStaffByBookInfoModel.id_bookinfo, find_book[0].id));
 
     // ##### Make Datas
     const user_status = await getMarkUserBookStatus(find_book[0].id);
-
 
     const genders: GenderInterface[] = [];
     for (const gender of db_genders) {
@@ -107,7 +88,9 @@ export async function getDatabaseBookInfo(url: string | null, id_bookinfo?: numb
 
     let chapters: ChapterInterface[] = [];
     for (const chapter of db_chapters) {
-      const index_found = chapters.findIndex(v => chapter[DatabaseTableName.BOOK_CHAPTERS].id === v.id);
+      const index_found = chapters.findIndex(
+        (v) => chapter[DatabaseTableName.BOOK_CHAPTERS].id === v.id,
+      );
 
       if (index_found !== -1) {
         chapters[index_found].options.push({
@@ -122,7 +105,9 @@ export async function getDatabaseBookInfo(url: string | null, id_bookinfo?: numb
         id: chapter[DatabaseTableName.BOOK_CHAPTERS].id,
         title: chapter[DatabaseTableName.BOOK_CHAPTERS].name,
         data_chapter: chapter[DatabaseTableName.BOOK_CHAPTERS].data_chapter,
-        chapter_number: extractNumberChapter(chapter[DatabaseTableName.BOOK_CHAPTERS].name),
+        chapter_number: extractNumberChapter(
+          chapter[DatabaseTableName.BOOK_CHAPTERS].name,
+        ),
         options: [
           {
             title: chapter[DatabaseTableName.BOOK_CHAPTER_OPTIONS]!.title,

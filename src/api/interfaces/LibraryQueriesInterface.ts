@@ -1,5 +1,15 @@
-import { LibraryGenders } from "../enums/LibraryGenders";
-import { LibraryQueries, LibraryOrderItems, LibraryOrderDir, LibraryFilterby, LibraryType, LibraryDemography, LibraryStatus, LibraryTranslationStatus, LibraryCheck } from "../enums/LibraryQueries";
+import { LibraryGenders } from '../enums/LibraryGenders';
+import {
+  LibraryQueries,
+  LibraryOrderItems,
+  LibraryOrderDir,
+  LibraryFilterby,
+  LibraryType,
+  LibraryDemography,
+  LibraryStatus,
+  LibraryTranslationStatus,
+  LibraryCheck,
+} from '../enums/LibraryQueries';
 
 export interface LibraryQueriesInterface {
   // Order

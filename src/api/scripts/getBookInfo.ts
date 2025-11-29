@@ -1,37 +1,36 @@
-import { ApiEndpoint } from "../enums/ApiEndpoint";
-import { ApiMessageError } from "../enums/ApiMessageError";
-import { ChapterInterface } from "../interfaces/ChapterInterface";
-import { GenderInterface } from "../interfaces/GenderInterface";
-import { UserBookStatusList } from "../interfaces/UserBookStatus";
-import { BookStatus } from "../enums/BookStatus";
-import { BookType } from "../enums/BookType";
-import { BookInfoInterface } from "../interfaces/BookInfoInterface";
-import { axios } from "~/common/utils/Axios";
-import { getUrlParams } from "~/database/utils/getUrlParams";
-import { AxiosError } from "axios";
-import { BookStaffInterface } from "../interfaces/BookStaffInterface";
-import { extractNumberChapter } from "~/utils/extractNumberChapter";
-import parse, { HTMLElement } from "node-html-parser";
-import moment from "moment";
-import he from "he";
-import qs from "qs";
+import { ApiEndpoint } from '../enums/ApiEndpoint';
+import { ApiMessageError } from '../enums/ApiMessageError';
+import { ChapterInterface } from '../interfaces/ChapterInterface';
+import { GenderInterface } from '../interfaces/GenderInterface';
+import { UserBookStatusList } from '../interfaces/UserBookStatus';
+import { BookStatus } from '../enums/BookStatus';
+import { BookType } from '../enums/BookType';
+import { BookInfoInterface } from '../interfaces/BookInfoInterface';
+import { axios } from '~/common/utils/Axios';
+import { getUrlParams } from '~/database/utils/getUrlParams';
+import { AxiosError } from 'axios';
+import { BookStaffInterface } from '../interfaces/BookStaffInterface';
+import { extractNumberChapter } from '~/utils/extractNumberChapter';
+import parse, { HTMLElement } from 'node-html-parser';
+import moment from 'moment';
+import he from 'he';
+import qs from 'qs';
 
 function getChapterInfo(el: HTMLElement, set_title?: string): ChapterInterface {
   const options: ChapterInterface['options'] = [];
-  
+
   for (const item_el of el.querySelectorAll('.list-group-item')) {
     const date = moment(
       item_el.querySelector('.badge')?.innerText.trim() ?? '2012-12-12',
       'YYYY-MM-DD',
     );
 
-    const title = item_el
-      .querySelector('.text-truncate')
-      ?.innerText
-      .trim()
-      .replace(/ {2,}/g, '  ')
-      .replace(/\n/g, '')
-      ?? '';
+    const title =
+      item_el
+        .querySelector('.text-truncate')
+        ?.innerText.trim()
+        .replace(/ {2,}/g, '  ')
+        .replace(/\n/g, '') ?? '';
 
     options.push({
       date: date.toDate(),
@@ -41,7 +40,8 @@ function getChapterInfo(el: HTMLElement, set_title?: string): ChapterInterface {
   }
 
   const title = el.querySelector('h4')?.innerText.trim() ?? '';
-  const number = el.querySelector('span[data-chapter]')?.getAttribute('data-chapter') ?? '0';
+  const number =
+    el.querySelector('span[data-chapter]')?.getAttribute('data-chapter') ?? '0';
 
   const use_title = set_title ?? he.decode(title);
 
@@ -53,16 +53,16 @@ function getChapterInfo(el: HTMLElement, set_title?: string): ChapterInterface {
   };
 }
 
-export async function getBookInfo(url: string, referer?: string): Promise<BookInfoInterface> {
+export async function getBookInfo(
+  url: string,
+  referer?: string,
+): Promise<BookInfoInterface> {
   try {
-    const { data } = await axios.get<string>(
-      url,
-      {
-        headers: {
-          Referer: referer ?? ApiEndpoint.HOME,
-        },
+    const { data } = await axios.get<string>(url, {
+      headers: {
+        Referer: referer ?? ApiEndpoint.HOME,
       },
-    );
+    });
     const root = parse(data);
 
     // ##### Chapters
@@ -80,7 +80,6 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
     }
     chapters = chapters.sort((a, b) => b.chapter_number - a.chapter_number);
 
-    
     // ##### Genders
     const genders: GenderInterface[] = [];
 
@@ -94,13 +93,11 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
       });
     }
 
-    
     // ##### Wallpaper
     const style_wallpaper = data.indexOf('.wallpaper::before');
     const start_url_wallpaper = data.indexOf("url('", style_wallpaper);
     const end_url_wallpaper = data.indexOf("')", start_url_wallpaper);
 
-    
     // ##### User Statues
     const user_status: Record<string, UserBookStatusList['abandoned']> = {};
 
@@ -109,49 +106,37 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
 
       Object.assign(user_status, {
         [key]: {
-          quantity: el
-            .querySelector('.element-header-bar-element-number')
-            ?.innerText
-            ?? ''
-          ,
+          quantity:
+            el.querySelector('.element-header-bar-element-number')?.innerText ??
+            '',
           user_select: el.classList.contains('active'),
         },
       });
     }
-    
-    const stars = root
-        .querySelector('.score')!
-        .querySelector('span')
-        ?.innerText
-        ?? '';
 
-    const title = root
-      .querySelector('.element-title')
-      ?.innerText
-      .trim()
-      .replace(/ {2,}/g, '  ')
-      .replace(/\n/g, '')
-      .replace(/\t/g, '')
-      ?? '';
+    const stars =
+      root.querySelector('.score')!.querySelector('span')?.innerText ?? '';
 
-    const subtitle = root
-      .querySelector('h2.element-subtitle')
-      ?.innerText
-      .trim() ?? '';
+    const title =
+      root
+        .querySelector('.element-title')
+        ?.innerText.trim()
+        .replace(/ {2,}/g, '  ')
+        .replace(/\n/g, '')
+        .replace(/\t/g, '') ?? '';
 
-    const description = root
-      .querySelector('.element-description')
-      ?.innerText
-      .trim() ?? '';
+    const subtitle =
+      root.querySelector('h2.element-subtitle')?.innerText.trim() ?? '';
 
+    const description =
+      root.querySelector('.element-description')?.innerText.trim() ?? '';
 
     // Staff
     const staff_list: BookStaffInterface[] = [];
-    const staff_content = Array.from(root.querySelectorAll('h2'))
-      .find(el => el.textContent.trim() === 'Staff')
-      ?.parentNode
-      ?.parentNode;
-    
+    const staff_content = Array.from(root.querySelectorAll('h2')).find(
+      (el) => el.textContent.trim() === 'Staff',
+    )?.parentNode?.parentNode;
+
     if (staff_content) {
       for (const el of staff_content.querySelectorAll('div.card')) {
         const img = el.querySelector('img');
@@ -175,7 +160,6 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
       }
     }
 
-
     return {
       url: url.trim(),
       path: url.slice(url.lastIndexOf('/') + 1).trim(),
@@ -183,23 +167,16 @@ export async function getBookInfo(url: string, referer?: string): Promise<BookIn
       title: he.decode(title),
       subtitle: he.decode(subtitle),
       description: he.decode(description),
-      picture: root
-        .querySelector('.book-thumbnail')!
-        .getAttribute('src')!
-      ,
+      picture: root.querySelector('.book-thumbnail')!.getAttribute('src')!,
       wallpaper: data.slice(start_url_wallpaper + 5, end_url_wallpaper),
       genders: genders,
       status: root
         .querySelector('.book-status.publishing')
-        ?.innerText
-        .toLowerCase() as BookStatus
-      ,
+        ?.innerText.toLowerCase() as BookStatus,
       type: root
         .querySelector('.book-type')
-        ?.innerText
-        .toLowerCase()
-        .trim() as BookType
-      ,
+        ?.innerText.toLowerCase()
+        .trim() as BookType,
       user_status: user_status as unknown as UserBookStatusList,
       chapters: chapters,
       staff: staff_list,

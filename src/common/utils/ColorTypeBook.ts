@@ -1,4 +1,4 @@
-import { BookType } from "~/api/enums/BookType";
+import { BookType } from '~/api/enums/BookType';
 
 export function getColorTypeBook(type: BookType) {
   switch (type) {

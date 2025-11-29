@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import Fuse from 'fuse.js';
 
 export default function <T = []>(data: T, keys: string[]) {
@@ -20,7 +20,7 @@ export default function <T = []>(data: T, keys: string[]) {
     });
     const list = fuse.search(search);
 
-    const res = list.map(v => ({
+    const res = list.map((v) => ({
       ...v.item,
       hide: (v.score ?? 1) > 0.5,
     }));
@@ -30,12 +30,10 @@ export default function <T = []>(data: T, keys: string[]) {
 
   useEffect(() => {
     goToSearch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   useEffect(() => {
     goToSearch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return {

@@ -1,13 +1,15 @@
-import { eq, inArray } from "drizzle-orm";
-import { db } from "../database";
-import { BookChapterHistoryModel } from "../schemas/BookChapterHistoryModel";
+import { eq, inArray } from 'drizzle-orm';
+import { db } from '../database';
+import { BookChapterHistoryModel } from '../schemas/BookChapterHistoryModel';
 
 interface HistoryChapter {
   id: number;
   status: boolean;
 }
 
-export async function getDatabaseHistoryChapter<T extends (number | number[])>(id_chapter: T): Promise<T extends number ? boolean : HistoryChapter[]> {
+export async function getDatabaseHistoryChapter<T extends number | number[]>(
+  id_chapter: T,
+): Promise<T extends number ? boolean : HistoryChapter[]> {
   const find = await db
     .select()
     .from(BookChapterHistoryModel)
@@ -25,7 +27,7 @@ export async function getDatabaseHistoryChapter<T extends (number | number[])>(i
   }
 
   if (Array.isArray(id_chapter)) {
-    return find.map(v => ({
+    return find.map((v) => ({
       id: v.id_chapter,
       status: v.status,
     })) as any;

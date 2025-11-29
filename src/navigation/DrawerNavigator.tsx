@@ -1,26 +1,26 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { Platform, StyleSheet } from "react-native";
-import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
-import { DrawerMenu } from "~/common/components/DrawerMenu";
-import { refNavigation } from "~/common/utils/Ref";
-import { DrawerScreen } from "~/enums/DrawerScreen";
-import { StackScreens } from "~/enums/StackScreens";
-import { NotificationAction } from "~/services/notifications/enums/NotificationAction";
-import { useNotificationAction } from "~/services/notifications/hooks/useNotificationAction";
-import { ConfigurationScreen } from "~/screens/ConfigurationScreen/ConfigurationScreen";
-import { LibraryScreen } from "~/screens/LibraryScreen/LibraryScreen";
-import { MyProfileScreen } from "~/screens/MyProfileScreen/MyProfile";
-import { PopularScreen } from "~/screens/PopularScreen/PopularScreen";
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Platform, StyleSheet } from 'react-native';
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
+import { DrawerMenu } from '~/common/components/DrawerMenu';
+import { refNavigation } from '~/common/utils/Ref';
+import { DrawerScreen } from '~/enums/DrawerScreen';
+import { StackScreens } from '~/enums/StackScreens';
+import { NotificationAction } from '~/services/notifications/enums/NotificationAction';
+import { useNotificationAction } from '~/services/notifications/hooks/useNotificationAction';
+import { ConfigurationScreen } from '~/screens/ConfigurationScreen/ConfigurationScreen';
+import { LibraryScreen } from '~/screens/LibraryScreen/LibraryScreen';
+import { MyProfileScreen } from '~/screens/MyProfileScreen/MyProfile';
+import { PopularScreen } from '~/screens/PopularScreen/PopularScreen';
 
 const Drawer = createDrawerNavigator();
 
 export function DrawerNavigator() {
-  useNotificationAction<BookInfoInterface>(NotificationAction.OPEN_DETAILS, data => {
-    refNavigation.current?.navigate(
-      StackScreens.BOOK_INFO,
-      data,
-    );
-  });
+  useNotificationAction<BookInfoInterface>(
+    NotificationAction.OPEN_DETAILS,
+    (data) => {
+      refNavigation.current?.navigate(StackScreens.BOOK_INFO, data);
+    },
+  );
 
   return (
     <Drawer.Navigator
@@ -28,9 +28,7 @@ export function DrawerNavigator() {
         headerShown: false,
         drawerStyle: styles.drawerStyle,
       }}
-      drawerContent={drawerProps => (
-        <DrawerMenu {...drawerProps} />
-      )}
+      drawerContent={(drawerProps) => <DrawerMenu {...drawerProps} />}
     >
       <Drawer.Screen
         name={DrawerScreen.HOME}
@@ -40,7 +38,7 @@ export function DrawerNavigator() {
         }}
         component={PopularScreen}
       />
-      
+
       <Drawer.Screen
         name={DrawerScreen.LIBRARY}
         options={{
@@ -49,7 +47,7 @@ export function DrawerNavigator() {
         }}
         component={LibraryScreen}
       />
-      
+
       <Drawer.Screen
         name={DrawerScreen.CONFIGURATIONS}
         options={{
@@ -58,7 +56,7 @@ export function DrawerNavigator() {
         }}
         component={ConfigurationScreen}
       />
-      
+
       <Drawer.Screen
         name={DrawerScreen.MY_PROFILE}
         options={{

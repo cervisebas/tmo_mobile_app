@@ -2,8 +2,8 @@ import {
   differenceInMinutes,
   differenceInHours,
   differenceInDays,
-  differenceInYears
-} from 'date-fns'
+  differenceInYears,
+} from 'date-fns';
 
 export function timeAgoShort(date: Date) {
   const now = new Date();

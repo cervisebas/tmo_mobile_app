@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import { StyleSheet, View } from "react-native";
-import { Surface, TouchableRipple, Icon, Text } from "react-native-paper";
-import { ThemeContext } from "~/common/providers/ThemeProvider";
-import { UserStatus } from "~/api/interfaces/UserBookStatus";
+import React, { useContext } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Surface, TouchableRipple, Icon, Text } from 'react-native-paper';
+import { ThemeContext } from '~/common/providers/ThemeProvider';
+import { UserStatus } from '~/api/interfaces/UserBookStatus';
 
 interface IProps {
   icon: string;
@@ -14,8 +14,8 @@ interface IProps {
 }
 
 export function BookStatusItem(props: IProps) {
-  const {theme} = useContext(ThemeContext);
-  
+  const { theme } = useContext(ThemeContext);
+
   return (
     <Surface
       elevation={0}
@@ -29,32 +29,20 @@ export function BookStatusItem(props: IProps) {
       <TouchableRipple style={styles.touchable} onPress={props.onPress}>
         <React.Fragment>
           {props.value?.user_select ? (
-            <Icon
-              source={props.iconSelected}
-              size={32}
-              color={props.color}
-            />
+            <Icon source={props.iconSelected} size={32} color={props.color} />
           ) : (
-            <Icon
-              source={props.icon}
-              size={32}
-              color={props.color}
-            />
+            <Icon source={props.icon} size={32} color={props.color} />
           )}
-          <View className={'gap-[4] flex-col'}>
-            <Text variant={'titleMedium'}>
-              {props.value?.quantity}
-            </Text>
+          <View className={'flex-col gap-[4]'}>
+            <Text variant={'titleMedium'}>{props.value?.quantity}</Text>
 
-            <Text variant={'labelSmall'}>
-              {props.title}
-            </Text>
+            <Text variant={'labelSmall'}>{props.title}</Text>
           </View>
         </React.Fragment>
       </TouchableRipple>
 
       <View
-        className={'w-full h-[4]'}
+        className={'h-[4] w-full'}
         style={{
           backgroundColor: props.color,
           opacity: Number(props.value?.user_select ?? 0),

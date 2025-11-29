@@ -1,4 +1,4 @@
-import { UserBookStatus } from "../enums/UserBookStatus";
+import { UserBookStatus } from '../enums/UserBookStatus';
 
 export interface UserStatus {
   quantity: string;

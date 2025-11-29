@@ -1,11 +1,11 @@
-import moment from "moment";
-import { BottomSheetOptionsInterface } from "~/common/components/BottomSheetOptions";
-import { ChapterHistoryInterface } from "~/database/interfaces/ChapterHistoryInterface";
-import { goViewChapter } from "./goViewChapter";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { toast } from "sonner-native";
-import { refDialog } from "~/common/utils/Ref";
-import { DatabaseService } from "~/database/classes/DatabaseService";
+import moment from 'moment';
+import { BottomSheetOptionsInterface } from '~/common/components/BottomSheetOptions';
+import { ChapterHistoryInterface } from '~/database/interfaces/ChapterHistoryInterface';
+import { goViewChapter } from './goViewChapter';
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { toast } from 'sonner-native';
+import { refDialog } from '~/common/utils/Ref';
+import { DatabaseService } from '~/database/classes/DatabaseService';
 
 interface IProps {
   chapter: ChapterHistoryInterface | ChapterInterface;
@@ -17,22 +17,24 @@ interface IProps {
 }
 
 export function onPressChapterItem(props: IProps) {
-  const options: BottomSheetOptionsInterface[] = props.chapter.options.map((option, index) => ({
-    label: option.title,
-    description: moment(option.date).format('DD-MM-YYYY'),
-    leftIcon: 'play',
-    leftIconColor: props.primaryColor,
-    onPress() {
-      goViewChapter({
-        index: index,
-        option: option,
-        chapter: props.chapter,
-        book_url: props.book_url,
-        id_bookinfo: props.id_bookinfo,
-        chapters_list: props.chapters,
-      });
-    },
-  }));
+  const options: BottomSheetOptionsInterface[] = props.chapter.options.map(
+    (option, index) => ({
+      label: option.title,
+      description: moment(option.date).format('DD-MM-YYYY'),
+      leftIcon: 'play',
+      leftIconColor: props.primaryColor,
+      onPress() {
+        goViewChapter({
+          index: index,
+          option: option,
+          chapter: props.chapter,
+          book_url: props.book_url,
+          id_bookinfo: props.id_bookinfo,
+          chapters_list: props.chapters,
+        });
+      },
+    }),
+  );
 
   const aditionalOptions: BottomSheetOptionsInterface[] = [];
 
@@ -40,39 +42,36 @@ export function onPressChapterItem(props: IProps) {
     aditionalOptions.push({
       label: props.chapter.viewed
         ? 'Marcar como no visto'
-        : 'Marcar como visto'
-      ,
-      leftIcon: props.chapter.viewed
-        ? 'eye-off-outline'
-        : 'eye-outline'
-      ,
+        : 'Marcar como visto',
+      leftIcon: props.chapter.viewed ? 'eye-off-outline' : 'eye-outline',
       onPress() {
         const dbService = new DatabaseService();
-        toast.promise(dbService.setDatabaseHistoryChapter(
-          props.id_bookinfo,
-          props.chapters,
-          props.chapter,
-          !(props.chapter as ChapterHistoryInterface).viewed
-        ), {
-          loading: 'Espere por favor...',
-          success(value: boolean) {
-            return `Se ha ${value ? 'marcado' : 'desmarcado'} como visto correctamente`;
+        toast.promise(
+          dbService.setDatabaseHistoryChapter(
+            props.id_bookinfo,
+            props.chapters,
+            props.chapter,
+            !(props.chapter as ChapterHistoryInterface).viewed,
+          ),
+          {
+            loading: 'Espere por favor...',
+            success(value: boolean) {
+              return `Se ha ${value ? 'marcado' : 'desmarcado'} como visto correctamente`;
+            },
+            error(error) {
+              return typeof error === 'string'
+                ? error
+                : 'Ocurrio un error inesperado';
+            },
           },
-          error(error) {
-            return typeof error === 'string'
-              ? error
-              : 'Ocurrio un error inesperado';
-          },
-        });
+        );
       },
     });
   }
 
   const information: BottomSheetOptionsInterface[] = [
     {
-      label: props.book_title
-        ? 'Nombre del capítulo'
-        : 'Nombre',
+      label: props.book_title ? 'Nombre del capítulo' : 'Nombre',
       leftIcon: 'text',
       description: props.chapter.title,
     },
@@ -86,18 +85,13 @@ export function onPressChapterItem(props: IProps) {
     });
   }
 
-  refDialog.current?.showBottomSheetOptions(
-    'Opciónes del capítulo',
-    {
-      'Información': information,
-      'Opciónes de lectura': options,
-      ...(
-        aditionalOptions.length
-           ? {
-             'Opciónes adicionales': aditionalOptions,
-           }
-           : {}
-      )
-    },
-  );
+  refDialog.current?.showBottomSheetOptions('Opciónes del capítulo', {
+    Información: information,
+    'Opciónes de lectura': options,
+    ...(aditionalOptions.length
+      ? {
+          'Opciónes adicionales': aditionalOptions,
+        }
+      : {}),
+  });
 }

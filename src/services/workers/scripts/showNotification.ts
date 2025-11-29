@@ -1,4 +1,7 @@
-import Notifee, { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
+import Notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
 import { NotificationChannel } from '~/services/notifications/enums/NotificationChannel';
 import { clearObject } from '~/utils/clearObject';
 import { randomString } from '~/utils/randomString';
@@ -32,13 +35,13 @@ const defaultProps = {
 export async function showNotification(props: IProps) {
   try {
     const id = props.id || randomString(24);
-    const channelId = props.channelId ?? (
-      await Notifee.createChannel({
+    const channelId =
+      props.channelId ??
+      (await Notifee.createChannel({
         id: NotificationChannel.DEFAULT,
         name: 'Default Channel',
         importance: AndroidImportance.HIGH,
-      })
-    );
+      }));
 
     await Notifee.displayNotification({
       id: id,
@@ -56,11 +59,10 @@ export async function showNotification(props: IProps) {
         onlyAlertOnce: props.onlyAlertOnce,
         pressAction: props.action
           ? {
-            id: props.action?.id,
-            launchActivity: 'default',
-          }
-          : undefined
-        ,
+              id: props.action?.id,
+              launchActivity: 'default',
+            }
+          : undefined,
         progress: props.progress,
         ...defaultProps,
       }),
@@ -72,7 +74,7 @@ export async function showNotification(props: IProps) {
       },
       update(new_props: Partial<IProps>) {
         const _props = { ...props, ...new_props };
-        
+
         return Notifee.displayNotification({
           id: id,
           title: _props.title,
@@ -86,11 +88,10 @@ export async function showNotification(props: IProps) {
             onlyAlertOnce: _props.onlyAlertOnce,
             pressAction: _props.action
               ? {
-                id: _props.action?.id,
-                launchActivity: 'default',
-              }
-              : undefined
-            ,
+                  id: _props.action?.id,
+                  launchActivity: 'default',
+                }
+              : undefined,
             progress: _props.progress,
             ...defaultProps,
           }),

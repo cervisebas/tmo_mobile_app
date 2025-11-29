@@ -1,14 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
-import { getBookChapterInfo } from "../services/getBookChapterInfo";
-import { getCurrentHistoryBook } from "../services/getCurrentHistoryBook";
-import { useTableChanges } from "./useTableChange";
-import { DatabaseTableName } from "../enums/DatabaseTableName";
+import { useCallback, useEffect, useState } from 'react';
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { ChapterOptionInterface } from '~/api/interfaces/ChapterOptionInterface';
+import { getBookChapterInfo } from '../services/getBookChapterInfo';
+import { getCurrentHistoryBook } from '../services/getCurrentHistoryBook';
+import { useTableChanges } from './useTableChange';
+import { DatabaseTableName } from '../enums/DatabaseTableName';
 
 export function useUserChapterBookHistory(id_bookinfo: number) {
-  const [chapter, setChapter] = useState<ChapterInterface | undefined>(undefined);
-  const [option, setOption] = useState<ChapterOptionInterface | undefined>(undefined);
+  const [chapter, setChapter] = useState<ChapterInterface | undefined>(
+    undefined,
+  );
+  const [option, setOption] = useState<ChapterOptionInterface | undefined>(
+    undefined,
+  );
 
   const loadData = useCallback(async () => {
     const _info = await getCurrentHistoryBook(id_bookinfo);
@@ -20,7 +24,7 @@ export function useUserChapterBookHistory(id_bookinfo: number) {
     const _chapter = await getBookChapterInfo(_info.id_chapter);
 
     setChapter(_chapter);
-    setOption(_chapter?.options.find(v => v.path === _info.path_option));
+    setOption(_chapter?.options.find((v) => v.path === _info.path_option));
   }, []);
 
   useEffect(() => {
@@ -34,5 +38,5 @@ export function useUserChapterBookHistory(id_bookinfo: number) {
     0,
   );
 
-  return {chapter, option};
+  return { chapter, option };
 }

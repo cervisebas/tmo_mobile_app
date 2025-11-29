@@ -18,10 +18,15 @@ declare class ExpoInsecureFetchModule extends NativeModule {
   ): Promise<FetchReturn>;
 }
 
-
-export const fetch: ExpoInsecureFetchModule['fetch'] = (url, method, headers, body) => {
+export const fetch: ExpoInsecureFetchModule['fetch'] = (
+  url,
+  method,
+  headers,
+  body,
+) => {
   if (Platform.OS === 'android') {
-    const module = requireNativeModule<ExpoInsecureFetchModule>('ExpoInsecureFetch');
+    const module =
+      requireNativeModule<ExpoInsecureFetchModule>('ExpoInsecureFetch');
     return module.fetch(url, method, headers, body);
   }
 
@@ -36,7 +41,10 @@ export const fetch: ExpoInsecureFetchModule['fetch'] = (url, method, headers, bo
       });
 
       const uint8Array = new Uint8Array(res.data);
-      const binary = uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), '');
+      const binary = uint8Array.reduce(
+        (data, byte) => data + String.fromCharCode(byte),
+        '',
+      );
 
       resolve({
         status: String(res.status),

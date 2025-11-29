@@ -1,4 +1,11 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import BottomSheet, { BottomSheetRef } from './BottomSheet';
 import { Divider, List } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
@@ -16,14 +23,19 @@ export interface BottomSheetOptionsInterface {
   onPress?(): void;
 }
 
-type Options = BottomSheetOptionsInterface[] | Record<string, BottomSheetOptionsInterface[]>;
+type Options =
+  | BottomSheetOptionsInterface[]
+  | Record<string, BottomSheetOptionsInterface[]>;
 
 export interface BottomSheetOptionsRef {
   open: (title: string, options: Options) => void;
   close: () => void;
 }
 
-export default forwardRef(function (_: object, ref: React.Ref<BottomSheetOptionsRef>) {
+export default forwardRef(function (
+  _: object,
+  ref: React.Ref<BottomSheetOptionsRef>,
+) {
   const [title, setTitle] = useState('');
   const [section, setSection] = useState(false);
   const [options, setOptions] = useState<Options>([]);
@@ -38,29 +50,34 @@ export default forwardRef(function (_: object, ref: React.Ref<BottomSheetOptions
     }
   }, [section, options]);
 
-  const renderOption = useCallback((value: BottomSheetOptionsInterface, index: number, array: BottomSheetOptionsInterface[]) => {
-    return (
-      <React.Fragment key={`bottom-sheet-option-${index}`}>
-        <ItemWithIcon
-          title={value.label}
-          disabled={value.selected || value.disabled}
-          leftIcon={value.leftIcon}
-          leftIconColor={value.leftIconColor}
-          rightIcon={value.selected ? 'check' : value.rightIcon}
-          rightIconColor={value.rightIconColor}
-          description={value.description}
-          onPress={() => {
-            refBottomSheet.current?.hide();
-            value.onPress?.();
-          }}
-        />
+  const renderOption = useCallback(
+    (
+      value: BottomSheetOptionsInterface,
+      index: number,
+      array: BottomSheetOptionsInterface[],
+    ) => {
+      return (
+        <React.Fragment key={`bottom-sheet-option-${index}`}>
+          <ItemWithIcon
+            title={value.label}
+            disabled={value.selected || value.disabled}
+            leftIcon={value.leftIcon}
+            leftIconColor={value.leftIconColor}
+            rightIcon={value.selected ? 'check' : value.rightIcon}
+            rightIconColor={value.rightIconColor}
+            description={value.description}
+            onPress={() => {
+              refBottomSheet.current?.hide();
+              value.onPress?.();
+            }}
+          />
 
-        {array[index + 1] && (
-          <Divider style={styles.divider} />
-        )}
-      </React.Fragment>
-    );
-  }, []);
+          {array[index + 1] && <Divider style={styles.divider} />}
+        </React.Fragment>
+      );
+    },
+    [],
+  );
 
   useImperativeHandle(ref, () => ({
     open: (title, options) => {
@@ -82,21 +99,15 @@ export default forwardRef(function (_: object, ref: React.Ref<BottomSheetOptions
       useScrollView={true}
     >
       <React.Fragment>
-        {
-          !Array.isArray(options)
-            ? (
-              sections!.map(({label, options}) => (
-                <List.Section key={label}>
-                  <List.Subheader>{label}</List.Subheader>
+        {!Array.isArray(options)
+          ? sections!.map(({ label, options }) => (
+              <List.Section key={label}>
+                <List.Subheader>{label}</List.Subheader>
 
-                  {options.map(renderOption)}
-                </List.Section>
-              ))
-            )
-            : (
-              options.map(renderOption)
-            )
-        }
+                {options.map(renderOption)}
+              </List.Section>
+            ))
+          : options.map(renderOption)}
       </React.Fragment>
     </BottomSheet>
   );

@@ -1,8 +1,8 @@
-import React from "react";
-import { View } from "react-native";
-import { BookStatusItem } from "./BookStatusItem";
-import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
-import { UserBookStatus } from "~/api/enums/UserBookStatus";
+import React from 'react';
+import { View } from 'react-native';
+import { BookStatusItem } from './BookStatusItem';
+import { UserBookStatusList } from '~/api/interfaces/UserBookStatus';
+import { UserBookStatus } from '~/api/enums/UserBookStatus';
 
 interface IProps extends UserBookStatusList {
   onToggleStatus(key: keyof UserBookStatusList): void;
@@ -10,8 +10,8 @@ interface IProps extends UserBookStatusList {
 
 export const BookStatusPanel = React.memo(function (props: IProps) {
   return (
-    <View className={'flex-col mx-[-12]'}>
-      <View className={'w-full flex-wrap justify-start flex-row'}>
+    <View className={'mx-[-12] flex-col'}>
+      <View className={'w-full flex-row flex-wrap justify-start'}>
         <BookStatusItem
           icon={'check-circle-outline'}
           iconSelected={'check-circle'}
@@ -46,7 +46,7 @@ export const BookStatusPanel = React.memo(function (props: IProps) {
         />
       </View>
 
-      <View className={'w-full flex-wrap justify-start flex-row'}>
+      <View className={'w-full flex-row flex-wrap justify-start'}>
         <BookStatusItem
           icon={'heart-outline'}
           iconSelected={'heart'}

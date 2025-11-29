@@ -42,5 +42,4 @@ export namespace DialogInterface {
   export interface ToastRef {
     open(message: string, duration?: number): void;
   }
-
 }

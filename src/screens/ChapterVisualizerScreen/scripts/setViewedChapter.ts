@@ -1,5 +1,5 @@
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { DatabaseService } from "~/database/classes/DatabaseService";
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { DatabaseService } from '~/database/classes/DatabaseService';
 
 export async function setViewedChapter(
   id_bookinfo: number,

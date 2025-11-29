@@ -1,28 +1,31 @@
-import { ScrollViewWithHeaders } from "@codeherence/react-native-header";
-import StackScreenProps from "~/common/interfaces/StackScreenProps";
-import { Header } from "./components/Header";
-import { LargeHeader } from "./components/LargeHeader";
-import PrincipalView from "~/common/components/PrincipalView";
-import { Divider, Text } from "react-native-paper";
-import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
-import { useApiBookInfo } from "~/api/hooks/useApiBookInfo";
-import { LoadingErrorContent } from "~/common/components/LoadingErrorContent";
-import { StyleSheet, View } from "react-native";
-import SafeArea from "~/common/components/SafeArea";
-import useSafeArea from "~/common/hooks/useSafeArea";
-import { GenderList } from "./components/GenderList";
-import { ChapterList } from "./components/ChapterList";
-import React, { useMemo } from "react";
-import useDimension from "~/common/hooks/useDimension";
-import { BookStatusList } from "~/constants/BookStatusList";
-import { StaffList } from "./components/StaffList";
-import { UserHistoryChapter } from "./components/UserHistoryChapter";
-import { useProvicionalPersistenceBook } from "~/common/storage/provisional-persistence-service/hooks/useProvicionalPersistenceBook";
+import { ScrollViewWithHeaders } from '@codeherence/react-native-header';
+import StackScreenProps from '~/common/interfaces/StackScreenProps';
+import { Header } from './components/Header';
+import { LargeHeader } from './components/LargeHeader';
+import PrincipalView from '~/common/components/PrincipalView';
+import { Divider, Text } from 'react-native-paper';
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
+import { useApiBookInfo } from '~/api/hooks/useApiBookInfo';
+import { LoadingErrorContent } from '~/common/components/LoadingErrorContent';
+import { StyleSheet, View } from 'react-native';
+import SafeArea from '~/common/components/SafeArea';
+import useSafeArea from '~/common/hooks/useSafeArea';
+import { GenderList } from './components/GenderList';
+import { ChapterList } from './components/ChapterList';
+import React, { useMemo } from 'react';
+import useDimension from '~/common/hooks/useDimension';
+import { BookStatusList } from '~/constants/BookStatusList';
+import { StaffList } from './components/StaffList';
+import { UserHistoryChapter } from './components/UserHistoryChapter';
+import { useProvicionalPersistenceBook } from '~/common/storage/provisional-persistence-service/hooks/useProvicionalPersistenceBook';
 
 export function BookInfoScreen(props: StackScreenProps) {
-  const info = props.route.params as BookInfoInterface & {referer?: string};
-  const {data, error, loading, refresh} = useApiBookInfo(info.url, info.referer);
-  const {left, right, bottom} = useSafeArea(12, 60);
+  const info = props.route.params as BookInfoInterface & { referer?: string };
+  const { data, error, loading, refresh } = useApiBookInfo(
+    info.url,
+    info.referer,
+  );
+  const { left, right, bottom } = useSafeArea(12, 60);
   const [, WINDOW_HEIGHT] = useDimension('window');
 
   const status = useMemo(() => {
@@ -43,7 +46,7 @@ export function BookInfoScreen(props: StackScreenProps) {
       <ScrollViewWithHeaders
         absoluteHeader
         disableAutoFixScroll
-        HeaderComponent={_props => (
+        HeaderComponent={(_props) => (
           <Header
             {..._props}
             link={info.url}
@@ -56,61 +59,53 @@ export function BookInfoScreen(props: StackScreenProps) {
             onBackPress={props.navigation.goBack}
           />
         )}
-        LargeHeaderComponent={!loading
-          ? _props => (
-            <LargeHeader
-              {..._props}
-              id_bookinfo={data?.id!}
-              status={data?.user_status!}
-            />
-          )
-          : undefined
+        LargeHeaderComponent={
+          !loading
+            ? (_props) => (
+                <LargeHeader
+                  {..._props}
+                  id_bookinfo={data?.id!}
+                  status={data?.user_status!}
+                />
+              )
+            : undefined
         }
         contentContainerStyle={{
           flexGrow: loading ? 1 : undefined,
           paddingLeft: left,
           paddingRight: right,
-          paddingBottom: bottom + (WINDOW_HEIGHT / 2),
+          paddingBottom: bottom + WINDOW_HEIGHT / 2,
         }}
       >
-        <LoadingErrorContent
-          loading={loading}
-          error={error}
-        >
+        <LoadingErrorContent loading={loading} error={error}>
           <View className={'mt-[12] gap-[24]'}>
             <View className={'gap-[8]'}>
               <Text variant={'titleLarge'}>Títulos</Text>
 
-              <Text variant={'titleMedium'}>
-                {data?.title}
-              </Text>
+              <Text variant={'titleMedium'}>{data?.title}</Text>
 
               {data?.subtitle && (
-                <Text variant={'labelMedium'}>
-                  {data?.subtitle}
-                </Text>
+                <Text variant={'labelMedium'}>{data?.subtitle}</Text>
               )}
             </View>
-            
+
             <Divider />
-            
+
             {status && (
               <React.Fragment>
-                <View className={'gap-[8] flex-col'}>
+                <View className={'flex-col gap-[8]'}>
                   <Text variant={'titleLarge'}>Estado</Text>
-    
-                  <View className={'flex-row gap-[8] items-center'}>
+
+                  <View className={'flex-row items-center gap-[8]'}>
                     <View
                       className={'size-[16] rounded-full'}
-                      style={{backgroundColor: status.color}}
+                      style={{ backgroundColor: status.color }}
                     />
 
-                    <Text variant={'labelLarge'}>
-                      {status.label}
-                    </Text>
+                    <Text variant={'labelLarge'}>{status.label}</Text>
                   </View>
                 </View>
-                
+
                 <Divider />
               </React.Fragment>
             )}
@@ -124,22 +119,14 @@ export function BookInfoScreen(props: StackScreenProps) {
             <View className={'gap-[8]'}>
               <Text variant={'titleLarge'}>Descripción</Text>
 
-              <Text variant={'bodyMedium'}>
-                {data?.description!}
-              </Text>
+              <Text variant={'bodyMedium'}>{data?.description!}</Text>
             </View>
-            
+
             <Divider />
 
-            <GenderList
-              data={data?.genders!}
-            />
+            <GenderList data={data?.genders!} />
 
-            {data?.staff && (
-              <StaffList
-                data={data.staff}
-              />
-            )}
+            {data?.staff && <StaffList data={data.staff} />}
 
             {data?.chapters && (
               <React.Fragment>

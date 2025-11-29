@@ -7,14 +7,16 @@ import { DefaultValueConfig } from '~/config/enums/DefaultValueConfig';
 import { showNotification } from './scripts/showNotification';
 import BackgroundFetch, { HeadlessEvent } from 'react-native-background-fetch';
 import { waitTo } from '~/common/utils/WaitTo';
-import Notifee, { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
+import Notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
 import { NotificationChannel } from '../notifications/enums/NotificationChannel';
 import { getBookInfo } from '~/api/scripts/getBookInfo';
 import { NotificationAction } from '../notifications/enums/NotificationAction';
 import { ProvisionalPersistenceService } from '~/common/storage/provisional-persistence-service';
 import { MMKV, Mode } from 'react-native-mmkv';
 import { StorageKey } from '~/common/enums/StorageKey';
-
 
 async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
   if (typeof taskId === 'object') {
@@ -49,7 +51,9 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
       id: StorageKey.PROVISIONAL_PERSISTENCE_STORAGE,
       mode: Mode.MULTI_PROCESS,
     });
-    const provisionalPersistenceService = new ProvisionalPersistenceService(storage);
+    const provisionalPersistenceService = new ProvisionalPersistenceService(
+      storage,
+    );
 
     // Check Execute Background Task
     console.info('[BackgroundTask] Check requrequirements...');
@@ -61,11 +65,11 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
       UserBookStatus.WISH,
       UserBookStatus.FOLLOW,
     ]);
-    
+
     console.info('[BackgroundTask] Get %d books', user_books.length);
 
     // Filter books
-    const books = user_books.filter(value => {
+    const books = user_books.filter((value) => {
       return (
         value.status === BookStatus.ACTIVO ||
         value.status === BookStatus.PUBLICANDOSE ||
@@ -82,8 +86,10 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
 
     for (const book of books) {
       const position = books.indexOf(book) + 1;
-      console.info(`[BackgroundTask] Progress -> ${position} de ${books.length}`);
-      
+      console.info(
+        `[BackgroundTask] Progress -> ${position} de ${books.length}`,
+      );
+
       taskNotification?.update({
         message: `Escaneando ${position} de ${books.length}`,
         progress: {
@@ -95,10 +101,15 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
 
       // Check Update Book
       const new_data = await getBookInfo(book.url);
-    
-      if (new_data.chapters && book.chapters.length !== new_data.chapters.length) {
-        const local_chapters = book.chapters.map(v => v.data_chapter);
-        const new_chapters = new_data.chapters.filter(v => !local_chapters.includes(v.data_chapter));
+
+      if (
+        new_data.chapters &&
+        book.chapters.length !== new_data.chapters.length
+      ) {
+        const local_chapters = book.chapters.map((v) => v.data_chapter);
+        const new_chapters = new_data.chapters.filter(
+          (v) => !local_chapters.includes(v.data_chapter),
+        );
 
         for (const chapter of new_chapters) {
           await showNotification({
@@ -119,10 +130,9 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
           });
         }
       }
-    
+
       provisionalPersistenceService.set(new_data, book.user_book_status);
     }
-
   } catch (error) {
     console.error('[BackgroundTask]', error);
 
@@ -147,8 +157,10 @@ function backgrounTaskTimeout(taskId: string) {
 
 export default {
   configure() {
-    const minimumInterval = ConfigStorage.getNumber(ConfigKey.BACKGROUND_TASK_INTERVAL) ?? DefaultValueConfig.BACKGROUND_TASK_INTERVAL;
-    
+    const minimumInterval =
+      ConfigStorage.getNumber(ConfigKey.BACKGROUND_TASK_INTERVAL) ??
+      DefaultValueConfig.BACKGROUND_TASK_INTERVAL;
+
     BackgroundFetch.registerHeadlessTask(backgrounTaskFunction);
     return BackgroundFetch.configure(
       {

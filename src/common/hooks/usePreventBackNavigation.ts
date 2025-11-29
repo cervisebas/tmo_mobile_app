@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 import StackScreenProps from '../interfaces/StackScreenProps';
 
 export default function (

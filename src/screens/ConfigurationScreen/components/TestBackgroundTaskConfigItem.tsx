@@ -1,7 +1,7 @@
-import React, { useCallback } from "react";
-import ItemWithIcon from "~/common/components/ItemWithIcon";
-import BackgroundCheckSaveBooks from "~/services/workers/BackgroundCheckSaveBooks";
-import { ToastAndroid } from "react-native";
+import React, { useCallback } from 'react';
+import ItemWithIcon from '~/common/components/ItemWithIcon';
+import BackgroundCheckSaveBooks from '~/services/workers/BackgroundCheckSaveBooks';
+import { ToastAndroid } from 'react-native';
 
 export const TestBackgroundTaskConfigItem = React.memo(function () {
   const testNow = useCallback(async () => {
@@ -14,13 +14,10 @@ export const TestBackgroundTaskConfigItem = React.memo(function () {
       );
       return;
     } */
-    
+
     setTimeout(() => {
       try {
-        ToastAndroid.show(
-          'Ejecutando....',
-          ToastAndroid.SHORT,
-        );
+        ToastAndroid.show('Ejecutando....', ToastAndroid.SHORT);
 
         BackgroundCheckSaveBooks.test();
       } catch (error) {
@@ -32,7 +29,9 @@ export const TestBackgroundTaskConfigItem = React.memo(function () {
   return (
     <ItemWithIcon
       title={'Probar tarea en segundo plano'}
-      description={'Ejecuta la tarea en segundo plano para probar su funcionamiento.'}
+      description={
+        'Ejecuta la tarea en segundo plano para probar su funcionamiento.'
+      }
       descriptionNumberOfLines={6}
       leftIcon={'bug-outline'}
       onPress={testNow}

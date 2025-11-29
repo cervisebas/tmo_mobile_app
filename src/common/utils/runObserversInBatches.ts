@@ -1,5 +1,5 @@
-import { lastValueFrom, Observable } from "rxjs";
-import { chunkArray } from "./ChunkArray";
+import { lastValueFrom, Observable } from 'rxjs';
+import { chunkArray } from './ChunkArray';
 
 interface IProps<T> {
   observables: Observable<T>[];
@@ -16,7 +16,9 @@ export async function runObserversInBatches<T>(props: IProps<T>) {
   const concurrency = props.concurrency || 3;
   const observables = chunkArray(props.observables, concurrency);
 
-  console.info(`ObserversInBatches: Recortado en ${observables.length} de ${concurrency}`);
+  console.info(
+    `ObserversInBatches: Recortado en ${observables.length} de ${concurrency}`,
+  );
 
   let index = 0;
 
@@ -34,20 +36,28 @@ export async function runObserversInBatches<T>(props: IProps<T>) {
     while (!loaded) {
       try {
         console.log('tasks:', tasks);
-        console.info(`ObserversInBatches: Ejecutando ${observables.indexOf(tasks)} de ${observables.length}...`);
-        const results = await Promise.all(tasks.map((task) => lastValueFrom(task)));
-        
-        console.info(`ObserversInBatches: Ejecucion ${observables.indexOf(tasks)} completada!`);
+        console.info(
+          `ObserversInBatches: Ejecutando ${observables.indexOf(tasks)} de ${observables.length}...`,
+        );
+        const results = await Promise.all(
+          tasks.map((task) => lastValueFrom(task)),
+        );
+
+        console.info(
+          `ObserversInBatches: Ejecucion ${observables.indexOf(tasks)} completada!`,
+        );
 
         for (const result of results) {
           const _continue = props.checkContinue?.() ?? true;
-          
+
           if (!_continue) {
             loaded = true;
             return;
-          }  
+          }
 
-          console.info(`ObserversInBatches: Esperando ${results.indexOf(result)} resultado...`);
+          console.info(
+            `ObserversInBatches: Esperando ${results.indexOf(result)} resultado...`,
+          );
           try {
             await props.onResult(result, index);
             index++;

@@ -1,7 +1,7 @@
-import React, {useContext, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Text, TouchableRipple} from 'react-native-paper';
-import {ThemeContext} from '../providers/ThemeProvider';
+import React, { useContext, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Text, TouchableRipple } from 'react-native-paper';
+import { ThemeContext } from '../providers/ThemeProvider';
 import { BookType } from '~/api/enums/BookType';
 import { ImageBook } from './ImageBook';
 
@@ -19,7 +19,7 @@ const PADDING_VERTICAL = 8;
 const PADDING_HORIZONTAL = 10;
 
 export const BookItem = React.memo(function (props: IProps) {
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   const size_image = useMemo(() => {
     return {
@@ -30,7 +30,7 @@ export const BookItem = React.memo(function (props: IProps) {
 
   return (
     <TouchableRipple
-      className={'flex-col py-[8] px-[10]'}
+      className={'flex-col px-[10] py-[8]'}
       style={{
         width: props.width,
       }}
@@ -59,7 +59,7 @@ export const BookItem = React.memo(function (props: IProps) {
           />
         </View>
 
-        <View className={'w-full mt-[8] mx-[4]'}>
+        <View className={'mx-[4] mt-[8] w-full'}>
           <Text variant={'titleSmall'} numberOfLines={4}>
             {props.title}
           </Text>

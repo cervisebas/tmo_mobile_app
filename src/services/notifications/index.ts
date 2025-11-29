@@ -11,14 +11,14 @@ async function checkPermissions() {
     ConfigStorage.set(ConfigKey.NOTIFICATION_STATUS, false);
     return false;
   }
-  
+
   ConfigStorage.set(ConfigKey.NOTIFICATION_STATUS, true);
   return true;
 }
 
 function registEvents() {
-  Notifee.onBackgroundEvent(async event => BackgroundNotifee.next(event));
-  Notifee.onForegroundEvent(event => ForegroundNotifee.next(event));
+  Notifee.onBackgroundEvent(async (event) => BackgroundNotifee.next(event));
+  Notifee.onForegroundEvent((event) => ForegroundNotifee.next(event));
 }
 
 export const Notifications = {

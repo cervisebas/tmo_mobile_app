@@ -39,11 +39,11 @@ export enum LibraryDemography {
 }
 
 export enum LibraryStatus {
-  ALL = "",
-  PUBLISHING = "publishing",
-  ENDED = "ended",
-  CANCELLED = "cancelled",
-  ON_HOLD = "on_hold",
+  ALL = '',
+  PUBLISHING = 'publishing',
+  ENDED = 'ended',
+  CANCELLED = 'cancelled',
+  ON_HOLD = 'on_hold',
 }
 
 export enum LibraryTranslationStatus {

@@ -1,8 +1,8 @@
-import { Image } from "expo-image";
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Divider, List, Text } from "react-native-paper";
-import { BookStaffInterface } from "~/api/interfaces/BookStaffInterface";
+import { Image } from 'expo-image';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Divider, List, Text } from 'react-native-paper';
+import { BookStaffInterface } from '~/api/interfaces/BookStaffInterface';
 
 interface IProps {
   data: BookStaffInterface[];
@@ -27,13 +27,10 @@ export const StaffList = React.memo(function (props: IProps) {
                 title={val.name}
                 description={val.position}
                 style={styles.item}
-                left={props => (
+                left={(props) => (
                   <Image
                     {...props}
-                    style={[
-                      props.style,
-                      styles.image,
-                    ]}
+                    style={[props.style, styles.image]}
                     source={{
                       uri: val.picture,
                     }}
@@ -41,9 +38,7 @@ export const StaffList = React.memo(function (props: IProps) {
                 )}
               />
 
-              {array?.[index + 1] && (
-                <Divider className={'mx-[12]'} />
-              )}
+              {array?.[index + 1] && <Divider className={'mx-[12]'} />}
             </React.Fragment>
           ))}
         </View>

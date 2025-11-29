@@ -13,10 +13,12 @@ import {
   Snackbar,
   Text,
 } from 'react-native-paper';
-import {ImageURISource, Platform, StyleSheet} from 'react-native';
-import {DialogInterface} from '../interfaces/DialogInterface';
+import { ImageURISource, Platform, StyleSheet } from 'react-native';
+import { DialogInterface } from '../interfaces/DialogInterface';
 import ImageView from 'react-native-image-viewing';
-import BottomSheetOptions, { BottomSheetOptionsRef } from './BottomSheetOptions';
+import BottomSheetOptions, {
+  BottomSheetOptionsRef,
+} from './BottomSheetOptions';
 
 export const Dialogs = forwardRef(function (
   _: DialogInterface.IProps,
@@ -75,13 +77,14 @@ namespace Loading {
       setMessage(mess);
     }, []);
     const close = useCallback(() => setVisible(false), []);
-    useImperativeHandle(ref, () => ({open, close}));
+    useImperativeHandle(ref, () => ({ open, close }));
     return (
       <Dialog
         visible={visible}
         dismissable={false}
         dismissableBackButton={false}
-        style={styles.dialog}>
+        style={styles.dialog}
+      >
         <Dialog.Content style={styles.content}>
           <ActivityIndicator size={'large'} />
           <Text style={styles.message}>{message}</Text>
@@ -126,12 +129,14 @@ namespace Alert {
     >(
       'Laborum magna labore quis excepteur non duis sunt consequat qui sit ipsum enim esse mollit.',
     );
-    const [buttons, setButtons] = useState<DialogInterface.AlertButtons[] | undefined>(
-      DefaultButton,
-    );
+    const [buttons, setButtons] = useState<
+      DialogInterface.AlertButtons[] | undefined
+    >(DefaultButton);
     const [dismissable, setDismissable] = useState(true);
     const onClose =
-      useRef<Parameters<DialogInterface.AlertRef['open']>[0]['onClose']>(undefined);
+      useRef<Parameters<DialogInterface.AlertRef['open']>[0]['onClose']>(
+        undefined,
+      );
 
     const open = useCallback(
       (props: Parameters<DialogInterface.AlertRef['open']>[0]) => {
@@ -162,7 +167,7 @@ namespace Alert {
       setVisible(false);
       onClose.current?.();
     }, []);
-    useImperativeHandle(ref, () => ({open, close}));
+    useImperativeHandle(ref, () => ({ open, close }));
 
     const clickButton = useCallback(
       (fun?: () => void) => {
@@ -179,9 +184,7 @@ namespace Alert {
         {message && (
           <Dialog.Content>
             {typeof message === 'string' ? (
-              <Text variant={'bodyMedium'}>
-                {message}
-              </Text>
+              <Text variant={'bodyMedium'}>{message}</Text>
             ) : (
               message
             )}
@@ -190,7 +193,7 @@ namespace Alert {
 
         {buttons && (
           <Dialog.Actions>
-            {buttons.map(({text, onPress}, index) => (
+            {buttons.map(({ text, onPress }, index) => (
               <Button
                 key={`dialog-alert-component-button-${index}`}
                 onPress={() => clickButton(onPress)}
@@ -206,48 +209,46 @@ namespace Alert {
 }
 
 namespace ImageViewing {
-  export const Component = React.memo(forwardRef(function (_: object, ref: React.Ref<DialogInterface.ImageViewingRef>) {
-    const [visible, setVisible] = useState(false);
-    const [images, setimages] = useState<ImageURISource[]>([]);
-    
-    useImperativeHandle(ref, () => ({
-      open(images) {
-        setVisible(true);
-        setimages(images.map(v => ({uri: v})));
-      },
-    }));
+  export const Component = React.memo(
+    forwardRef(function (
+      _: object,
+      ref: React.Ref<DialogInterface.ImageViewingRef>,
+    ) {
+      const [visible, setVisible] = useState(false);
+      const [images, setimages] = useState<ImageURISource[]>([]);
 
-    return (
-      <ImageView
-        images={images}
-        imageIndex={0}
-        visible={visible}
-        presentationStyle={
-          Platform.select({
+      useImperativeHandle(ref, () => ({
+        open(images) {
+          setVisible(true);
+          setimages(images.map((v) => ({ uri: v })));
+        },
+      }));
+
+      return (
+        <ImageView
+          images={images}
+          imageIndex={0}
+          visible={visible}
+          presentationStyle={Platform.select({
             ios: 'pageSheet',
             default: 'fullScreen',
-          })
-        }
-        animationType={
-          Platform.select({
+          })}
+          animationType={Platform.select({
             ios: 'slide',
             default: 'fade',
-          })
-        }
-        swipeToCloseEnabled={
-          Platform.select({
+          })}
+          swipeToCloseEnabled={Platform.select({
             ios: false,
             default: true,
-          })
-        }
-        doubleTapToZoomEnabled={true}
-
-        onRequestClose={() => {
-          setVisible(false);
-        }}
-      />
-    );
-  }));
+          })}
+          doubleTapToZoomEnabled={true}
+          onRequestClose={() => {
+            setVisible(false);
+          }}
+        />
+      );
+    }),
+  );
 }
 
 namespace Toast {

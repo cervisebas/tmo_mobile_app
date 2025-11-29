@@ -1,5 +1,10 @@
-import React, {useCallback, useContext, useMemo} from 'react';
-import {FlatListProps, ListRenderItemInfo, StyleSheet, View} from 'react-native';
+import React, { useCallback, useContext, useMemo } from 'react';
+import {
+  FlatListProps,
+  ListRenderItemInfo,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
 import { BookItem } from '~/common/components/BookItem';
@@ -23,8 +28,8 @@ interface IProps {
 const getKey = (s: string, v: string) => s.replace('{id}', v);
 
 export default React.memo(function (props: IProps) {
-  const {layout, onLayout} = useLayoutSize();
-  const {theme} = useContext(ThemeContext);
+  const { layout, onLayout } = useLayoutSize();
+  const { theme } = useContext(ThemeContext);
 
   const empty_color = useMemo(
     () => Color(theme.colors.onSurface).alpha(0.6).rgb().string(),
@@ -43,7 +48,7 @@ export default React.memo(function (props: IProps) {
   );
 
   const renderItem = useCallback(
-    ({item}: ListRenderItemInfo<BookInfoInterface>) => (
+    ({ item }: ListRenderItemInfo<BookInfoInterface>) => (
       <BookItem
         key={getKey(props.keyExtractor, item.path)}
         path={item.path}
@@ -53,13 +58,10 @@ export default React.memo(function (props: IProps) {
         width={WIDTH_ITEM}
         picture={item.picture}
         onPress={() => {
-          refNavigation.current?.navigate(
-            StackScreens.BOOK_INFO,
-            {
-              ...item,
-              referer: props.referer,
-            },
-          );
+          refNavigation.current?.navigate(StackScreens.BOOK_INFO, {
+            ...item,
+            referer: props.referer,
+          });
         }}
       />
     ),

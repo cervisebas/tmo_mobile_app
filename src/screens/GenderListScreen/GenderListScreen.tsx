@@ -1,17 +1,24 @@
-import { StyleSheet, View } from "react-native";
-import { Appbar, Button } from "react-native-paper";
-import { AppbarHeader } from "~/common/components/AppbarHeader";
-import ListOfBooks from "~/common/components/ListOfBooks";
-import { LoadingErrorContent } from "~/common/components/LoadingErrorContent";
-import PrincipalView from "~/common/components/PrincipalView";
-import SafeArea from "~/common/components/SafeArea";
-import { LibrarySearchBar, LibrarySearchBarRef } from "../LibraryScreen/components/LibrarySearchBar";
-import StackScreenProps from "~/common/interfaces/StackScreenProps";
-import { useCallback, useRef } from "react";
-import { LibraryQueriesInterface } from "~/api/interfaces/LibraryQueriesInterface";
-import { LibraryQueries, LibraryStatus, LibraryTranslationStatus } from "~/api/enums/LibraryQueries";
-import { LibraryGenders } from "~/api/enums/LibraryGenders";
-import { useApiLibrarySearch } from "~/api/hooks/useApiLibrarySearch";
+import { StyleSheet, View } from 'react-native';
+import { Appbar, Button } from 'react-native-paper';
+import { AppbarHeader } from '~/common/components/AppbarHeader';
+import ListOfBooks from '~/common/components/ListOfBooks';
+import { LoadingErrorContent } from '~/common/components/LoadingErrorContent';
+import PrincipalView from '~/common/components/PrincipalView';
+import SafeArea from '~/common/components/SafeArea';
+import {
+  LibrarySearchBar,
+  LibrarySearchBarRef,
+} from '../LibraryScreen/components/LibrarySearchBar';
+import StackScreenProps from '~/common/interfaces/StackScreenProps';
+import { useCallback, useRef } from 'react';
+import { LibraryQueriesInterface } from '~/api/interfaces/LibraryQueriesInterface';
+import {
+  LibraryQueries,
+  LibraryStatus,
+  LibraryTranslationStatus,
+} from '~/api/enums/LibraryQueries';
+import { LibraryGenders } from '~/api/enums/LibraryGenders';
+import { useApiLibrarySearch } from '~/api/hooks/useApiLibrarySearch';
 
 export function GenderListScreen(props: StackScreenProps) {
   const params = props.route.params as {
@@ -23,7 +30,9 @@ export function GenderListScreen(props: StackScreenProps) {
 
   const getFilters = useCallback((page: number) => {
     const filters: Partial<LibraryQueriesInterface> = {
-      [LibraryQueries.GENDERS]: [params.gender_value] as unknown as LibraryGenders[],
+      [LibraryQueries.GENDERS]: [
+        params.gender_value,
+      ] as unknown as LibraryGenders[],
       [LibraryQueries.TITLE]: refLibrarySearchBar.current?.getValue()!,
       [LibraryQueries.PAGINATOR]: '1',
       [LibraryQueries.PAGE]: String(page),
@@ -34,23 +43,25 @@ export function GenderListScreen(props: StackScreenProps) {
     return filters;
   }, []);
 
-  const {loading, refresh, url, data, error, nextPage, goNextPage, fullReload} = useApiLibrarySearch(getFilters);
+  const {
+    loading,
+    refresh,
+    url,
+    data,
+    error,
+    nextPage,
+    goNextPage,
+    fullReload,
+  } = useApiLibrarySearch(getFilters);
 
   return (
     <PrincipalView hideKeyboard>
       <AppbarHeader mode={'small'}>
-        <Appbar.BackAction
-          onPress={props.navigation.goBack}
-        />
-        <Appbar.Content
-          title={params.gender_title}
-        />
+        <Appbar.BackAction onPress={props.navigation.goBack} />
+        <Appbar.Content title={params.gender_title} />
       </AppbarHeader>
 
-      <LibrarySearchBar
-        ref={refLibrarySearchBar}
-        onSearch={fullReload}
-      />
+      <LibrarySearchBar ref={refLibrarySearchBar} onSearch={fullReload} />
 
       <LoadingErrorContent loading={loading} error={error}>
         <ListOfBooks
@@ -58,21 +69,19 @@ export function GenderListScreen(props: StackScreenProps) {
           referer={url}
           keyExtractor={'library-search-item-{id}'}
           ListFooterComponent={
-            nextPage !== undefined
-              ? (
-                <View className={'w-full py-[6] flex-row justify-center'}>
-                  <Button
-                    mode={'contained'}
-                    loading={refresh}
-                    disabled={refresh}
-                    style={styles.loadMore}
-                    onPress={goNextPage}
-                  >
-                    CARGAR MÁS
-                  </Button>
-                </View>
-              )
-              : null
+            nextPage !== undefined ? (
+              <View className={'w-full flex-row justify-center py-[6]'}>
+                <Button
+                  mode={'contained'}
+                  loading={refresh}
+                  disabled={refresh}
+                  style={styles.loadMore}
+                  onPress={goNextPage}
+                >
+                  CARGAR MÁS
+                </Button>
+              </View>
+            ) : null
           }
         />
       </LoadingErrorContent>

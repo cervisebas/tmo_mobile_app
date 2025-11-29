@@ -1,6 +1,6 @@
-import React, {useMemo} from 'react';
-import {Text} from 'react-native-paper';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
+import React, { useMemo } from 'react';
+import { Text } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface IProps {
   focused: boolean;
@@ -11,7 +11,7 @@ interface IProps {
 export function TabBarLabel(props: IProps) {
   const data = useMemo(() => {
     if (props.children.indexOf('}') === -1) {
-      return {label: props.children};
+      return { label: props.children };
     }
 
     const split = props.children.split('}');
@@ -25,8 +25,11 @@ export function TabBarLabel(props: IProps) {
     <Text
       style={{
         color: props.color,
-      }}>
-      {data.icon && <MaterialCommunityIcons name={data.icon as never} size={16} />}
+      }}
+    >
+      {data.icon && (
+        <MaterialCommunityIcons name={data.icon as never} size={16} />
+      )}
       {data.label}
     </Text>
   );

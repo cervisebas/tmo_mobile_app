@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ImageItemInterface } from "../interfaces/ImageItemInterface";
-import { downloadChapterImages, prepareDownloadChapter } from "../scripts/downloadChapterImages";
-import { Platform } from "react-native";
-import { runObserversInBatches } from "~/common/utils/runObserversInBatches";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ImageItemInterface } from '../interfaces/ImageItemInterface';
+import {
+  downloadChapterImages,
+  prepareDownloadChapter,
+} from '../scripts/downloadChapterImages';
+import { Platform } from 'react-native';
+import { runObserversInBatches } from '~/common/utils/runObserversInBatches';
 
 export function useLoadChapterImages(
   images: string[],
@@ -19,13 +22,12 @@ export function useLoadChapterImages(
   const startLoadImages = useCallback(async () => {
     await prepareDownloadChapter(path);
 
-    onProgress?.(
-      progress.current,
-      images.length,
-    );
+    onProgress?.(progress.current, images.length);
 
     return runObserversInBatches({
-      observables: images.map((image) => downloadChapterImages(image, originImagesUrl, path)),
+      observables: images.map((image) =>
+        downloadChapterImages(image, originImagesUrl, path),
+      ),
       concurrency: 2,
       retryOnCatch: true,
       catchErrorOnResult: true,
@@ -45,12 +47,9 @@ export function useLoadChapterImages(
             default: data.fileName,
           }),
         });
-        
+
         progress.current++;
-        onProgress?.(
-          progress.current,
-          images.length,
-        );
+        onProgress?.(progress.current, images.length);
 
         setLoaded(images.length === progress.current);
       },
@@ -58,16 +57,18 @@ export function useLoadChapterImages(
   }, [images, onLoadImage, onProgress, originImagesUrl, path]);
 
   useEffect(() => {
-    setData(images.map(v => ({
-      name_file: v.slice(v.lastIndexOf('/') + 1),
-      loading: true,
-    })));
+    setData(
+      images.map((v) => ({
+        name_file: v.slice(v.lastIndexOf('/') + 1),
+        loading: true,
+      })),
+    );
   }, []);
 
   return {
     loaded,
     images: data,
     startLoadImages,
-    cancelLoad: () => canceled.current = true,
+    cancelLoad: () => (canceled.current = true),
   };
 }

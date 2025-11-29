@@ -1,5 +1,5 @@
-import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
 
 export interface UserChapterHistoryInterface {
   id: number;

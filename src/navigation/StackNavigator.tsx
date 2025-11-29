@@ -1,14 +1,14 @@
-import { createStackNavigator } from "@react-navigation/stack";
-import { StackScreens } from "~/enums/StackScreens";
-import { DrawerNavigator } from "./DrawerNavigator";
-import { BookInfoScreen } from "~/screens/BookInfoScreen/BookInfoScreen";
-import { ChapterVisualizerScreen } from "~/screens/ChapterVisualizerScreen/ChapterVisualizerScreen";
-import BootSplash from "react-native-bootsplash";
-import { useEffect } from "react";
-import { ChapterListScreen } from "~/screens/ChapterListScreen/ChapterListScreen";
-import { Notifications } from "~/services/notifications";
-import { GenderListScreen } from "~/screens/GenderListScreen/GenderListScreen";
-import { UserHistoryScreen } from "~/screens/UserHistoryScreen/UserHistoryScreen";
+import { createStackNavigator } from '@react-navigation/stack';
+import { StackScreens } from '~/enums/StackScreens';
+import { DrawerNavigator } from './DrawerNavigator';
+import { BookInfoScreen } from '~/screens/BookInfoScreen/BookInfoScreen';
+import { ChapterVisualizerScreen } from '~/screens/ChapterVisualizerScreen/ChapterVisualizerScreen';
+import BootSplash from 'react-native-bootsplash';
+import { useEffect } from 'react';
+import { ChapterListScreen } from '~/screens/ChapterListScreen/ChapterListScreen';
+import { Notifications } from '~/services/notifications';
+import { GenderListScreen } from '~/screens/GenderListScreen/GenderListScreen';
+import { UserHistoryScreen } from '~/screens/UserHistoryScreen/UserHistoryScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,15 +29,9 @@ export function StackNavigator() {
         headerShown: false,
       }}
     >
-      <Stack.Screen
-        name={StackScreens.STACK}
-        component={DrawerNavigator}
-      />
+      <Stack.Screen name={StackScreens.STACK} component={DrawerNavigator} />
 
-      <Stack.Screen
-        name={StackScreens.BOOK_INFO}
-        component={BookInfoScreen}
-      />
+      <Stack.Screen name={StackScreens.BOOK_INFO} component={BookInfoScreen} />
 
       <Stack.Screen
         name={StackScreens.CHAPTER_VISUALIZER}

@@ -1,24 +1,36 @@
-import { Keyboard, StyleSheet, View } from "react-native";
-import { Appbar, Button } from "react-native-paper";
-import { AppbarHeader } from "~/common/components/AppbarHeader";
-import PrincipalView from "~/common/components/PrincipalView";
-import { DrawerScreenProps } from "~/common/interfaces/DrawerScreenProps";
-import { LibrarySearchBar, LibrarySearchBarRef } from "./components/LibrarySearchBar";
-import React, { useCallback, useRef } from "react";
-import { SearchFilterSheet, SearchFilterSheetRef } from "./sheets/SearchFilterSheet";
-import { LibraryQueriesInterface } from "~/api/interfaces/LibraryQueriesInterface";
-import { LibraryQueries, LibraryStatus, LibraryTranslationStatus } from "~/api/enums/LibraryQueries";
-import { useApiLibrarySearch } from "~/api/hooks/useApiLibrarySearch";
-import { LoadingErrorContent } from "~/common/components/LoadingErrorContent";
-import ListOfBooks from "../../common/components/ListOfBooks";
-import SafeArea from "~/common/components/SafeArea";
-import { AppbarActionFilter, AppbarActionFilterRef } from "./components/AppbarActionFilter";
+import { Keyboard, StyleSheet, View } from 'react-native';
+import { Appbar, Button } from 'react-native-paper';
+import { AppbarHeader } from '~/common/components/AppbarHeader';
+import PrincipalView from '~/common/components/PrincipalView';
+import { DrawerScreenProps } from '~/common/interfaces/DrawerScreenProps';
+import {
+  LibrarySearchBar,
+  LibrarySearchBarRef,
+} from './components/LibrarySearchBar';
+import React, { useCallback, useRef } from 'react';
+import {
+  SearchFilterSheet,
+  SearchFilterSheetRef,
+} from './sheets/SearchFilterSheet';
+import { LibraryQueriesInterface } from '~/api/interfaces/LibraryQueriesInterface';
+import {
+  LibraryQueries,
+  LibraryStatus,
+  LibraryTranslationStatus,
+} from '~/api/enums/LibraryQueries';
+import { useApiLibrarySearch } from '~/api/hooks/useApiLibrarySearch';
+import { LoadingErrorContent } from '~/common/components/LoadingErrorContent';
+import ListOfBooks from '../../common/components/ListOfBooks';
+import SafeArea from '~/common/components/SafeArea';
+import {
+  AppbarActionFilter,
+  AppbarActionFilterRef,
+} from './components/AppbarActionFilter';
 
 export function LibraryScreen(props: DrawerScreenProps) {
   const refSearchFilterSheet = useRef<SearchFilterSheetRef>(null);
   const refLibrarySearchBar = useRef<LibrarySearchBarRef>(null);
   const refAppbarActionFilter = useRef<AppbarActionFilterRef>(null);
-  
 
   const getFilters = useCallback((page: number) => {
     const filters: LibraryQueriesInterface = {
@@ -37,19 +49,23 @@ export function LibraryScreen(props: DrawerScreenProps) {
     return filters;
   }, []);
 
-  const {loading, refresh, url, data, error, nextPage, goNextPage, fullReload} = useApiLibrarySearch(getFilters);
+  const {
+    loading,
+    refresh,
+    url,
+    data,
+    error,
+    nextPage,
+    goNextPage,
+    fullReload,
+  } = useApiLibrarySearch(getFilters);
 
   return (
     <React.Fragment>
       <PrincipalView hideKeyboard>
         <AppbarHeader mode={'small'}>
-          <Appbar.Action
-            icon={'menu'}
-            onPress={props.navigation.openDrawer}
-          />
-          <Appbar.Content
-            title={'Biblioteca'}
-          />
+          <Appbar.Action icon={'menu'} onPress={props.navigation.openDrawer} />
+          <Appbar.Content title={'Biblioteca'} />
 
           <AppbarActionFilter
             ref={refAppbarActionFilter}
@@ -60,10 +76,7 @@ export function LibraryScreen(props: DrawerScreenProps) {
           />
         </AppbarHeader>
 
-        <LibrarySearchBar
-          ref={refLibrarySearchBar}
-          onSearch={fullReload}
-        />
+        <LibrarySearchBar ref={refLibrarySearchBar} onSearch={fullReload} />
 
         <LoadingErrorContent loading={loading} error={error}>
           <ListOfBooks
@@ -71,21 +84,19 @@ export function LibraryScreen(props: DrawerScreenProps) {
             referer={url}
             keyExtractor={'library-search-item-{id}'}
             ListFooterComponent={
-              nextPage !== undefined
-                ? (
-                  <View className={'w-full py-[6] flex-row justify-center'}>
-                    <Button
-                      mode={'contained'}
-                      loading={refresh}
-                      disabled={refresh}
-                      style={styles.loadMore}
-                      onPress={goNextPage}
-                    >
-                      CARGAR MÁS
-                    </Button>
-                  </View>
-                )
-                : null
+              nextPage !== undefined ? (
+                <View className={'w-full flex-row justify-center py-[6]'}>
+                  <Button
+                    mode={'contained'}
+                    loading={refresh}
+                    disabled={refresh}
+                    style={styles.loadMore}
+                    onPress={goNextPage}
+                  >
+                    CARGAR MÁS
+                  </Button>
+                </View>
+              ) : null
             }
           />
         </LoadingErrorContent>
@@ -102,10 +113,7 @@ export function LibraryScreen(props: DrawerScreenProps) {
         />
       </PrincipalView>
 
-      <SearchFilterSheet
-        ref={refSearchFilterSheet}
-        onFilter={fullReload}
-      />
+      <SearchFilterSheet ref={refSearchFilterSheet} onFilter={fullReload} />
     </React.Fragment>
   );
 }
