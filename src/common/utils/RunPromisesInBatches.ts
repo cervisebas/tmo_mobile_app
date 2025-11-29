@@ -4,6 +4,7 @@ interface IProps<T> {
   promises: Promise<T>[];
   concurrency?: number;
   retryOnCatch?: boolean;
+  catchErrorOnResult?: boolean;
   checkContinue?(): boolean;
   onResult(result: T, index: number): Promise<void>;
   onError?(index: number): void;
@@ -32,19 +33,26 @@ export async function runPromisesInBatches<T>(props: IProps<T>) {
       try {
         console.info(`PromiseInBatches: Ejecutando ${promises.indexOf(tasks)} de ${promises.length}...`);
         const results = await Promise.all(tasks);
-    
+        
+        console.info(`PromiseInBatches: Ejecucion ${promises.indexOf(tasks)} completada!`);
+
         for (const result of results) {
           const _continue = props.checkContinue?.() ?? true;
-    
+          
           if (!_continue) {
             loaded = true;
             return;
-          }
-    
+          }  
+
+          console.info(`PromiseInBatches: Esperando ${results.indexOf(result)} resultado...`);
           try {
             await props.onResult(result, index);
           } catch (error) {
             console.error(error);
+
+            if (props.catchErrorOnResult) {
+              throw error;
+            }
           }
           index++;
         }

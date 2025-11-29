@@ -76,7 +76,7 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
 
           refAction.current = resolve;
         }),
-        5000,
+        4000,
       );
     },
     getCurrentPosition() {

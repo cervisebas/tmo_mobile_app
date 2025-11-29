@@ -19,14 +19,20 @@ export function useLoadChapterImages(
   const startLoadImages = useCallback(async () => {
     await prepareDownloadChapter(path);
 
+    onProgress?.(
+      progress.current,
+      images.length,
+    );
+
     return runPromisesInBatches({
       promises: images.map((image) => downloadChapterImages(image, originImagesUrl, path)),
       concurrency: 3,
       retryOnCatch: true,
-      checkContinue() {
+      catchErrorOnResult: true,
+      checkContinue: () => {
         return !canceled.current;
       },
-      async onResult(data, index) {
+      onResult: async (data, index) => {
         if (canceled.current) {
           return;
         }
