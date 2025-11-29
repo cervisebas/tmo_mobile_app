@@ -26,7 +26,7 @@ export function useLoadChapterImages(
 
     return runObserversInBatches({
       observables: images.map((image) => downloadChapterImages(image, originImagesUrl, path)),
-      concurrency: 5,
+      concurrency: 2,
       retryOnCatch: true,
       catchErrorOnResult: true,
       checkContinue: () => {
