@@ -10,7 +10,7 @@ import { runObserversInBatches } from '~/common/utils/runObserversInBatches';
 export function useLoadChapterImages(
   images: string[],
   originImagesUrl: string,
-  path: string,
+  folderPath: string,
   onLoadImage: (index: number, data: ImageItemInterface) => Promise<void>,
   onProgress?: (current: number, max: number) => void,
 ) {
@@ -20,13 +20,13 @@ export function useLoadChapterImages(
   const canceled = useRef(false);
 
   const startLoadImages = useCallback(async () => {
-    await prepareDownloadChapter(path);
+    await prepareDownloadChapter(folderPath);
 
     onProgress?.(progress.current, images.length);
 
     return runObserversInBatches({
       observables: images.map((image) =>
-        downloadChapterImages(image, originImagesUrl, path),
+        downloadChapterImages(image, originImagesUrl, folderPath),
       ),
       concurrency: 2,
       retryOnCatch: true,
@@ -54,7 +54,7 @@ export function useLoadChapterImages(
         setLoaded(images.length === progress.current);
       },
     });
-  }, [images, onLoadImage, onProgress, originImagesUrl, path]);
+  }, [images, onLoadImage, onProgress, originImagesUrl, folderPath]);
 
   useEffect(() => {
     setData(

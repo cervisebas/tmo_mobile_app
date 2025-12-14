@@ -19,6 +19,9 @@ import {
 } from './sheets/VisualizerOptionsSheet';
 import { useAutoSaveChapterBookHistory } from '~/services/chapter-progress/hooks/useAutoSaveChapterBookHistory';
 import { UserHistory } from '~/services/user-history';
+import { getBestOptionFromChapter } from '~/common/utils/GetBestOptionFromChapter';
+import { waitTo } from '~/common/utils/WaitTo';
+import { useLoadNextChapterImages } from './hooks/useLoadNextChapterImages';
 
 export function ChapterVisualizerScreen(props: StackScreenProps) {
   const params = props.route.params as ChapterVisualizerParams;
@@ -55,6 +58,7 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
     params.chapter_id,
     async (index, image) => {
       await refVisualizeWebView.current?.loadImage(index, image);
+      await waitTo(100);
     },
     (current, max) => {
       progressRef.current = toast.loading(
@@ -66,19 +70,23 @@ export function ChapterVisualizerScreen(props: StackScreenProps) {
         },
       );
 
-      if (current === max && progressRef.current) {
+      if (current >= max && progressRef.current) {
         toast.dismiss(progressRef.current);
       }
     },
+  );
+
+  useLoadNextChapterImages(
+    loaded,
+    chapter_list[chapter_index + 1],
+    params.book_url,
   );
 
   const goToChapter = useCallback(
     (move: number) => {
       const index = chapter_index + move;
       const chapter = chapter_list.at(index)!;
-      const bestOption = chapter.options.sort(
-        (a, b) => b.date.getTime() - a.date.getTime(),
-      )[0];
+      const bestOption = getBestOptionFromChapter(chapter.options);
 
       goViewChapter({
         index: index,
