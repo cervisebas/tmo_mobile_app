@@ -2,7 +2,7 @@
   "expo": {
     "name": "TMO",
     "slug": "tmo_app",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "experiments": {
       "tsconfigPaths": true,
       "reactCompiler": true
@@ -92,8 +92,8 @@
       }
     },
     "android": {
-      "version": "1.4.0",
-      "versionCode": 12,
+      "version": "1.4.1",
+      "versionCode": 13,
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/foreground-image.png",
