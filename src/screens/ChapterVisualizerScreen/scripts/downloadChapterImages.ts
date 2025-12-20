@@ -46,8 +46,6 @@ export function downloadChapterImages(
   return new Observable<DownloadChapterImagesReturn>((subs) => {
     (async () => {
       try {
-        console.log('downloadChapterImages:', url, originUrl, folder);
-
         const CHAPTER_FOLDER = `${DOWNLOAD_IMAGES_FOLDER_PATH}/${folder}`;
         const FILE_NAME = url.slice(url.lastIndexOf('/') + 1);
         const IMAGE_PATH = `${CHAPTER_FOLDER}/${FILE_NAME}`;

@@ -62,6 +62,7 @@ export function useLoadNextChapterImages(
       },
       onResult: async (_, index) => {
         if (canceled.current) {
+          taskNotification?.dismiss();
           return;
         }
 
@@ -75,6 +76,10 @@ export function useLoadNextChapterImages(
         });
       },
       onFinish() {
+        taskNotification?.dismiss();
+      },
+      onError(index) {
+        canceled.current = true;
         taskNotification?.dismiss();
       },
     });

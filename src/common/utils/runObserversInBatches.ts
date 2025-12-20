@@ -22,7 +22,6 @@ export async function runObserversInBatches<T>(props: IProps<T>) {
 
   let index = 0;
 
-  console.log('tasks:', observables);
   for (const tasks of observables) {
     let loaded = false;
 
@@ -30,12 +29,12 @@ export async function runObserversInBatches<T>(props: IProps<T>) {
 
     if (!_continue) {
       loaded = true;
+      props.onFinish?.(index);
       return;
     }
 
     while (!loaded) {
       try {
-        console.log('tasks:', tasks);
         console.info(
           `ObserversInBatches: Ejecutando ${observables.indexOf(tasks)} de ${observables.length}...`,
         );
@@ -52,6 +51,7 @@ export async function runObserversInBatches<T>(props: IProps<T>) {
 
           if (!_continue) {
             loaded = true;
+            props.onFinish?.(index);
             return;
           }
 
