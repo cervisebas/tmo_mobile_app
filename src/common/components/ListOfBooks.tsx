@@ -1,5 +1,10 @@
-import React, {useCallback, useContext, useMemo} from 'react';
-import {FlatListProps, ListRenderItemInfo, StyleSheet, View} from 'react-native';
+import React, { useCallback, useContext, useMemo } from 'react';
+import {
+  FlatListProps,
+  ListRenderItemInfo,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { Icon, Text } from 'react-native-paper';
 import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
 import { BookItem } from '~/common/components/BookItem';
@@ -9,6 +14,7 @@ import { refNavigation } from '~/common/utils/Ref';
 import { StackScreens } from '~/enums/StackScreens';
 import { ThemeContext } from '../providers/ThemeProvider';
 import Color from 'color';
+import { chunkArray } from '../utils/ChunkArray';
 
 interface IProps {
   data: BookInfoInterface[];
@@ -17,14 +23,16 @@ interface IProps {
   showEmpty?: boolean;
   emptyIcon?: string;
   emptyMessage?: string;
+  noScroll?: boolean;
   ListFooterComponent?: FlatListProps<any>['ListFooterComponent'];
 }
 
 const getKey = (s: string, v: string) => s.replace('{id}', v);
+const LIST_COLUMNS = 2;
 
 export default React.memo(function (props: IProps) {
-  const {layout, onLayout} = useLayoutSize();
-  const {theme} = useContext(ThemeContext);
+  const { layout, onLayout } = useLayoutSize();
+  const { theme } = useContext(ThemeContext);
 
   const empty_color = useMemo(
     () => Color(theme.colors.onSurface).alpha(0.6).rgb().string(),
@@ -43,7 +51,7 @@ export default React.memo(function (props: IProps) {
   );
 
   const renderItem = useCallback(
-    ({item}: ListRenderItemInfo<BookInfoInterface>) => (
+    ({ item }: ListRenderItemInfo<BookInfoInterface>) => (
       <BookItem
         key={getKey(props.keyExtractor, item.path)}
         path={item.path}
@@ -53,13 +61,10 @@ export default React.memo(function (props: IProps) {
         width={WIDTH_ITEM}
         picture={item.picture}
         onPress={() => {
-          refNavigation.current?.navigate(
-            StackScreens.BOOK_INFO,
-            {
-              ...item,
-              referer: props.referer,
-            },
-          );
+          refNavigation.current?.navigate(StackScreens.BOOK_INFO, {
+            ...item,
+            referer: props.referer,
+          });
         }}
       />
     ),
@@ -102,13 +107,14 @@ export default React.memo(function (props: IProps) {
     <SafeArea.FlatList
       onLayout={onLayout}
       data={props.data}
-      numColumns={2}
+      numColumns={LIST_COLUMNS}
       expandDisableTop
       ListFooterComponent={props.ListFooterComponent}
       expandArea={{
         top: 8,
         bottom: 12,
       }}
+      scrollEnabled={!props.noScroll}
       keyExtractor={keyExtractor}
       renderItem={renderItem}
     />

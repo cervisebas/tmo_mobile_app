@@ -1,17 +1,17 @@
-import { useEffect, useRef } from "react";
-import {readAsStringAsync} from "expo-file-system";
-import { Asset } from "expo-asset";
-import { usePreserveHtmlVisualizer } from "./usePreserveHtmlVisualizer";
+import { useEffect, useRef } from 'react';
+import { readAsStringAsync } from 'expo-file-system';
+import { Asset } from 'expo-asset';
+import { usePreserveHtmlVisualizer } from './usePreserveHtmlVisualizer';
 
 export function useHtmlVisualizer() {
-  const {html, setHtml} = usePreserveHtmlVisualizer();
+  const { html, setHtml } = usePreserveHtmlVisualizer();
   const isMounted = useRef(false);
 
   const loadHtml = async () => {
     if (html) {
       return;
     }
-    
+
     const path = require('~/assets/VisualizerPage.html');
     const asset = Asset.fromModule(path);
     await asset.downloadAsync();
@@ -20,7 +20,7 @@ export function useHtmlVisualizer() {
     if (isMounted.current) {
       setHtml(htmlContent);
     }
-  }
+  };
 
   useEffect(() => {
     isMounted.current = true;

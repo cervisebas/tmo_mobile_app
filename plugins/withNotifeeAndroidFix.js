@@ -1,5 +1,5 @@
-const { withProjectBuildGradle } = require("@expo/config-plugins");
-const generateCode = require("@expo/config-plugins/build/utils/generateCode");
+const { withProjectBuildGradle } = require('@expo/config-plugins');
+const generateCode = require('@expo/config-plugins/build/utils/generateCode');
 
 const notifeeAndroidWorkaroundCode = `
     maven { 
@@ -12,10 +12,10 @@ module.exports = (expoConfig) => {
   return withProjectBuildGradle(expoConfig, async (config) => {
     const { contents } = generateCode.mergeContents({
       newSrc: notifeeAndroidWorkaroundCode,
-      tag: "notifieeAndroidWorkaround",
+      tag: 'notifieeAndroidWorkaround',
       src: config.modResults.contents,
       anchor: /maven\s*\{\s*url\s*'https:\/\/www\.jitpack\.io'\s*\}/,
-      comment: "//",
+      comment: '//',
       offset: 1,
     });
 

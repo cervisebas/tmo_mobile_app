@@ -9,7 +9,7 @@ import {
   ScrollViewProps,
   ScrollView as ScrollViewBase,
 } from 'react-native';
-import useSafeArea, {SafeAreaResponse} from '../hooks/useSafeArea';
+import useSafeArea, { SafeAreaResponse } from '../hooks/useSafeArea';
 import {
   Divider as DividerNative,
   DividerProps,

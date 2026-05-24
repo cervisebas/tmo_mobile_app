@@ -1,19 +1,18 @@
-import React, { useContext } from "react";
-import { View } from "react-native";
-import { Searchbar } from "react-native-paper";
-import useSafeArea from "~/common/hooks/useSafeArea";
-import useSearchEvent from "~/common/hooks/useSearchEvent";
-import { ThemeContext } from "~/common/providers/ThemeProvider";
+import React, { useContext } from 'react';
+import { View } from 'react-native';
+import { Searchbar } from 'react-native-paper';
+import useSafeArea from '~/common/hooks/useSafeArea';
+import useSearchEvent from '~/common/hooks/useSearchEvent';
+import { ThemeContext } from '~/common/providers/ThemeProvider';
 
 interface IProps {
   onSearch?(value: string): void;
 }
 
 export const ChapterListSearchBar = React.memo(function (props: IProps) {
-  const {theme} = useContext(ThemeContext);
-  const {left, right} = useSafeArea(12);
-  const {valueSearch, setValueSearch} = useSearchEvent(props.onSearch);
-  
+  const { theme } = useContext(ThemeContext);
+  const { left, right } = useSafeArea(12);
+  const { valueSearch, setValueSearch } = useSearchEvent(props.onSearch);
 
   return (
     <View

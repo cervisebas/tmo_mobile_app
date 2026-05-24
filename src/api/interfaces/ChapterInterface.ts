@@ -1,4 +1,4 @@
-import { ChapterOptionInterface } from "./ChapterOptionInterface";
+import { ChapterOptionInterface } from './ChapterOptionInterface';
 
 export interface ChapterInterface {
   id?: number;

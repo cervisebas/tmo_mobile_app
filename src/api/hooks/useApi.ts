@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Observable } from "rxjs";
+import { useEffect, useState } from 'react';
+import { Observable } from 'rxjs';
 
 export function useApi<T = object>(getData: Observable<T>) {
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ export function useApi<T = object>(getData: Observable<T>) {
     getData.subscribe({
       next(value) {
         if (append) {
-          setData([...data as any, ...value as any] as T);
+          setData([...(data as any), ...(value as any)] as T);
         } else {
           setData(value);
         }

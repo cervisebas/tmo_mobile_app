@@ -1,4 +1,4 @@
-import { Share, Platform } from "react-native";
+import { Share, Platform } from 'react-native';
 
 export function ShareURL(url: string) {
   Share.share(

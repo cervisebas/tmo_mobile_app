@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
-import { Appbar, AppbarHeaderProps } from "react-native-paper";
-import { ThemeContext } from "../providers/ThemeProvider";
+import React, { useContext } from 'react';
+import { Appbar, AppbarHeaderProps } from 'react-native-paper';
+import { ThemeContext } from '../providers/ThemeProvider';
 
 export function AppbarHeader(props: AppbarHeaderProps) {
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   return (
     <Appbar.Header

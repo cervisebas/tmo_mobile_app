@@ -1,18 +1,17 @@
-import { AndroidImportance, AndroidVisibility } from "@notifee/react-native";
-import React, { useCallback, useEffect, useState } from "react";
-import ItemWithIcon from "~/common/components/ItemWithIcon";
-import { DatabaseService } from "~/database/classes/DatabaseService";
-import { getRandomIntInclusive } from "~/database/utils/getRandomIntInclusive";
-import { Notifications } from "~/services/notifications";
-import { NotificationAction } from "~/services/notifications/enums/NotificationAction";
-import { showNotification } from "~/services/workers/scripts/showNotification";
+import { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import ItemWithIcon from '~/common/components/ItemWithIcon';
+import { DatabaseService } from '~/database/classes/DatabaseService';
+import { getRandomIntInclusive } from '~/database/utils/getRandomIntInclusive';
+import { Notifications } from '~/services/notifications';
+import { NotificationAction } from '~/services/notifications/enums/NotificationAction';
+import { showNotification } from '~/services/workers/scripts/showNotification';
 
 export const TestNotificationConfigItem = React.memo(function () {
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    Notifications.isAvailable()
-      .then(val => setDisabled(!val));
+    Notifications.isAvailable().then((val) => setDisabled(!val));
   }, []);
 
   const testNotificactions = useCallback(async () => {
@@ -57,8 +56,8 @@ export const TestNotificationConfigItem = React.memo(function () {
     <ItemWithIcon
       title={'Probar notificaciones'}
       description={
-        'Envía una notificación de prueba para comprobar que estén funcionando correctamente.'
-        + (disabled ? '\n\nNo disponible.' : '')
+        'Envía una notificación de prueba para comprobar que estén funcionando correctamente.' +
+        (disabled ? '\n\nNo disponible.' : '')
       }
       descriptionNumberOfLines={6}
       leftIcon={'bell-ring-outline'}

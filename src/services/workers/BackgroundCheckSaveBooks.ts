@@ -7,16 +7,16 @@ import { DefaultValueConfig } from '~/config/enums/DefaultValueConfig';
 import { showNotification } from './scripts/showNotification';
 import BackgroundFetch, { HeadlessEvent } from 'react-native-background-fetch';
 import { waitTo } from '~/common/utils/WaitTo';
-import Notifee, { AndroidImportance, AndroidVisibility } from '@notifee/react-native';
+import Notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
 import { NotificationChannel } from '../notifications/enums/NotificationChannel';
-import { DatabaseService } from '~/database/classes/DatabaseService';
 import { getBookInfo } from '~/api/scripts/getBookInfo';
 import { NotificationAction } from '../notifications/enums/NotificationAction';
-import { DatabaseSave } from '~/database/classes/DatabaseSave';
-import { openDatabaseAsync, SQLiteDatabase } from 'expo-sqlite';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
-import { DatabaseFileName } from '~/database/enums/DatabaseFileName';
-
+import { ProvisionalPersistenceService } from '~/common/storage/provisional-persistence-service';
+import { MMKV, Mode } from 'react-native-mmkv';
+import { StorageKey } from '~/common/enums/StorageKey';
 
 async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
   if (typeof taskId === 'object') {
@@ -45,37 +45,31 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
   });
 
   console.info('[BackgroundTask] Showed notification');
-  
-  let expo: SQLiteDatabase | undefined = undefined;
 
   try {
-    // Init Database
-    console.info('[BackgroundTask] Initializing database');
-    expo = await openDatabaseAsync(
-      DatabaseFileName.DEFAULT,
-      {
-        useNewConnection: true,
-      },
+    const storage = new MMKV({
+      id: StorageKey.PROVISIONAL_PERSISTENCE_STORAGE,
+      mode: Mode.MULTI_PROCESS,
+    });
+    const provisionalPersistenceService = new ProvisionalPersistenceService(
+      storage,
     );
-    const db = drizzle(expo);
-    console.info('[BackgroundTask] Database started');
-
-    // Init Database Models
-    const dbService = new DatabaseService(db);
-    const dbSave = new DatabaseSave(db);
 
     // Check Execute Background Task
+    console.info('[BackgroundTask] Check requrequirements...');
     await checkExecuteTask();
     console.info('[BackgroundTask] Check success');
 
     // Init Background Process
-    const follow_books = await dbService.getUserStatusBooks(UserBookStatus.FOLLOW);
-    const wish_books = await dbService.getUserStatusBooks(UserBookStatus.WISH);
-    const merge_books = [...follow_books, ...wish_books];
-    console.info('[BackgroundTask] Get', merge_books);
+    const user_books = provisionalPersistenceService.getAllWithUserStatus([
+      UserBookStatus.WISH,
+      UserBookStatus.FOLLOW,
+    ]);
+
+    console.info('[BackgroundTask] Get %d books', user_books.length);
 
     // Filter books
-    const books = merge_books.filter(value => {
+    const books = user_books.filter((value) => {
       return (
         value.status === BookStatus.ACTIVO ||
         value.status === BookStatus.PUBLICANDOSE ||
@@ -83,7 +77,7 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
         value.status === BookStatus.PAUSADO
       );
     });
-    console.info('[BackgroundTask] Filters', books);
+    console.info('[BackgroundTask] Filters %d books', books.length);
 
     if (books.length === 0) {
       await waitTo(1000);
@@ -92,8 +86,10 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
 
     for (const book of books) {
       const position = books.indexOf(book) + 1;
-      console.info(`[BackgroundTask] Progress -> ${position} de ${books.length}`);
-      
+      console.info(
+        `[BackgroundTask] Progress -> ${position} de ${books.length}`,
+      );
+
       taskNotification?.update({
         message: `Escaneando ${position} de ${books.length}`,
         progress: {
@@ -104,45 +100,39 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
       });
 
       // Check Update Book
-      const database = await dbService.getDatabaseBookInfo(book.url);
-      
-      if (!database) {
-        continue;
-      }
-    
       const new_data = await getBookInfo(book.url);
-    
-      if (database.chapters && new_data.chapters && database.chapters.length !== new_data.chapters.length) {
-        const newChapters = new_data.chapters.filter(chapter => {
-          const found = database.chapters?.find(v => v.data_chapter === chapter.data_chapter);
 
-          return found === undefined;
-        });
+      if (
+        new_data.chapters &&
+        book.chapters.length !== new_data.chapters.length
+      ) {
+        const local_chapters = book.chapters.map((v) => v.data_chapter);
+        const new_chapters = new_data.chapters.filter(
+          (v) => !local_chapters.includes(v.data_chapter),
+        );
 
-        for (const chapter of newChapters) {
+        for (const chapter of new_chapters) {
           await showNotification({
             title: book.title,
-            //message: 'Se acaba de actualizar este libro',
             message: chapter.title,
             action: {
               id: NotificationAction.OPEN_DETAILS,
               data: {
                 id: book.id,
-                path: book.path,
+                path: new_data.path,
                 url: book.url,
                 title: book.title,
-                picture: book.picture,
-                stars: book.stars,
-                type: book.type,
+                picture: new_data.picture,
+                stars: new_data.stars,
+                type: new_data.type,
               },
             },
           });
         }
       }
-    
-      await dbSave.saveBook(new_data);
-    }
 
+      provisionalPersistenceService.set(new_data, book.user_book_status);
+    }
   } catch (error) {
     console.error('[BackgroundTask]', error);
 
@@ -151,7 +141,6 @@ async function backgrounTaskFunction(taskId?: string | HeadlessEvent) {
       message: 'La tarea en segundo plano fallo.',
     }); */
   } finally {
-    await expo?.closeAsync();
     await taskNotification?.dismiss();
     console.info('[BackgroundTask] Finish');
 
@@ -168,8 +157,10 @@ function backgrounTaskTimeout(taskId: string) {
 
 export default {
   configure() {
-    const minimumInterval = ConfigStorage.getNumber(ConfigKey.BACKGROUND_TASK_INTERVAL) ?? DefaultValueConfig.BACKGROUND_TASK_INTERVAL;
-    
+    const minimumInterval =
+      ConfigStorage.getNumber(ConfigKey.BACKGROUND_TASK_INTERVAL) ??
+      DefaultValueConfig.BACKGROUND_TASK_INTERVAL;
+
     BackgroundFetch.registerHeadlessTask(backgrounTaskFunction);
     return BackgroundFetch.configure(
       {

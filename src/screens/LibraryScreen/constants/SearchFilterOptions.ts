@@ -1,5 +1,12 @@
 import { LibraryGenders } from '~/api/enums/LibraryGenders';
-import { LibraryCheck, LibraryDemography, LibraryFilterby, LibraryOrderDir, LibraryOrderItems, LibraryType } from '~/api/enums/LibraryQueries';
+import {
+  LibraryCheck,
+  LibraryDemography,
+  LibraryFilterby,
+  LibraryOrderDir,
+  LibraryOrderItems,
+  LibraryType,
+} from '~/api/enums/LibraryQueries';
 
 // Search Options
 export const LibraryFilterbyOptions = [
@@ -330,5 +337,5 @@ export const LibraryGenderOptions = [
   {
     label: 'Traps',
     value: LibraryGenders.TRAPS,
-  }
+  },
 ];

@@ -1,9 +1,9 @@
-import React, { useContext, useMemo } from "react";
-import { StyleSheet } from "react-native";
-import { IconButton, Text } from "react-native-paper";
-import ItemWithIcon from "~/common/components/ItemWithIcon";
-import { ThemeContext } from "~/common/providers/ThemeProvider";
-import { timeAgoShort } from "~/common/utils/TimeAgoShort";
+import React, { useContext, useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import { IconButton, Text } from 'react-native-paper';
+import ItemWithIcon from '~/common/components/ItemWithIcon';
+import { ThemeContext } from '~/common/providers/ThemeProvider';
+import { timeAgoShort } from '~/common/utils/TimeAgoShort';
 
 interface IProps {
   title: string;
@@ -14,7 +14,7 @@ interface IProps {
 }
 
 export const UserHistoryItem = React.memo(function (props: IProps) {
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   const timeAgo = useMemo(() => timeAgoShort(props.date), [props.date]);
 
@@ -24,14 +24,14 @@ export const UserHistoryItem = React.memo(function (props: IProps) {
       //description={`Hace ${timeAgo} • ${props.chapter}`}
       description={
         <Text>
-          <Text style={styles.timeAgo}>Hace {timeAgo}</Text>  •  {props.chapter}
+          <Text style={styles.timeAgo}>Hace {timeAgo}</Text> • {props.chapter}
         </Text>
       }
       descriptionNumberOfLines={2}
       leftIcon={'play'}
       leftIconColor={theme.colors.primary}
       fixHeight={72}
-      right={rp => (
+      right={(rp) => (
         <IconButton
           iconColor={rp.color}
           style={[rp.style, styles.icon]}

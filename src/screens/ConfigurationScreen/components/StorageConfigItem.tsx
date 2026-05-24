@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Platform, StyleSheet, ToastAndroid } from "react-native";
-import { Text } from "react-native-paper";
-import ItemWithIcon from "~/common/components/ItemWithIcon";
+import React, { useCallback, useEffect, useState } from 'react';
+import { Platform, StyleSheet, ToastAndroid } from 'react-native';
+import { Text } from 'react-native-paper';
+import ItemWithIcon from '~/common/components/ItemWithIcon';
 import * as FileSystem from 'expo-file-system';
-import { DOWNLOAD_IMAGES_FOLDER_PATH } from "~/screens/ChapterVisualizerScreen/scripts/downloadChapterImages";
+import { DOWNLOAD_IMAGES_FOLDER_PATH } from '~/screens/ChapterVisualizerScreen/scripts/downloadChapterImages';
 
 export const StorageConfigItem = React.memo(function () {
   const [storage, setStorage] = useState('0 MB');
@@ -11,10 +11,10 @@ export const StorageConfigItem = React.memo(function () {
   const calculeStorageSize = useCallback(async () => {
     try {
       const info = await FileSystem.getInfoAsync(DOWNLOAD_IMAGES_FOLDER_PATH);
-      
+
       if ('size' in info) {
-        const mb = info.size / (1024 ** 2);
-        
+        const mb = info.size / 1024 ** 2;
+
         setStorage(`${mb.toFixed(2)} MB`);
       }
     } catch (error) {
@@ -24,10 +24,7 @@ export const StorageConfigItem = React.memo(function () {
 
   const clickCalculeStorageSize = useCallback(() => {
     if (Platform.OS === 'android') {
-      ToastAndroid.show(
-        'Actualizando...',
-        ToastAndroid.SHORT,
-      );
+      ToastAndroid.show('Actualizando...', ToastAndroid.SHORT);
     }
 
     calculeStorageSize();
@@ -43,11 +40,8 @@ export const StorageConfigItem = React.memo(function () {
       title={'Espacio de descargas'}
       description={`Espacio ocupado por los mangas descargados en el almacenamiento del dispositivo.`}
       descriptionNumberOfLines={6}
-      right={rp => (
-        <Text
-          variant={'labelLarge'}
-          style={[rp.style, styles.right_text]}
-        >
+      right={(rp) => (
+        <Text variant={'labelLarge'} style={[rp.style, styles.right_text]}>
           {storage}
         </Text>
       )}

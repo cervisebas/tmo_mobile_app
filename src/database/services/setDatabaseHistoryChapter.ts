@@ -1,6 +1,6 @@
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { checkMarkUserBookStatus } from "./checkMarkUserBookStatus";
-import { DatabaseSave } from "../classes/DatabaseSave";
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { checkMarkUserBookStatus } from './checkMarkUserBookStatus';
+import { DatabaseSave } from '../classes/DatabaseSave';
 
 export async function setDatabaseHistoryChapter(
   id_bookinfo: number,
@@ -13,7 +13,7 @@ export async function setDatabaseHistoryChapter(
   if (!isStatusMarked && status) {
     throw 'Es necesario clasificar la obra en un estado para marcar los capítulos vistos.';
   }
-  
+
   const indexOf = chapterList.indexOf(chapter);
 
   if (indexOf === -1) {
@@ -28,11 +28,7 @@ export async function setDatabaseHistoryChapter(
       chapter_set_list.push({
         id_chapter: item.id!,
         //status: true,
-        status:
-          chapter.chapter_number === item.chapter_number
-            ? status
-            : true
-        ,
+        status: chapter.chapter_number === item.chapter_number ? status : true,
       });
     } else {
       chapter_set_list.push({

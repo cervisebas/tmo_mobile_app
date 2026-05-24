@@ -1,9 +1,9 @@
-import { BookStatus } from "../enums/BookStatus";
-import { BookType } from "../enums/BookType";
-import { BookStaffInterface } from "./BookStaffInterface";
-import { ChapterInterface } from "./ChapterInterface";
-import { GenderInterface } from "./GenderInterface";
-import { UserBookStatusList } from "./UserBookStatus";
+import { BookStatus } from '../enums/BookStatus';
+import { BookType } from '../enums/BookType';
+import { BookStaffInterface } from './BookStaffInterface';
+import { ChapterInterface } from './ChapterInterface';
+import { GenderInterface } from './GenderInterface';
+import { UserBookStatusList } from './UserBookStatus';
 
 export interface BookInfoInterface {
   id?: number;

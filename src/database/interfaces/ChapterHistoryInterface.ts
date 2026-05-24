@@ -1,4 +1,4 @@
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
 
 export interface ChapterHistoryInterface extends ChapterInterface {
   viewed: boolean;

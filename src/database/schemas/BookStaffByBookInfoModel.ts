@@ -1,5 +1,5 @@
-import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
-import { DatabaseTableName } from "../enums/DatabaseTableName";
+import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { DatabaseTableName } from '../enums/DatabaseTableName';
 
 export const BookStaffByBookInfoModel = sqliteTable(
   DatabaseTableName.BOOK_STAFF_BY_BOOKS_INFO,

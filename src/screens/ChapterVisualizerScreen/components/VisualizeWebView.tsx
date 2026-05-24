@@ -2,7 +2,13 @@ import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { LoadingErrorContent } from '~/common/components/LoadingErrorContent';
 import { useHtmlVisualizer } from '../hooks/useHtmlVisualizer';
 import { ImageItemInterface } from '../interfaces/ImageItemInterface';
-import React, { forwardRef, useCallback, useContext, useImperativeHandle, useRef } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useContext,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { DOWNLOAD_IMAGES_FOLDER_PATH } from '../scripts/downloadChapterImages';
@@ -22,28 +28,28 @@ export interface VisualizeWebViewRef {
   setCurrentPosition(position_y: number): void;
 }
 
-
-export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.Ref<VisualizeWebViewRef>) {
-  const {html, loading} = useHtmlVisualizer();
+export const VisualizeWebView = forwardRef(function (
+  props: IProps,
+  ref: React.Ref<VisualizeWebViewRef>,
+) {
+  const { html, loading } = useHtmlVisualizer();
   const refWebView = useRef<WebView>(null);
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const refAction = useRef<((val: any) => void) | undefined>(undefined);
 
-  const {calculeSafeArea} = useVisualizeWebViewSafeArea(
-    val => {
-      refWebView.current?.injectJavaScript(`
+  const { calculeSafeArea } = useVisualizeWebViewSafeArea((val) => {
+    refWebView.current?.injectJavaScript(`
         setPaddingTop(12);
         setPaddingLeft(${val.left});
         setPaddingRight(${val.right});
         setPaddingBottom(${val.bottom});
         true;
       `);
-    },
-  );
-  
+  });
+
   const _onLoadEnd = useCallback(() => {
     const jsonImages = JSON.stringify(props.images);
-    
+
     refWebView.current?.injectJavaScript(`
       setImages(${jsonImages});
       true;
@@ -51,23 +57,26 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
     props.onLoadEnd?.();
   }, [props]);
 
-  const _onMessage = useCallback(({nativeEvent: {data}}: WebViewMessageEvent) => {
-    try {
-      const receive = JSON.parse(data) as object;
-      
-      if ('action' in receive && 'data' in receive) {
-        refAction.current?.(receive.data);
+  const _onMessage = useCallback(
+    ({ nativeEvent: { data } }: WebViewMessageEvent) => {
+      try {
+        const receive = JSON.parse(data) as object;
+
+        if ('action' in receive && 'data' in receive) {
+          refAction.current?.(receive.data);
+        }
+      } catch (error) {
+        console.error(error);
+        refAction.current?.(null);
       }
-    } catch (error) {
-      console.error(error);
-      refAction.current?.(null);
-    }
-  }, []);
+    },
+    [],
+  );
 
   useImperativeHandle(ref, () => ({
     loadImage(index, image) {
       return withTimeout(
-        new Promise(resolve => {
+        new Promise((resolve) => {
           const jsonVal = JSON.stringify(image);
           refWebView.current?.injectJavaScript(`
             setImage(${index}, ${jsonVal});
@@ -76,16 +85,16 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
 
           refAction.current = resolve;
         }),
-        5000,
+        4000,
       );
     },
     getCurrentPosition() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         refWebView.current?.injectJavaScript(`
           getScrollPosition();
           true;
         `);
-        
+
         refAction.current = resolve;
       });
     },
@@ -103,7 +112,9 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
         ref={refWebView}
         source={{
           html: html,
-          baseUrl: `${DOWNLOAD_IMAGES_FOLDER_PATH}/${props.bookPath}/`,
+          baseUrl: Platform.select({
+            android: `${DOWNLOAD_IMAGES_FOLDER_PATH}/${props.bookPath}/`,
+          }),
         }}
         style={[
           styles.webview,
@@ -120,7 +131,7 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
         onError={console.error}
         onMessage={_onMessage}
         renderLoading={() => (
-          <View className={'flex-1 justify-center items-center'}>
+          <View className={'flex-1 items-center justify-center'}>
             <ActivityIndicator size={'large'} />
           </View>
         )}
@@ -130,6 +141,9 @@ export const VisualizeWebView = forwardRef(function (props: IProps, ref: React.R
         javaScriptEnabled={true}
         domStorageEnabled={true}
         scalesPageToFit={Platform.OS === 'android'}
+        webviewDebuggingEnabled={Platform.select({
+          ios: __DEV__,
+        })}
       />
     </LoadingErrorContent>
   );

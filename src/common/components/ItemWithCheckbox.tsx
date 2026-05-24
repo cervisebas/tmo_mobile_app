@@ -1,6 +1,6 @@
-import React from "react";
-import { StyleProp, TextStyle, ViewStyle } from "react-native";
-import { Checkbox, List, Switch } from "react-native-paper";
+import React from 'react';
+import { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { Checkbox, List, Switch } from 'react-native-paper';
 
 interface IProps {
   title: string;
@@ -28,8 +28,7 @@ export const ItemWithCheckbox = React.memo(function (props: IProps) {
       descriptionNumberOfLines={props.descriptionNumberOfLines}
       left={
         props.leftIcon
-          ?
-            p => (
+          ? (p) => (
               <List.Icon
                 {...p}
                 icon={props.leftIcon!}
@@ -38,27 +37,23 @@ export const ItemWithCheckbox = React.memo(function (props: IProps) {
             )
           : undefined
       }
-      right={
-        p => (
-          props.useSwitch
-            ? (
-              <Switch
-                style={p.style}
-                value={props.checked}
-                onValueChange={() => props.onChecked(!props.checked)}
-              />
-            )
-            : (
-              <Checkbox.Android
-                style={p.style}
-                status={props.checked ? 'checked' : 'unchecked'}
-                onPress={() => props.onChecked(!props.checked)}
-              />
-            )
+      right={(p) =>
+        props.useSwitch ? (
+          <Switch
+            style={p.style}
+            value={props.checked}
+            onValueChange={() => props.onChecked(!props.checked)}
+          />
+        ) : (
+          <Checkbox.Android
+            style={p.style}
+            status={props.checked ? 'checked' : 'unchecked'}
+            onPress={() => props.onChecked(!props.checked)}
+          />
         )
       }
       disabled={props.disabled}
-      style={[props.style, props.fixHeight ? {height: props.fixHeight} : {}]}
+      style={[props.style, props.fixHeight ? { height: props.fixHeight } : {}]}
       onPress={() => props.onChecked(!props.checked)}
     />
   );

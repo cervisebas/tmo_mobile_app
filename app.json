@@ -2,9 +2,10 @@
   "expo": {
     "name": "TMO",
     "slug": "tmo_app",
-    "version": "1.2.0",
+    "version": "1.4.1",
     "experiments": {
-      "tsconfigPaths": true
+      "tsconfigPaths": true,
+      "reactCompiler": true
     },
     "plugins": [
       [
@@ -78,17 +79,12 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.cervisebas.tmo-app",
       "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "processing"
-        ],
+        "UIBackgroundModes": ["fetch", "processing"],
         "BGTaskSchedulerPermittedIdentifiers": [
           "com.transistorsoft.fetch",
           "com.transistorsoft.customtask"
@@ -96,8 +92,8 @@
       }
     },
     "android": {
-      "version": "1.2.0",
-      "versionCode": 7,
+      "version": "1.4.1",
+      "versionCode": 13,
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/foreground-image.png",

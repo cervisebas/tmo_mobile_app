@@ -7,9 +7,16 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {Text} from 'react-native-paper';
-import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal, BottomSheetProps, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Text } from 'react-native-paper';
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetModal,
+  BottomSheetProps,
+  BottomSheetScrollView,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 import { BottomSheetVariables } from '@gorhom/bottom-sheet/lib/typescript/types';
 import useSafeArea from '../hooks/useSafeArea';
 import useDimension from '../hooks/useDimension';
@@ -43,18 +50,15 @@ const MAX_WIDTH = 600;
 export default React.memo(
   forwardRef(function (props: IProps, ref: React.Ref<BottomSheetRef>) {
     const [visible, setVisible] = useState(false);
-    const {theme} = useContext(ThemeContext);
-    const {left, right, bottom, top} = useSafeArea();
+    const { theme } = useContext(ThemeContext);
+    const { left, right, bottom, top } = useSafeArea();
     const [WINDOW_WIDTH, WINDOW_HEIGHT] = useDimension('window');
     const refBottomSheetModal = useRef<BottomSheetModal>(null);
 
-    const EXTRA_MARGIN = useMemo(
-      () => {
-        const value = WINDOW_WIDTH - MAX_WIDTH;
-        return value > 0 ? value : 0;
-      },
-      [WINDOW_WIDTH],
-    );
+    const EXTRA_MARGIN = useMemo(() => {
+      const value = WINDOW_WIDTH - MAX_WIDTH;
+      return value > 0 ? value : 0;
+    }, [WINDOW_WIDTH]);
 
     const contentStyle: ViewStyle = {
       paddingBottom: bottom,
@@ -110,10 +114,8 @@ export default React.memo(
       refBottomSheetModal.current?.dismiss();
     }, visible);
 
-    usePreventBackNavigation(
-      props.navigation,
-      visible,
-      () => refBottomSheetModal.current?.dismiss(),
+    usePreventBackNavigation(props.navigation, visible, () =>
+      refBottomSheetModal.current?.dismiss(),
     );
 
     useImperativeHandle(ref, () => ({
@@ -133,11 +135,7 @@ export default React.memo(
         ref={refBottomSheetModal}
         enablePanDownToClose={true}
         enableDynamicSizing={!props.height}
-        maxDynamicContentSize={
-          !props.height
-            ? (WINDOW_HEIGHT - top)
-            : undefined
-        }
+        maxDynamicContentSize={!props.height ? WINDOW_HEIGHT - top : undefined}
         snapPoints={
           props.height
             ? Array.isArray(props.height)
@@ -149,8 +147,8 @@ export default React.memo(
           {
             width: WINDOW_WIDTH - (left + right),
             maxWidth: MAX_WIDTH,
-            marginLeft: left + (EXTRA_MARGIN / 2),
-            marginRight: right + (EXTRA_MARGIN / 2),
+            marginLeft: left + EXTRA_MARGIN / 2,
+            marginRight: right + EXTRA_MARGIN / 2,
           },
         ]}
         backgroundStyle={[
@@ -164,22 +162,19 @@ export default React.memo(
         footerComponent={props.footerComponent}
         onDismiss={onDismiss}
       >
-        {!props.useScrollView
-          ? (
-            <BottomSheetView
-              style={[contentStyle, props.contentContainerStyle]}
-              // eslint-disable-next-line react/no-children-prop
-              children={props.children}
-            />
-          )
-          : (
-            <BottomSheetScrollView
-              contentContainerStyle={[contentStyle, props.contentContainerStyle]}
-              // eslint-disable-next-line react/no-children-prop
-              children={props.children}
-            />
-          )
-        }
+        {!props.useScrollView ? (
+          <BottomSheetView
+            style={[contentStyle, props.contentContainerStyle]}
+            // eslint-disable-next-line react/no-children-prop
+            children={props.children}
+          />
+        ) : (
+          <BottomSheetScrollView
+            contentContainerStyle={[contentStyle, props.contentContainerStyle]}
+            // eslint-disable-next-line react/no-children-prop
+            children={props.children}
+          />
+        )}
       </BottomSheetModal>
     );
   }),

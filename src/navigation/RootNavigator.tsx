@@ -1,12 +1,15 @@
-import React, { useContext } from "react";
-import { StackNavigator } from "./StackNavigator";
-import { ThemeContext } from "~/common/providers/ThemeProvider";
+import React, { useContext } from 'react';
+import { StackNavigator } from './StackNavigator';
+import { ThemeContext } from '~/common/providers/ThemeProvider';
 import { Toaster } from 'sonner-native';
-import { useBackgroundFetch } from "~/services/workers/hooks/useBackgroundFetch";
+import { useBackgroundFetch } from '~/services/workers/hooks/useBackgroundFetch';
+import { useInitProvicionalPersistenceBook } from '~/common/storage/provisional-persistence-service/hooks/useInitProvicionalPersistenceBook';
 
 export function RootNavigator() {
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
+
   useBackgroundFetch();
+  useInitProvicionalPersistenceBook();
 
   return (
     <React.Fragment>

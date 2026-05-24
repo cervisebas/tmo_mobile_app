@@ -1,10 +1,17 @@
-import { useEffect, useRef } from "react";
-import { NotificationAction } from "../enums/NotificationAction";
-import Notifee, { Event, EventType, InitialNotification } from "@notifee/react-native";
-import { ForegroundNotifee } from "../events/ForegoundNotifee";
-import { BackgroundNotifee } from "../events/BackgroundNotifee";
+import { useEffect, useRef } from 'react';
+import { NotificationAction } from '../enums/NotificationAction';
+import Notifee, {
+  Event,
+  EventType,
+  InitialNotification,
+} from '@notifee/react-native';
+import { ForegroundNotifee } from '../events/ForegoundNotifee';
+import { BackgroundNotifee } from '../events/BackgroundNotifee';
 
-export function useNotificationAction<T extends object>(notification_type: NotificationAction, callback: (data: T) => void) {
+export function useNotificationAction<T extends object>(
+  notification_type: NotificationAction,
+  callback: (data: T) => void,
+) {
   const init = useRef(false);
 
   function notificationAction(event: Event | InitialNotification) {
@@ -30,9 +37,9 @@ export function useNotificationAction<T extends object>(notification_type: Notif
       }
     }
   }
-  
+
   useEffect(() => {
-    Notifee.getInitialNotification().then(val => {
+    Notifee.getInitialNotification().then((val) => {
       if (!init.current) {
         init.current = true;
         if (val) {
@@ -40,7 +47,7 @@ export function useNotificationAction<T extends object>(notification_type: Notif
         }
       }
     });
-    
+
     const eventForeground = ForegroundNotifee.subscribe(notificationAction);
     const eventBackground = BackgroundNotifee.subscribe(notificationAction);
 

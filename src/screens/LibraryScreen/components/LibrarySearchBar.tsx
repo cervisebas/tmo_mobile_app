@@ -1,8 +1,13 @@
-import React, { forwardRef, useContext, useImperativeHandle, useState } from "react";
-import { View } from "react-native";
-import { Searchbar } from "react-native-paper";
-import useSafeArea from "~/common/hooks/useSafeArea";
-import { ThemeContext } from "~/common/providers/ThemeProvider";
+import React, {
+  forwardRef,
+  useContext,
+  useImperativeHandle,
+  useState,
+} from 'react';
+import { View } from 'react-native';
+import { Searchbar } from 'react-native-paper';
+import useSafeArea from '~/common/hooks/useSafeArea';
+import { ThemeContext } from '~/common/providers/ThemeProvider';
 
 interface IProps {
   onSearch?(value: string): void;
@@ -12,12 +17,12 @@ export interface LibrarySearchBarRef {
   getValue(): string;
 }
 
-export const LibrarySearchBar = React.memo(forwardRef(
-  function (props: IProps, ref: React.Ref<LibrarySearchBarRef>) {
-    const {theme} = useContext(ThemeContext);
-    const {left, right} = useSafeArea(12);
+export const LibrarySearchBar = React.memo(
+  forwardRef(function (props: IProps, ref: React.Ref<LibrarySearchBarRef>) {
+    const { theme } = useContext(ThemeContext);
+    const { left, right } = useSafeArea(12);
     const [value, setValue] = useState('');
-    
+
     useImperativeHandle(ref, () => ({
       getValue() {
         return value;
@@ -53,5 +58,5 @@ export const LibrarySearchBar = React.memo(forwardRef(
         />
       </View>
     );
-  }
-));
+  }),
+);

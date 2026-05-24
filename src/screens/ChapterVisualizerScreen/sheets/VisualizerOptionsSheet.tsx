@@ -1,11 +1,16 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
-import { BottomSheetOptionsInterface } from "~/common/components/BottomSheetOptions";
-import { ShareURL } from "~/common/scripts/ShareURL";
-import { refDialog } from "~/common/utils/Ref";
-import { DatabaseService } from "~/database/classes/DatabaseService";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { ChapterOptionInterface } from '~/api/interfaces/ChapterOptionInterface';
+import { BottomSheetOptionsInterface } from '~/common/components/BottomSheetOptions';
+import { ShareURL } from '~/common/scripts/ShareURL';
+import { refDialog } from '~/common/utils/Ref';
+import { DatabaseService } from '~/database/classes/DatabaseService';
 
 interface IProps {
   chapter: ChapterInterface;
@@ -21,17 +26,19 @@ export interface VisualizerOptionsSheetRef {
   open(): void;
 }
 
-export const VisualizerOptionsSheet = React.memo(forwardRef(
-  function (props: IProps, ref: React.Ref<VisualizerOptionsSheetRef>) {
+export const VisualizerOptionsSheet = React.memo(
+  forwardRef(function (
+    props: IProps,
+    ref: React.Ref<VisualizerOptionsSheetRef>,
+  ) {
     const [bookInfo, setBookInfo] = useState<BookInfoInterface | null>(null);
 
     useEffect(() => {
       const dbService = new DatabaseService();
-      dbService.getDatabaseBookInfo(props.book_url)
-        .then(setBookInfo);
+      dbService.getDatabaseBookInfo(props.book_url).then(setBookInfo);
     }, [props.book_url]);
 
-    useImperativeHandle(ref, ()=> ({
+    useImperativeHandle(ref, () => ({
       open() {
         const infoSection: BottomSheetOptionsInterface[] = [
           {
@@ -50,7 +57,7 @@ export const VisualizerOptionsSheet = React.memo(forwardRef(
             onPress() {
               ShareURL(props.selectedOption.path);
             },
-          }
+          },
         ];
 
         if (bookInfo) {
@@ -95,18 +102,13 @@ export const VisualizerOptionsSheet = React.memo(forwardRef(
           });
         }
 
-        refDialog.current?.showBottomSheetOptions(
-          'Opciones',
-          {
-            'Viendo ahora': infoSection,
-            'Acciones': actionSection,
-          },
-        );
+        refDialog.current?.showBottomSheetOptions('Opciones', {
+          'Viendo ahora': infoSection,
+          Acciones: actionSection,
+        });
       },
     }));
 
-    return (
-      <React.Fragment />
-    );
-  }
-));
+    return <React.Fragment />;
+  }),
+);

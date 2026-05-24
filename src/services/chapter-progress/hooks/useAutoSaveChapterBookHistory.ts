@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
-import { ChapterProgressStorage } from "../../chapter-progress";
-import { useInterval } from "~/common/hooks/useInterval";
-import { DatabaseSave } from "~/database/classes/DatabaseSave";
+import { useCallback, useEffect, useState } from 'react';
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { ChapterOptionInterface } from '~/api/interfaces/ChapterOptionInterface';
+import { ChapterProgressStorage } from '../../chapter-progress';
+import { useInterval } from '~/common/hooks/useInterval';
+import { DatabaseSave } from '~/database/classes/DatabaseSave';
 
 export function useAutoSaveChapterBookHistory(
   id_bookinfo: number,
@@ -12,13 +12,15 @@ export function useAutoSaveChapterBookHistory(
   getProgress: () => Promise<number | null | undefined>,
 ) {
   const [saving, setSaving] = useState(false);
-  const [availableProgress, setAvailableProgress] = useState<number | null>(null);
+  const [availableProgress, setAvailableProgress] = useState<number | null>(
+    null,
+  );
   const CHAPTER_ID = option.path.slice(option.path.lastIndexOf('/') + 1);
 
   const saveNow = useCallback(async () => {
     setSaving(true);
     setAvailableProgress(null);
-    
+
     try {
       const progress = await getProgress();
 
@@ -29,12 +31,7 @@ export function useAutoSaveChapterBookHistory(
       ChapterProgressStorage.set(CHAPTER_ID, progress);
 
       const dbSave = new DatabaseSave();
-      await dbSave.saveUserHistory(
-        id_bookinfo,
-        chapter,
-        option,
-        progress,
-      );
+      await dbSave.saveUserHistory(id_bookinfo, chapter, option, progress);
 
       setSaving(false);
     } catch (error) {

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { db } from "~/database/database";
-import { DatabaseTableName } from "~/database/enums/DatabaseTableName";
-import { useTableChanges } from "~/database/hooks/useTableChange";
-import { BookInfoModel } from "~/database/schemas/BookInfoModel";
+import { useCallback, useEffect, useState } from 'react';
+import { db } from '~/database/database';
+import { DatabaseTableName } from '~/database/enums/DatabaseTableName';
+import { useTableChanges } from '~/database/hooks/useTableChange';
+import { BookInfoModel } from '~/database/schemas/BookInfoModel';
 
 export function useSavedBooks() {
   const [booksWithoutInfo, setBooksWithoutInfo] = useState(0);
@@ -27,10 +27,7 @@ export function useSavedBooks() {
     setBooksWithoutInfo(booksWithoutInfo);
   }, []);
 
-  useTableChanges(
-    DatabaseTableName.BOOKS_INFO,
-    loadData,
-  );
+  useTableChanges(DatabaseTableName.BOOKS_INFO, loadData);
 
   useEffect(() => {
     loadData();

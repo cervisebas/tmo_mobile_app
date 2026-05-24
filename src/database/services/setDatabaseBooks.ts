@@ -1,5 +1,5 @@
-import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
-import { DatabaseSave } from "../classes/DatabaseSave";
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
+import { DatabaseSave } from '../classes/DatabaseSave';
 
 export async function setDatabaseBooks(data: BookInfoInterface[]) {
   try {

@@ -1,9 +1,9 @@
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
-import { getImagesOfChapter } from "~/api/scripts/getImagesOfChapter";
-import { refDialog, refNavigation } from "~/common/utils/Ref";
-import { StackScreens } from "~/enums/StackScreens";
-import { ChapterVisualizerParams } from "~/screens/ChapterVisualizerScreen/interfaces/ChapterVisualizerParams";
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { ChapterOptionInterface } from '~/api/interfaces/ChapterOptionInterface';
+import { getImagesOfChapter } from '~/api/scripts/getImagesOfChapter';
+import { refDialog, refNavigation } from '~/common/utils/Ref';
+import { StackScreens } from '~/enums/StackScreens';
+import { ChapterVisualizerParams } from '~/screens/ChapterVisualizerScreen/interfaces/ChapterVisualizerParams';
 
 interface IProps {
   index: number;
@@ -19,7 +19,7 @@ export async function goViewChapter(props: IProps) {
   try {
     refDialog.current?.showLoading('Obteniendo información...');
 
-    const {images, originUrl} = await getImagesOfChapter(
+    const { images, originUrl } = await getImagesOfChapter(
       props.option.path,
       props.book_url,
     );
@@ -28,7 +28,9 @@ export async function goViewChapter(props: IProps) {
       await props.onLoadImages();
     }
 
-    const chapter_id = props.option.path.slice(props.option.path.lastIndexOf('/') + 1);
+    const chapter_id = props.option.path.slice(
+      props.option.path.lastIndexOf('/') + 1,
+    );
     const params: ChapterVisualizerParams = {
       index: props.index,
       title: props.chapter.title,
@@ -42,10 +44,7 @@ export async function goViewChapter(props: IProps) {
       selected_option: props.option,
     };
 
-    refNavigation.current?.navigate(
-      StackScreens.CHAPTER_VISUALIZER,
-      params,
-    );
+    refNavigation.current?.navigate(StackScreens.CHAPTER_VISUALIZER, params);
 
     refDialog.current?.showLoading(false);
   } catch (error) {

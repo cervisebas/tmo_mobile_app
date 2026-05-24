@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useMemo, useRef} from 'react';
-import {StyleProp, StyleSheet, ViewStyle} from 'react-native';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Modal from 'react-native-modal';
 import useDimension from '../hooks/useDimension';
 import { ThemeContext } from '../providers/ThemeProvider';
@@ -30,11 +30,11 @@ interface IProps {
   children: React.ReactNode;
 }
 
-const _animationRemove = {from: {opacity: 1}, to: {opacity: 1}};
+const _animationRemove = { from: { opacity: 1 }, to: { opacity: 1 } };
 
 export default React.memo(function CustomModal(props: IProps) {
   // Context's
-  const {theme} = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [width, height] = useDimension('screen');
   const init = useRef(false);
 
@@ -59,17 +59,19 @@ export default React.memo(function CustomModal(props: IProps) {
       animationIn={
         (removeAnimationIn
           ? _animationRemove
-          : props.animationIn ?? 'slideInRight') as any
+          : (props.animationIn ?? 'slideInRight')) as any
       }
-      animationInTiming={removeAnimationIn ? 0 : props.animationInTiming ?? 250}
+      animationInTiming={
+        removeAnimationIn ? 0 : (props.animationInTiming ?? 250)
+      }
       // Animation Out
       animationOut={
         (removeAnimationOut
           ? _animationRemove
-          : props.animationOut ?? 'slideOutLeft') as any
+          : (props.animationOut ?? 'slideOutLeft')) as any
       }
       animationOutTiming={
-        removeAnimationOut ? 0 : props.animationOutTiming ?? 250
+        removeAnimationOut ? 0 : (props.animationOutTiming ?? 250)
       }
       // Others parameters
       backdropTransitionOutTiming={props.backdropTransitionOutTiming}
@@ -88,7 +90,8 @@ export default React.memo(function CustomModal(props: IProps) {
       useNativeDriver={props.useNativeDriver ?? true}
       useNativeDriverForBackdrop={props.useNativeDriverForBackdrop ?? true}
       hideModalContentWhileAnimating={true}
-      style={[props.style, styles.modal]}>
+      style={[props.style, styles.modal]}
+    >
       {props.children}
     </Modal>
   );

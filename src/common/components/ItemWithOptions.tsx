@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
-import {StyleProp, TextStyle, View, ViewStyle} from 'react-native';
-import {List, Text} from 'react-native-paper';
-import {Dropdown, DropdownRef} from 'react-native-paper-dropdown';
+import { StyleProp, TextStyle, View, ViewStyle } from 'react-native';
+import { List, Text } from 'react-native-paper';
+import { Dropdown, DropdownRef } from 'react-native-paper-dropdown';
 import useSafeArea from '../hooks/useSafeArea';
 
 interface IProps {
@@ -27,7 +27,7 @@ interface IProps {
 }
 export default React.memo(function (props: IProps) {
   const refDropdown = useRef<DropdownRef>(null);
-  const {top} = useSafeArea();
+  const { top } = useSafeArea();
 
   return (
     <Dropdown
@@ -43,7 +43,7 @@ export default React.memo(function (props: IProps) {
         left: '40%',
       }}
       disabled={props.disabled}
-      CustomDropdownInput={dProps => (
+      CustomDropdownInput={(dProps) => (
         <List.Item
           title={props.title}
           titleNumberOfLines={props.titleNumberOfLines}
@@ -52,8 +52,7 @@ export default React.memo(function (props: IProps) {
           descriptionNumberOfLines={props.descriptionNumberOfLines}
           left={
             props.icon
-              ?
-                p => (
+              ? (p) => (
                   <List.Icon
                     {...p}
                     icon={props.icon!}
@@ -62,23 +61,19 @@ export default React.memo(function (props: IProps) {
                 )
               : undefined
           }
-          right={
-            p => (
-              <View className={'flex flex-row items-center gap-[4]'}>
-                {dProps.selectedLabel && (
-                  <Text variant={'bodySmall'}>
-                    {dProps.selectedLabel}
-                  </Text>
-                )}
-                <List.Icon
-                  {...p}
-                  icon={'menu-down'}
-                />
-              </View>
-            )
-          }
+          right={(p) => (
+            <View className={'flex flex-row items-center gap-[4]'}>
+              {dProps.selectedLabel && (
+                <Text variant={'bodySmall'}>{dProps.selectedLabel}</Text>
+              )}
+              <List.Icon {...p} icon={'menu-down'} />
+            </View>
+          )}
           disabled={props.disabled}
-          style={[props.style, props.fixHeight ? {height: props.fixHeight} : {}]}
+          style={[
+            props.style,
+            props.fixHeight ? { height: props.fixHeight } : {},
+          ]}
           onPress={() => {
             props.onPress?.();
             refDropdown.current?.focus();

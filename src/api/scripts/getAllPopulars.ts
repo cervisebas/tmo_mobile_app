@@ -1,11 +1,11 @@
-import { parse } from "node-html-parser";
-import { ApiEndpoint } from "../enums/ApiEndpoint";
-import { ApiMessageError } from "../enums/ApiMessageError";
-import { BookInfoInterface } from "../interfaces/BookInfoInterface";
-import { BookType } from "../enums/BookType";
-import { PopularsInterface } from "../interfaces/PopularsInterface";
-import { axios } from "~/common/utils/Axios";
-import he from "he";
+import { parse } from 'node-html-parser';
+import { ApiEndpoint } from '../enums/ApiEndpoint';
+import { ApiMessageError } from '../enums/ApiMessageError';
+import { BookInfoInterface } from '../interfaces/BookInfoInterface';
+import { BookType } from '../enums/BookType';
+import { PopularsInterface } from '../interfaces/PopularsInterface';
+import { axios } from '~/common/utils/Axios';
+import he from 'he';
 
 const CATEGORIES = [
   '#pills-populars',
@@ -15,16 +15,13 @@ const CATEGORIES = [
 
 export async function getAllPopulars(): Promise<PopularsInterface> {
   try {
-    const { data } = await axios.get<string>(
-      ApiEndpoint.HOME,
-      {
-        headers: {
-          Referer: ApiEndpoint.HOME,
-        },
+    const { data } = await axios.get<string>(ApiEndpoint.HOME, {
+      headers: {
+        Referer: ApiEndpoint.HOME,
       },
-    );
+    });
     const root = parse(data);
-    
+
     const populars: BookInfoInterface[][] = [[], [], []];
 
     let category_index = 0;
@@ -45,10 +42,9 @@ export async function getAllPopulars(): Promise<PopularsInterface> {
 
         const type = element
           .querySelector('.book-type')
-          ?.innerText
-          .toLowerCase()
+          ?.innerText.toLowerCase()
           .trim();
-        
+
         const url = element.querySelector('a')?.getAttribute('href');
 
         const data: BookInfoInterface = {

@@ -1,5 +1,5 @@
-import {useEffect, useRef} from 'react';
-import {BackHandler} from 'react-native';
+import { useEffect, useRef } from 'react';
+import { BackHandler } from 'react-native';
 
 export default function (callback: () => void, dep = false) {
   const back = useRef(dep);
@@ -14,7 +14,6 @@ export default function (callback: () => void, dep = false) {
     });
 
     return event.remove;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

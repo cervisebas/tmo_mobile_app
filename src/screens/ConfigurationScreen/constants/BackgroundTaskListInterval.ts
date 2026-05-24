@@ -24,4 +24,3 @@ export const BackgroundTaskListInterval = [
     value: '720',
   },
 ];
-

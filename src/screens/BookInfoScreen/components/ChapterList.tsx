@@ -1,15 +1,15 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
-import { ListRenderItemInfo, StyleSheet, View } from "react-native";
-import { Button, IconButton, Text } from "react-native-paper";
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import FlatListDynamicItems from "~/common/components/FlatListDynamicItems";
-import ItemWithIcon from "~/common/components/ItemWithIcon";
-import { ThemeContext } from "~/common/providers/ThemeProvider";
-import { refNavigation } from "~/common/utils/Ref";
-import { useChapterHistory } from "~/database/hooks/useChapterHistory";
-import { ChapterHistoryInterface } from "~/database/interfaces/ChapterHistoryInterface";
-import { StackScreens } from "~/enums/StackScreens";
-import { onPressChapterItem } from "../scripts/onPressChapterItem";
+import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
+import { Button, IconButton, Text } from 'react-native-paper';
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import FlatListDynamicItems from '~/common/components/FlatListDynamicItems';
+import ItemWithIcon from '~/common/components/ItemWithIcon';
+import { ThemeContext } from '~/common/providers/ThemeProvider';
+import { refNavigation } from '~/common/utils/Ref';
+import { useChapterHistory } from '~/database/hooks/useChapterHistory';
+import { ChapterHistoryInterface } from '~/database/interfaces/ChapterHistoryInterface';
+import { StackScreens } from '~/enums/StackScreens';
+import { onPressChapterItem } from '../scripts/onPressChapterItem';
 
 interface IProps {
   book_title: string;
@@ -23,17 +23,15 @@ const MAX_ITEMS_UNCOLAPSE = 12;
 export const CHAPTER_HEIGHT_ITEMS = 52;
 
 export const ChapterList = React.memo(function (props: IProps) {
-  const {theme} = useContext(ThemeContext);
-  
+  const { theme } = useContext(ThemeContext);
+
   const [ascending, setAscending] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
   const chapters = useChapterHistory(props.chapters);
-  
+
   const data = useMemo(() => {
-    const use_data = ascending
-      ? chapters.slice().reverse()
-      : chapters;
+    const use_data = ascending ? chapters.slice().reverse() : chapters;
 
     const items = showAll
       ? use_data.slice(0, MAX_ITEMS_UNCOLAPSE)
@@ -41,24 +39,21 @@ export const ChapterList = React.memo(function (props: IProps) {
 
     return items;
   }, [ascending, chapters, showAll]);
-  
-  const canShowMore = useMemo(() => (
-    !showAll //&&
+
+  const canShowMore = useMemo(
+    () => !showAll, //&&
     //chapters.length > MAX_ITEMS_COLAPSE
-  ), [showAll]);
+    [showAll],
+  );
 
   const renderItem = useCallback(
-    ({item}: ListRenderItemInfo<ChapterHistoryInterface>) => (
+    ({ item }: ListRenderItemInfo<ChapterHistoryInterface>) => (
       <ItemWithIcon
         key={`chapter-item-${item.id}`}
         title={item.title}
         leftIcon={'chevron-down'}
         leftIconColor={theme.colors.primary}
-        rightIcon={
-          item.viewed
-            ? 'eye-outline'
-            : 'eye-off-outline'
-        }
+        rightIcon={item.viewed ? 'eye-outline' : 'eye-off-outline'}
         rightIconColor={
           item.viewed
             ? theme.colors.inversePrimary
@@ -88,10 +83,8 @@ export const ChapterList = React.memo(function (props: IProps) {
 
   return (
     <View className={'flex-col gap-[8]'}>
-      <View className={'flex-row justify-between items-center'}>
-        <Text variant={'titleLarge'}>
-          Capítulos
-        </Text>
+      <View className={'flex-row items-center justify-between'}>
+        <Text variant={'titleLarge'}>Capítulos</Text>
 
         <View className={'flex-row'}>
           {!canShowMore && (
@@ -105,17 +98,13 @@ export const ChapterList = React.memo(function (props: IProps) {
           )}
 
           <IconButton
-            icon={
-              !ascending
-                ? 'sort-ascending'
-                : 'sort-descending'
-            }
+            icon={!ascending ? 'sort-ascending' : 'sort-descending'}
             disabled={chapters.length === 1}
             animated={true}
             mode={'contained'}
             style={styles.button_actions}
             size={20}
-            onPress={() => setAscending(v => !v)}
+            onPress={() => setAscending((v) => !v)}
           />
         </View>
       </View>
@@ -130,29 +119,28 @@ export const ChapterList = React.memo(function (props: IProps) {
         useKeyExtractor={'chapter-item-{id}'}
       />
 
-      <View className={'pt-[12] gap-[12]'}>
-        {canShowMore && chapters.length > MAX_ITEMS_COLAPSE && <Button
-          mode={'contained'}
-          className={'w-full'}
-          onPress={() => setShowAll(true)}
-        >
-          VER MÁS (MAX {MAX_ITEMS_UNCOLAPSE} ITEMS)
-        </Button>}
+      <View className={'gap-[12] pt-[12]'}>
+        {canShowMore && chapters.length > MAX_ITEMS_COLAPSE && (
+          <Button
+            mode={'contained'}
+            className={'w-full'}
+            onPress={() => setShowAll(true)}
+          >
+            VER MÁS (MAX {MAX_ITEMS_UNCOLAPSE} ITEMS)
+          </Button>
+        )}
 
         {chapters.length > MAX_ITEMS_COLAPSE && (
           <Button
             mode={'contained'}
             className={'w-full'}
             onPress={() => {
-              refNavigation.current?.navigate(
-                StackScreens.CHAPTER_LIST,
-                {
-                  title: props.book_title,
-                  chapters: props.chapters,
-                  book_url: props.book_url,
-                  id_bookinfo: props.id_bookinfo,
-                },
-              );
+              refNavigation.current?.navigate(StackScreens.CHAPTER_LIST, {
+                title: props.book_title,
+                chapters: props.chapters,
+                book_url: props.book_url,
+                id_bookinfo: props.id_bookinfo,
+              });
             }}
           >
             VER TODO

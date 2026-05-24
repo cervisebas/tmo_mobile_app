@@ -1,4 +1,4 @@
 export enum DefaultValueConfig {
   BACKGROUND_TASK = 1,
-  BACKGROUND_TASK_INTERVAL = 90,
+  BACKGROUND_TASK_INTERVAL = 120,
 }

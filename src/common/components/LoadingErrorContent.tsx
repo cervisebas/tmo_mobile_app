@@ -1,6 +1,6 @@
-import React from "react";
-import { View } from "react-native";
-import { ActivityIndicator, Icon, Text } from "react-native-paper";
+import React from 'react';
+import { View } from 'react-native';
+import { ActivityIndicator, Icon, Text } from 'react-native-paper';
 
 interface IProps {
   loading: boolean;
@@ -12,11 +12,8 @@ interface IProps {
 export const LoadingErrorContent = React.memo(function (props: IProps) {
   if (props.error) {
     return (
-      <View className={'flex-1 justify-center items-center flex-col gap-[8]'}>
-        <Icon
-          source={props.errorIcon ?? 'chat-alert-outline'}
-          size={24}
-        />
+      <View className={'flex-1 flex-col items-center justify-center gap-[8]'}>
+        <Icon source={props.errorIcon ?? 'chat-alert-outline'} size={24} />
 
         <Text>{props.error}</Text>
       </View>
@@ -25,7 +22,7 @@ export const LoadingErrorContent = React.memo(function (props: IProps) {
 
   if (props.loading) {
     return (
-      <View className={'flex-1 justify-center items-center'}>
+      <View className={'flex-1 items-center justify-center'}>
         <ActivityIndicator size={'large'} />
       </View>
     );

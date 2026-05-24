@@ -1,6 +1,6 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { View } from "react-native";
-import { Tooltip, Appbar, Badge } from "react-native-paper";
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { View } from 'react-native';
+import { Tooltip, Appbar, Badge } from 'react-native-paper';
 
 interface IProps {
   onPress?(): void;
@@ -10,7 +10,10 @@ export interface AppbarActionFilterRef {
   setQuantityFilter(val: number): void;
 }
 
-export const AppbarActionFilter = forwardRef(function (props: IProps, ref: React.Ref<AppbarActionFilterRef>) {
+export const AppbarActionFilter = forwardRef(function (
+  props: IProps,
+  ref: React.Ref<AppbarActionFilterRef>,
+) {
   const [quantity, setQuantity] = useState(0);
 
   useImperativeHandle(ref, () => ({
@@ -20,13 +23,10 @@ export const AppbarActionFilter = forwardRef(function (props: IProps, ref: React
   return (
     <View className={'relative'}>
       <Tooltip title={'Filtros'}>
-        <Appbar.Action
-          icon={'filter-variant'}
-          onPress={props.onPress}
-        />
+        <Appbar.Action icon={'filter-variant'} onPress={props.onPress} />
       </Tooltip>
       <Badge
-        className={'absolute top-[4] right-[4]'}
+        className={'absolute right-[4] top-[4]'}
         pointerEvents={'none'}
         visible={quantity > 0}
       >

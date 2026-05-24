@@ -47,5 +47,5 @@ export enum LibraryGenders {
   SOAP_OPERA = 46,
   WAR = 47,
   WESTERN = 48,
-  TRAPS = 94
+  TRAPS = 94,
 }

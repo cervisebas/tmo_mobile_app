@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
-import { UserBookStatus } from "~/api/enums/UserBookStatus";
-import { BookInfoInterface } from "~/api/interfaces/BookInfoInterface";
-import { UserBookStatusList } from "~/api/interfaces/UserBookStatus";
-import { DatabaseService } from "~/database/classes/DatabaseService";
-import { DatabaseTableName } from "~/database/enums/DatabaseTableName";
-import { useTableChanges } from "~/database/hooks/useTableChange";
+import { useCallback, useEffect, useState } from 'react';
+import { UserBookStatus } from '~/api/enums/UserBookStatus';
+import { BookInfoInterface } from '~/api/interfaces/BookInfoInterface';
+import { UserBookStatusList } from '~/api/interfaces/UserBookStatus';
+import { DatabaseService } from '~/database/classes/DatabaseService';
+import { DatabaseTableName } from '~/database/enums/DatabaseTableName';
+import { useTableChanges } from '~/database/hooks/useTableChange';
 
 export function useProfileBooks(select: UserBookStatus) {
   const [stateList, setStateList] = useState<UserBookStatusList>({
@@ -36,7 +36,6 @@ export function useProfileBooks(select: UserBookStatus) {
 
   const [books, setBooks] = useState<BookInfoInterface[]>([]);
 
-
   const calculate = useCallback(async () => {
     const dbService = new DatabaseService();
     const state_list = await dbService.getUserStatusCount();
@@ -55,7 +54,7 @@ export function useProfileBooks(select: UserBookStatus) {
   useEffect(() => {
     calculate();
   }, []);
-  
+
   useEffect(() => {
     calculate();
   }, [select]);
@@ -67,5 +66,5 @@ export function useProfileBooks(select: UserBookStatus) {
     0,
   );
 
-  return {stateList, books};
+  return { stateList, books };
 }

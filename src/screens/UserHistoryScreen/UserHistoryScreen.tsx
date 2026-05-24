@@ -1,24 +1,24 @@
-import { useCallback, useContext } from "react";
-import { ListRenderItemInfo, View } from "react-native";
-import { Appbar, Tooltip } from "react-native-paper";
-import { AppbarHeader } from "~/common/components/AppbarHeader";
-import FlatListDynamicItems from "~/common/components/FlatListDynamicItems";
-import PrincipalView from "~/common/components/PrincipalView";
-import StackScreenProps from "~/common/interfaces/StackScreenProps";
-import { UserChapterHistoryInterface } from "~/database/interfaces/UserChapterHistoryInterface";
-import { useUserHistory } from "~/services/user-history/hooks/useUserHistory";
-import { UserHistoryItem } from "./components/UserHistoryItem";
-import { refDialog } from "~/common/utils/Ref";
-import { UserHistory } from "~/services/user-history";
-import { getBookInfo } from "~/api/scripts/getBookInfo";
-import { onPressChapterItem } from "../BookInfoScreen/scripts/onPressChapterItem";
-import { ThemeContext } from "~/common/providers/ThemeProvider";
-import { DatabaseSave } from "~/database/classes/DatabaseSave";
-import { DatabaseService } from "~/database/classes/DatabaseService";
+import { useCallback, useContext } from 'react';
+import { ListRenderItemInfo, View } from 'react-native';
+import { Appbar, Tooltip } from 'react-native-paper';
+import { AppbarHeader } from '~/common/components/AppbarHeader';
+import FlatListDynamicItems from '~/common/components/FlatListDynamicItems';
+import PrincipalView from '~/common/components/PrincipalView';
+import StackScreenProps from '~/common/interfaces/StackScreenProps';
+import { UserChapterHistoryInterface } from '~/database/interfaces/UserChapterHistoryInterface';
+import { useUserHistory } from '~/services/user-history/hooks/useUserHistory';
+import { UserHistoryItem } from './components/UserHistoryItem';
+import { refDialog } from '~/common/utils/Ref';
+import { UserHistory } from '~/services/user-history';
+import { getBookInfo } from '~/api/scripts/getBookInfo';
+import { onPressChapterItem } from '../BookInfoScreen/scripts/onPressChapterItem';
+import { ThemeContext } from '~/common/providers/ThemeProvider';
+import { DatabaseSave } from '~/database/classes/DatabaseSave';
+import { DatabaseService } from '~/database/classes/DatabaseService';
 
 export function UserHistoryScreen(props: StackScreenProps) {
-  const {data, refresh, loading, reload} = useUserHistory();
-  const {theme} = useContext(ThemeContext);
+  const { data, refresh, loading, reload } = useUserHistory();
+  const { theme } = useContext(ThemeContext);
 
   const removeAllItems = useCallback(() => {
     refDialog.current?.showAlert({
@@ -34,7 +34,7 @@ export function UserHistoryScreen(props: StackScreenProps) {
               refDialog.current?.showLoading('Removiendo elementos...');
               await UserHistory.removeAllUserHistory();
               reload();
-        
+
               refDialog.current?.showLoading(false);
             } catch (error) {
               console.error(error);
@@ -43,7 +43,7 @@ export function UserHistoryScreen(props: StackScreenProps) {
           },
         },
       ],
-    })
+    });
   }, []);
 
   const removeItem = useCallback(async (id: number) => {
@@ -69,18 +69,21 @@ export function UserHistoryScreen(props: StackScreenProps) {
       } catch (error) {
         console.error(error);
       }
-      
+
       const dbService = new DatabaseService();
       const dbInfo = await dbService.getDatabaseBookInfo(null, data.book.id);
+
       onPressChapterItem({
         chapter: data.chapter,
         primaryColor: theme.colors.primary,
         book_url: dbInfo!.url,
         id_bookinfo: data.book.id!,
         book_title: data.book.title,
+        showOpenBook: true,
+        bookInfo: dbInfo!,
         chapters: dbInfo?.chapters!,
       });
-      
+
       refDialog.current?.showLoading(false);
     } catch (error) {
       console.error(error);
@@ -88,25 +91,24 @@ export function UserHistoryScreen(props: StackScreenProps) {
     }
   }, []);
 
-  const renderItem = useCallback(({item}: ListRenderItemInfo<UserChapterHistoryInterface>) => (
-    <UserHistoryItem
-      date={item.date}
-      title={item.book.title}
-      chapter={item.chapter.title}
-      onDelete={() => removeItem(item.id)}
-      onPress={() => actionItem(item)}
-    />
-  ), []);
+  const renderItem = useCallback(
+    ({ item }: ListRenderItemInfo<UserChapterHistoryInterface>) => (
+      <UserHistoryItem
+        date={item.date}
+        title={item.book.title}
+        chapter={item.chapter.title}
+        onDelete={() => removeItem(item.id)}
+        onPress={() => actionItem(item)}
+      />
+    ),
+    [],
+  );
 
   return (
     <PrincipalView>
       <AppbarHeader mode={'small'}>
-        <Appbar.BackAction
-          onPress={props.navigation.goBack}
-        />
-        <Appbar.Content
-          title={'Historial'}
-        />
+        <Appbar.BackAction onPress={props.navigation.goBack} />
+        <Appbar.Content title={'Historial'} />
 
         <Tooltip title={'Limpiar historial'}>
           <Appbar.Action
@@ -133,7 +135,6 @@ export function UserHistoryScreen(props: StackScreenProps) {
           emptyMessage={'No hay elementos en el historial'}
         />
       </View>
-
     </PrincipalView>
   );
 }

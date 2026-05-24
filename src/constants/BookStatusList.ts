@@ -1,4 +1,4 @@
-import { BookStatus } from "~/api/enums/BookStatus";
+import { BookStatus } from '~/api/enums/BookStatus';
 
 interface BookStatusItem {
   label: string;

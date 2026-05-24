@@ -1,8 +1,10 @@
-import { Image } from "expo-image";
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Divider, List, Text } from "react-native-paper";
-import { BookStaffInterface } from "~/api/interfaces/BookStaffInterface";
+import { Image } from 'expo-image';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Divider, List, Text } from 'react-native-paper';
+import { BookStaffInterface } from '~/api/interfaces/BookStaffInterface';
+import { refNavigation } from '~/common/utils/Ref';
+import { StackScreens } from '~/enums/StackScreens';
 
 interface IProps {
   data: BookStaffInterface[];
@@ -21,29 +23,30 @@ export const StaffList = React.memo(function (props: IProps) {
         <Text variant={'titleLarge'}>Staff</Text>
 
         <View className={'w-full flex-col'}>
-          {props.data.map((val, index, array) => (
-            <React.Fragment key={`staff-item-${val.id}-${val.position}`}>
+          {props.data.map((info, index, array) => (
+            <React.Fragment key={`staff-item-${info.id}-${info.position}`}>
               <List.Item
-                title={val.name}
-                description={val.position}
+                title={info.name}
+                description={info.position}
                 style={styles.item}
-                left={props => (
+                left={(props) => (
                   <Image
                     {...props}
-                    style={[
-                      props.style,
-                      styles.image,
-                    ]}
+                    style={[props.style, styles.image]}
                     source={{
-                      uri: val.picture,
+                      uri: info.picture,
                     }}
                   />
                 )}
+                onPress={() => {
+                  refNavigation.current?.navigate(
+                    StackScreens.AUTHOR_INFO,
+                    info,
+                  );
+                }}
               />
 
-              {array?.[index + 1] && (
-                <Divider className={'mx-[12]'} />
-              )}
+              {array?.[index + 1] && <Divider className={'mx-[12]'} />}
             </React.Fragment>
           ))}
         </View>

@@ -1,4 +1,4 @@
-import { BookInfoInterface } from "./BookInfoInterface";
+import { BookInfoInterface } from './BookInfoInterface';
 
 export interface PopularsInterface {
   populars: BookInfoInterface[];

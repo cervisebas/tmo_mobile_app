@@ -1,3 +1,3 @@
-import {fetch} from './src/ExpoInsecureFetchModule';
+import { fetch } from './src/ExpoInsecureFetchModule';
 
-export default {fetch};
+export default { fetch };

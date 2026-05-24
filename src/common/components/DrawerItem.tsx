@@ -15,10 +15,7 @@ export function DrawerItem(props: IProps) {
       icon={props.icon}
       label={props.title}
       active={props.active}
-      style={[
-        props.style,
-        styles.content,
-      ]}
+      style={[props.style, styles.content]}
       onPress={props.onPress}
     />
   );

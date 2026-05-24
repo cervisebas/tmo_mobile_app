@@ -1,5 +1,5 @@
-import { ChapterInterface } from "~/api/interfaces/ChapterInterface";
-import { ChapterOptionInterface } from "~/api/interfaces/ChapterOptionInterface";
+import { ChapterInterface } from '~/api/interfaces/ChapterInterface';
+import { ChapterOptionInterface } from '~/api/interfaces/ChapterOptionInterface';
 
 export interface ChapterVisualizerParams {
   index: number;

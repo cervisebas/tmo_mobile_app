@@ -1,5 +1,5 @@
-import {useMemo} from 'react';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { useMemo } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export interface SafeAreaResponse {
   top: number;
@@ -14,7 +14,7 @@ export default function (
   horizontal?: number,
   vertical?: number,
 ): SafeAreaResponse {
-  const {bottom, top, left, right} = useSafeAreaInsets();
+  const { bottom, top, left, right } = useSafeAreaInsets();
   return useMemo(
     () => ({
       top: top + (vertical ?? 0),
